@@ -4,8 +4,13 @@ export async function parseAttribute(attr, context, ctxName, parentId) {
 
     if (provider == null) return;
 
-    if (attr.ownerElement.dataset.uuid == null) {
-        attr.ownerElement.dataset.uuid = crypto.randomUUID();
+    const element = attr.ownerElement;
+    if (element.dataset.uuid == null) {
+        element.dataset.uuid = crypto.randomUUID();
+    }
+
+    if (element.dataset.bid == null) {
+        element.dataset.bid = context.bid;
     }
 
     await provider.parse(attr, context, ctxName, parentId);

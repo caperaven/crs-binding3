@@ -8,7 +8,7 @@ export default class CallProvider {
 
         const data = this.#events[event.type];
         const elementData = data[uuid];
-        console.log(elementData);
+        execute(event.target.dataset.bid, elementData, event);
     }
 
     /**
@@ -43,4 +43,36 @@ export default class CallProvider {
             }
         }
     }
+}
+
+function execute(bid, expr, event) {
+    const context = crs.binding.data.getContext(bid);
+    if (context == null) return;
+
+    const parts = expr.replace(")", "").split("(");
+    const fn = parts[0];
+
+    const args = parts.length == 1 ? [event] : processArgs(parts[1], event);
+    context[fn].call(context, ...args);
+}
+
+function processArgs(expr, event) {
+    const args = [];
+    const parts = expr.split(",");
+
+    for (let part of parts) {
+        part = part.trim();
+
+        if (part === "$event") {
+            args.push(event);
+        }
+        else if (Number.isNaN(part) == true) {
+            args.push(Number(part));
+        }
+        else {
+            args.push(part);
+        }
+    }
+
+    return args;
 }
