@@ -9,7 +9,7 @@
     <button click.call="log('hello world')">Log 2</button>
     <button click.call="log($event)">Log 3</button>
     <button click.call="log('hello world', $event, 10)">Log 4</button>
-    <button id="btnClear">Clear</button>
+    <button click.call="clear(0)">Clear</button>
 
     <script type="module">
         import "./src/crs-binding.js";
@@ -18,11 +18,6 @@
         globalThis.viewModel = new IndexViewModel();
 
         crs.binding.parsers.parseElements(document.body.children, globalThis.viewModel);
-
-        document.querySelector("#btnClear").addEventListener("click", () => {
-            crs.binding.providers.clear([document.body.children[0]]);
-        })
-
     </script>
 </body>
 </html>

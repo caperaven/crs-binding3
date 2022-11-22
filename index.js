@@ -13,4 +13,8 @@ export class IndexViewModel {
     log(...args) {
         console.log(...args);
     }
+
+    async clear(index) {
+        await crs.binding.providers.clear([document.body.children[index]]);
+    }
 }

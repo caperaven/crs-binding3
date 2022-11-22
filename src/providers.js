@@ -51,6 +51,7 @@ export class Providers {
             }
 
             delete element.dataset.uuid;
+            delete element.dataset.bid;
         }
     }
 }

@@ -2,13 +2,13 @@ export default class CallProvider {
     #events = {};
     #onEventHandler = this.#onEvent.bind(this);
 
-    #onEvent(event) {
+    async #onEvent(event) {
         const uuid = event.target.dataset.uuid;
         if (uuid == null) return;
 
         const data = this.#events[event.type];
         const elementData = data[uuid];
-        execute(event.target.dataset.bid, elementData, event);
+        await execute(event.target.dataset.bid, elementData, event);
     }
 
     /**
@@ -45,7 +45,7 @@ export default class CallProvider {
     }
 }
 
-function execute(bid, expr, event) {
+async function execute(bid, expr, event) {
     const context = crs.binding.data.getContext(bid);
     if (context == null) return;
 
@@ -53,7 +53,7 @@ function execute(bid, expr, event) {
     const fn = parts[0];
 
     const args = parts.length == 1 ? [event] : processArgs(parts[1], event);
-    context[fn].call(context, ...args);
+    await context[fn].call(context, ...args);
 }
 
 function processArgs(expr, event) {
