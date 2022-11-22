@@ -24,6 +24,7 @@ export default class CallProvider {
         }
 
         this.#events[event][attr.ownerElement.dataset.uuid] = attr.value;
+        attr.ownerElement.removeAttribute(attr.name);
     }
 
     /**
