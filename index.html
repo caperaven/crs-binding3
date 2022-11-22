@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <button click.call="log">Log</button>
+    <button click.call="log('hello world')">Log 2</button>
+    <button click.call="log($event)">Log 3</button>
+    <button click.call="log('hello world', $event)">Log 4</button>
+    <button id="btnClear">Clear</button>
+
+    <script type="module">
+        import "./src/crs-binding.js";
+
+        console.log(crs.binding);
+        crs.binding.parsers.parseElements(document.body.children);
+
+
+        document.querySelector("#btnClear").addEventListener("click", () => {
+            crs.binding.providers.clear([document.body.children[0]]);
+        })
+    </script>
+</body>
+</html>
