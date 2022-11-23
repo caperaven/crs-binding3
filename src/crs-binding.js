@@ -2,7 +2,7 @@ import {Providers} from "./providers.js";
 import {parseElement, parseElements, parseAttribute, parseAttributes} from "./parsers.js";
 import {BindingData} from "./binding-data.js";
 import {sanitize} from "./expressions.js";
-import {compile, release, enableEvents, disableEvents} from "./events.js";
+import {compile, release} from "./events.js";
 
 globalThis.crs ||= {};
 
@@ -27,10 +27,5 @@ globalThis.crs.binding = {
         sanitize,
         compile,
         release,
-    },
-
-    dom: {
-        enableEvents,
-        disableEvents
-    },
+    }
 }
