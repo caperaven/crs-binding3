@@ -44,14 +44,14 @@ export class Providers {
         const providers = Object.keys(this.#items);
 
         for (const element of elements) {
-            if (element.dataset.uuid == null) continue;
+            if (element["__uuid"] == null) continue;
 
             for (const provider of providers) {
                 this.#items[provider].clear(element)
             }
 
-            delete element.dataset.uuid;
-            delete element.dataset.bid;
+            delete element["__uuid"];
+            delete element["__bid"];
         }
     }
 }

@@ -3,12 +3,15 @@ export default class CallProvider {
     #onEventHandler = this.#onEvent.bind(this);
 
     async #onEvent(event) {
-        const uuid = event.target.dataset.uuid;
+        const uuid = event.target["__uuid"];
         if (uuid == null) return;
 
         const data = this.#events[event.type];
         const elementData = data[uuid];
-        await execute(event.target.dataset.bid, elementData, event);
+
+        if (elementData != null) {
+            await execute(event.target["__bid"], elementData, event);
+        }
     }
 
     /**
@@ -23,7 +26,7 @@ export default class CallProvider {
             this.#events[event] = {}
         }
 
-        this.#events[event][attr.ownerElement.dataset.uuid] = attr.value;
+        this.#events[event][attr.ownerElement["__uuid"]] = attr.value;
         attr.ownerElement.removeAttribute(attr.name);
     }
 
@@ -31,10 +34,10 @@ export default class CallProvider {
      * Free the memory associated with this element based on it's uuid
      */
     async clear(element) {
-        if (element.dataset.uuid == null) return;
+        if (element["__uuid"] == null) return;
 
         for (const event of Object.keys(this.#events)) {
-            delete this.#events[event][element.dataset.uuid];
+            delete this.#events[event][element["__uuid"]];
 
             // if no more items use the event, remove the event listener
             if (Object.keys(this.#events[event]).length === 0) {

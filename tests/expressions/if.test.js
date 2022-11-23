@@ -1,0 +1,25 @@
+import { beforeAll, describe, it} from "https://deno.land/std@0.157.0/testing/bdd.ts";
+import { assertEquals} from "https://deno.land/std@0.149.0/testing/asserts.ts";
+import {init} from "./../mockups/init.js";
+
+await init();
+
+beforeAll(async () => {
+    await import("./../../src/expressions/functions/if.js");
+});
+
+describe("if function tests", async () => {
+    it( "ifFunction", async () => {
+        let fn = await crs.binding.expression.ifFunction("code == 'a'");
+        assertEquals(fn({code: "a"}), true)
+        assertEquals(fn({code: "b"}), false)
+
+        fn = await crs.binding.expression.ifFunction("code == 'a' ? true");
+        assertEquals(fn({code: "a"}), true)
+        assertEquals(fn({code: "b"}), undefined)
+
+        fn = await crs.binding.expression.ifFunction("code == 'a' ? true : false");
+        assertEquals(fn({code: "a"}), true)
+        assertEquals(fn({code: "b"}), false)
+    })
+})
