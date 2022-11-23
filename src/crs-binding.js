@@ -3,6 +3,7 @@ import {parseElement, parseElements, parseAttribute, parseAttributes} from "./pa
 import {BindingData} from "./binding-data.js";
 import {sanitize} from "./expressions.js";
 import {compile, release} from "./events.js";
+import {disposeProperties} from "./utils.js";
 
 globalThis.crs ||= {};
 
@@ -27,5 +28,9 @@ globalThis.crs.binding = {
         sanitize,
         compile,
         release,
+    },
+
+    utils: {
+        disposeProperties
     }
 }

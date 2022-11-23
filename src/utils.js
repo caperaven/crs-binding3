@@ -1,0 +1,1 @@
+export {disposeProperties} from "./utils/dispose-properties.js";
