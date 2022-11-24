@@ -20,7 +20,7 @@ describe("dispose properties tests", async () => {
         const person = obj.person;
         const address = obj.addresses;
 
-        crs.binding.utils.disposeProperties(obj);
+        await crs.binding.utils.disposeProperties(obj);
         assert(person.firstName == null);
         assert(address.length == 0);
         assert(obj.person == null);
@@ -35,23 +35,23 @@ describe("dispose properties tests", async () => {
             }
         }
 
-        crs.binding.utils.disposeProperties(obj);
+        await crs.binding.utils.disposeProperties(obj);
         assertEquals(obj.person.firstName, "John");
     })
 
     it("dispose null", async () => {
         const obj = undefined;
 
-        crs.binding.utils.disposeProperties(obj);
+        await crs.binding.utils.disposeProperties(obj);
         assert(obj == null);
     })
 
-    it ("skip dispose of frozen objects", () => {
+    it ("skip dispose of frozen objects", async () => {
         const obj = Object.freeze({
             person: "John"
         });
 
-        crs.binding.utils.disposeProperties(obj);
+        await crs.binding.utils.disposeProperties(obj);
         assertEquals(obj.person, "John");
     })
 })

@@ -1,5 +1,5 @@
 const ignoreDispose = ["_element"];
-export function disposeProperties(obj) {
+export async function disposeProperties(obj) {
     if (obj == null || obj.autoDispose == false) return;
     if (typeof obj != "object") return;
     if (Object.isFrozen(obj)) return;
@@ -10,14 +10,21 @@ export function disposeProperties(obj) {
         const pObj = obj[property];
 
         if (typeof pObj == "object") {
-            if (Array.isArray(pObj)) {
-                for (const item of pObj) {
-                    disposeProperties(item);
+            if (Array.isArray(pObj) && pObj.length > 0) {
+                if (typeof pObj[0] == "object") {
+                    for (const item of pObj) {
+                        await disposeProperties(item);
+                    }
                 }
+
                 pObj.length = 0;
             }
             else {
-                disposeProperties(pObj);
+                if (pObj.dispose != null) {
+                    await pObj.dispose();
+                }
+
+                await disposeProperties(pObj);
             }
         }
 
