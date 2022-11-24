@@ -64,6 +64,18 @@ export class BindingData {
     }
 
     /**
+     * Remove the data and context objects and do cleanup
+     */
+    remove(id) {
+        id = this.#getContextId(id);
+        crs.binding.utils.disposeProperties(this.#data[id]);
+        crs.binding.utils.disposeProperties(this.#context[id]);
+
+        delete this.#data[id];
+        delete this.#context[id];
+    }
+
+    /**
      * Set a property for a given binding context on a provided path
      */
     getProperty(id, property) {

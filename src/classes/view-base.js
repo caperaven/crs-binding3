@@ -33,9 +33,7 @@ export class ViewBase {
     }
 
     async disconnectedCallback() {
-        crs.binding.utils.forceClean(this.#bid);
-        crs.binding.observation.releaseBinding(this.element);
-        await crs.binding.utils.disposeProperties(this);
+        await crs.binding.data.remove(this.#bid);
         this.#element = null;
     }
 
