@@ -3,7 +3,7 @@ import {parseElement, parseElements, parseAttribute, parseAttributes} from "./pa
 import {BindingData} from "./store/binding-data.js";
 import {sanitize} from "./expressions.js";
 import {compile, release} from "./events.js";
-import {disposeProperties, getValueOnPath, getPathOfFile} from "./utils.js";
+import {disposeProperties, getValueOnPath, setValueOnPath, getPathOfFile} from "./utils.js";
 
 
 globalThis.crs ||= {};
@@ -38,6 +38,7 @@ globalThis.crs.binding = {
     utils: {
         disposeProperties,
         getValueOnPath,
+        setValueOnPath,
         getPathOfFile
     }
 }

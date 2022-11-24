@@ -6,10 +6,12 @@ export function getValueOnPath(obj, path) {
     }
 
     const parts = path.split(".");
-    for (let i = 0; i < parts.length -1; i++) {
-        const part = parts[i];
+    const property = parts.pop();
+
+    for (const part of parts) {
         obj = obj[part];
         if (obj == null) return null;
     }
-    return obj[parts[parts.length -1]];
+
+    return obj[property];
 }

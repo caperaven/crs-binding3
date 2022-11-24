@@ -15,6 +15,13 @@ export class BindingData {
         return result;
     }
 
+    #getContextId(id) {
+        if (typeof id == "object") {
+            return id.bid;
+        }
+        return id;
+    }
+
     /**
      * Create a binding context data object.
      * This is the starting point for all bindable context objects
@@ -24,14 +31,11 @@ export class BindingData {
      */
     addObject(name, struct = {}) {
         const id = this.#getNextId();
-        struct.contextId = id;
-
         this.#data[id] = {
             name: name,
             type: "data",
             data: struct
         };
-
         this.#callbacks[id] = {};
 
         return id;
@@ -56,5 +60,15 @@ export class BindingData {
      */
     getData(id) {
         return this.#data[id];
+    }
+
+    getProperty(id, property) {
+        id = this.#getContextId(id);
+        return crs.binding.utils.getValueOnPath(this.#data[id], property);
+    }
+
+    setProperty(id, property, value) {
+        id = this.#getContextId(id);
+        crs.binding.utils.setValueOnPath(this.#data[id], property, value);
     }
 }
