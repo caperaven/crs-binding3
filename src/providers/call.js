@@ -2,6 +2,10 @@ export default class CallProvider {
     #events = {};
     #onEventHandler = this.#onEvent.bind(this);
 
+    get events() {
+        return this.#events;
+    }
+
     async #onEvent(event) {
         const uuid = event.target["__uuid"];
         if (uuid == null) return;

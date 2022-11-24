@@ -9,6 +9,7 @@ This is a list of changes between the old binding api and the new
 
 crs.binding.expressions.ifFunction -> import the expressions/functions/if.js
 crs.binding.expressions.caseFunction -> import the expressions/functions/case.js
+crs.binding.events.emitter -> import the events/event-emitter.js
 
 ## Dom
 

@@ -1,19 +1,17 @@
 export class EventEmitter {
-    constructor() {
-        this._events = new Map();
-    }
+    #events = {};
 
     dispose() {
-        this._events.clear();
+        this.#events = null;
     }
 
     async on(event, callback) {
         let events = [];
 
-        if (this._events.has(event)) {
-            events = this._events.get(event);
+        if (this.#events[event]) {
+            events = this.#events[event];
         } else {
-            this._events.set(event, events);
+            this.#events[event] = events;
         }
 
         if (events.indexOf(callback) == -1) {
@@ -22,8 +20,8 @@ export class EventEmitter {
     }
 
     async emit(event, args) {
-        if (this._events.has(event)) {
-            const events = this._events.get(event);
+        if (this.#events[event]) {
+            const events = this.#events[event];
 
             if (events.length == 1) {
                 return await events[0](args);
@@ -37,14 +35,14 @@ export class EventEmitter {
     }
 
     async remove(event, callback) {
-        if (this._events.has(event)) {
-            const events = this._events.get(event);
+        if (this.#events[event]) {
+            const events = this.#events[event];
             const index = events.indexOf(callback);
             if (index != -1) {
                 events.splice(index, 1);
             }
             if (events.length === 0) {
-                this._events.delete(event)
+                delete this.#events[event];
             } 
         }
     }
@@ -61,3 +59,5 @@ export class EventEmitter {
         await Promise.all(promises);
     }
 }
+
+(crs.binding.events ||= {}).emitter = new EventEmitter();

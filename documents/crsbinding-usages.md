@@ -36,8 +36,8 @@
 * crsbinding.utils.getValueOnPath()
 
 ###  crsbinding.expression
-* crsbinding.expression.compile()
-* crsbinding.expression.release()
+done - * crsbinding.expression.compile()
+done - * crsbinding.expression.release()
 
 ### crsbinding.providerManager
 * crsbinding.providerManager.provders.for.ds
