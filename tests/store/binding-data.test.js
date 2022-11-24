@@ -19,6 +19,17 @@ describe("binding data store tests", async () => {
         assertEquals(crs.binding.data.getContext(id), undefined);
     })
 
+    it ("add object", async () => {
+        const obj = { property: "test" }
+        const id = crs.binding.data.addObject("add object", obj);
+
+        assertEquals(crs.binding.data.getProperty(id, "property"), "test");
+
+        await crs.binding.data.remove(id);
+        assertEquals(crs.binding.data.getData(id), undefined);
+        assertEquals(crs.binding.data.getContext(id), undefined);
+    })
+
     it ("add context", async () => {
         const context = {};
         const id = crs.binding.data.addObject("add context");

@@ -27,7 +27,6 @@ export class ViewBase {
         }
 
         const path = crs.binding.utils.getPathOfFile(this.html);
-
         await crs.binding.parsers.parseElement(this.element, this.#bid, path ? {folder: path} : null);
         await this.load();
     }

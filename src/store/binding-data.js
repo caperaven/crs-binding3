@@ -79,13 +79,13 @@ export class BindingData {
      * Set a property for a given binding context on a provided path
      */
     getProperty(id, property) {
-        return crs.binding.utils.getValueOnPath(this.getData(id), property);
+        return crs.binding.utils.getValueOnPath(this.getData(id)?.data, property);
     }
 
     /**
      * Get a property for a given binding context on a provided path
      */
     setProperty(id, property, value) {
-        crs.binding.utils.setValueOnPath(this.getData(id), property, value);
+        crs.binding.utils.setValueOnPath(this.getData(id)?.data, property, value);
     }
 }
