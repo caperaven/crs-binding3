@@ -25,15 +25,15 @@
 * crsbinding.data.array()
 
 ### crsbinding.events
-* crsbinding.events.emitter
-* crsbinding.events.emitter.postMessage()
-* crsbinding.events.emitter.emit()
-* crsbinding.events.emitter.on()
-* crsbinding.events.emitter.remove()
+done - * crsbinding.events.emitter
+done - * crsbinding.events.emitter.postMessage()
+done - * crsbinding.events.emitter.emit()
+done - * crsbinding.events.emitter.on()
+done - * crsbinding.events.emitter.remove()
 * crsbinding.events.notifyPropertyChanged()
 
 ### crsbinding.utils
-* crsbinding.utils.getValueOnPath()
+done - * crsbinding.utils.getValueOnPath()
 
 ###  crsbinding.expression
 done - * crsbinding.expression.compile()
@@ -49,7 +49,8 @@ done - * crsbinding.expression.release()
 * crsbinding.observation.releaseObserved()
 
 ### crsbinding.parsers
-* crsbinding.parsers.parseElement()
+done - * crsbinding.parsers.parseElement()
+done - * crsbinding.parsers.parseElements()
 
 ### crsbinding.idleTaskManager
 * crsbinding.idleTaskManager.add()
@@ -66,11 +67,11 @@ done - * crsbinding.expression.release()
 * crsbinding.staticInflationManager.inflateElement()
 
 ### crsbinding.dom
-* crsbinding.dom.enableEvents()
-* crsbinding.dom.disableEvents()
+done - * crsbinding.dom.enableEvents()
+done - * crsbinding.dom.disableEvents()
 
 ### crsbinding._exfn
-* crsbinding._exfn.size
+done - * crsbinding._exfn.size (now called "functions")
 
 
 

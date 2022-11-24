@@ -3,7 +3,8 @@ import {parseElement, parseElements, parseAttribute, parseAttributes} from "./pa
 import {BindingData} from "./binding-data.js";
 import {sanitize} from "./expressions.js";
 import {compile, release} from "./events.js";
-import {disposeProperties} from "./utils.js";
+import {disposeProperties, getValueOnPath, getPathOfFile} from "./utils.js";
+
 
 globalThis.crs ||= {};
 
@@ -12,6 +13,10 @@ globalThis.crs.binding = {
 
     data: new BindingData(),
     functions: new Map(),
+
+    classes: {
+        AsyncFunction: Object.getPrototypeOf(async function(){}).constructor
+    },
 
     providers: new Providers({
         "call": "$root/providers/call.js"
@@ -31,6 +36,8 @@ globalThis.crs.binding = {
     },
 
     utils: {
-        disposeProperties
+        disposeProperties,
+        getValueOnPath,
+        getPathOfFile
     }
 }
