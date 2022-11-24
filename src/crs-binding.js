@@ -1,6 +1,6 @@
 import {Providers} from "./providers.js";
 import {parseElement, parseElements, parseAttribute, parseAttributes} from "./parsers.js";
-import {BindingData} from "./binding-data.js";
+import {BindingData} from "./store/binding-data.js";
 import {sanitize} from "./expressions.js";
 import {compile, release} from "./events.js";
 import {disposeProperties, getValueOnPath, getPathOfFile} from "./utils.js";
