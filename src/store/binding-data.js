@@ -59,16 +59,15 @@ export class BindingData {
      * Get the binding data object for the id provided
      */
     getData(id) {
+        id = this.#getContextId(id);
         return this.#data[id];
     }
 
     getProperty(id, property) {
-        id = this.#getContextId(id);
-        return crs.binding.utils.getValueOnPath(this.#data[id], property);
+        return crs.binding.utils.getValueOnPath(this.getData(id), property);
     }
 
     setProperty(id, property, value) {
-        id = this.#getContextId(id);
-        crs.binding.utils.setValueOnPath(this.#data[id], property, value);
+        crs.binding.utils.setValueOnPath(this.getData(id), property, value);
     }
 }
