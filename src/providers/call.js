@@ -22,6 +22,8 @@ export default class CallProvider {
      * Parse the attribute and register the required data and events.
      */
     async parse(attr, context, ctxName, parentId) {
+        console.log("call provider");
+
         const parts = attr.name.split(".");
         const event = parts[0];
 

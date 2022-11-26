@@ -1,39 +1,51 @@
 export class Providers {
-    #items = {};
+    #attrItems = {};
+    #attrPartialKeys = [];
 
-    constructor(providers) {
-        for (const key of Object.keys(providers)) {
-            this.add(key, providers[key]);
+    constructor(attrProviders) {
+        for (const key of Object.keys(attrProviders)) {
+            this.addAttributeProvider(key, attrProviders[key]);
         }
     }
 
     dispose() {
-        this.#items = null;
+        this.#attrItems = null;
+        this.#attrPartialKeys.length = 0;
+    }
+
+    async #getModule(key) {
+        const module = this.#attrItems[key];
+        if (typeof module !== "string") return module;
+
+        const file = module.replace("$root", crs.binding.root);
+        const result = new (await import(file)).default();
+        this.#attrItems[key] = result;
+        return result;
     }
 
     /**
      * Add a provider that can be used during parsing processes.
      */
-    add(key, file) {
-        this.#items[key] = file;
+    addAttributeProvider(key, file) {
+        this.#attrItems[key] = file;
+
+        if (key.indexOf(".") != -1) {
+            this.#attrPartialKeys.push(key);
+        }
     }
 
     /**
-     * Get the first provider that matches one of the keys that you pass on
+     * Get provider registered as attribute provider based on attribute name
+     * @param attrName
+     * @returns {Promise<*>}
      */
-    async get(...keys) {
-        let result = null;
+    async getAttrProvider(attrName) {
+        if (this.#attrItems[attrName] != null) return await this.#getModule(attrName);
 
-        for (const key of keys) {
-            if (this.#items[key] == null) continue;
-            result = this.#items[key];
-
-            if (typeof result !== "string") return result;
-
-            const file = result.replace("$root", crs.binding.root);
-            result = new (await import(file)).default();
-            this.#items[key] = result;
-            return result;
+        for (const key of this.#attrPartialKeys) {
+            if (attrName.indexOf(key) != -1) {
+                return await this.#getModule(key);
+            }
         }
     }
 
@@ -41,13 +53,13 @@ export class Providers {
      * Clear the providers for the element being released based on it's uuid
      */
     async clear(elements) {
-        const providers = Object.keys(this.#items);
+        const providers = Object.keys(this.#attrItems);
 
         for (const element of elements) {
             if (element["__uuid"] == null) continue;
 
             for (const provider of providers) {
-                this.#items[provider].clear(element)
+                this.#attrItems[provider].clear(element)
             }
 
             delete element["__uuid"];

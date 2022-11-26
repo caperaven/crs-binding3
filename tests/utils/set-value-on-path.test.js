@@ -28,4 +28,17 @@ describe("set on path tests", async () => {
         crs.binding.utils.setValueOnPath(obj, "person.firstName", null);
         assertEquals(obj.person.firstName, null);
     })
+
+    it ("set value on existing path", async () => {
+        const obj = {
+            person: {
+                lastName: "Doe"
+            }
+        }
+
+        crs.binding.utils.setValueOnPath(obj, "person.firstName", "John");
+
+        assertEquals(obj.person.firstName, "John");
+        assertEquals(obj.person.lastName, "Doe");
+    })
 })

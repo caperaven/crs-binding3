@@ -5,8 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-    <button click.call="log">Log</button>
-    <button click.call="log('hello world')">Log 2</button>
+    <div change.call="change"></div>
+    <div style.if="change"></div>
+    <div style.case="change"></div>
+    <div classlist.if="change"></div>
+    <div classlist.case="change"></div>
+    <div style.background="change"></div>
+    <div data-value.attr="change"></div>
+    <div hidden.if="change"></div>
+    <div hidden.case="change"></div>
+
+
+    <button click.call="log" style.background="firstName == 'John' ? 'red': 'blue'">Log</button>
+    <button click.call="log('hello world')" hidden.if="firstName != 'John'">Log 2</button>
     <button click.call="log($event)">Log 3</button>
     <button click.call="log('hello world', $event, 10)">Log 4</button>
 

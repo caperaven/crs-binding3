@@ -10,6 +10,10 @@ export class ViewBase {
         this.setProperty("title", newValue);
     }
 
+    get bid() {
+        return this.#bid;
+    }
+
     get element() {
         return this.#element;
     }

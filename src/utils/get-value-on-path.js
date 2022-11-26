@@ -1,5 +1,5 @@
 export function getValueOnPath(obj, path) {
-    if (obj == null) return;
+    if (obj == null || (path || "").length == 0) return;
 
     if (path.indexOf(".") == -1) {
         return obj[path];
