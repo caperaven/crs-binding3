@@ -41,4 +41,10 @@ describe("translations tests", async () => {
         assertEquals(element.children[0].textContent, "Code");
         assertEquals(element.getAttribute("data-value"), "Save");
     })
+
+    it("using fetch call", async () => {
+        crs.binding.translations.fetch = async (key) => "test";
+        const result = await crs.binding.translations.get("something");
+        assertEquals(result, "test");
+    })
 })
