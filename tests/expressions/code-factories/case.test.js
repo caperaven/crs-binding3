@@ -8,8 +8,8 @@ beforeAll(async () => {
     await import("../../../src/expressions/code-factories/case.js");
 });
 
-describe("case function tests", async () => {
-    it ("caseFunction", async () => {
+describe("case factory tests", async () => {
+    it ("caseFactory", async () => {
         let fn = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok', default: 'no'");
         let value1 = fn({value: 5});
         let value2 = fn({value: 15});

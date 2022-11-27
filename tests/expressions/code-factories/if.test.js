@@ -8,8 +8,8 @@ beforeAll(async () => {
     await import("../../../src/expressions/code-factories/if.js");
 });
 
-describe("if function tests", async () => {
-    it( "ifFunction", async () => {
+describe("if factory tests", async () => {
+    it( "ifFactory", async () => {
         let fn = await crs.binding.expression.ifFactory("code == 'a'");
         assertEquals(fn({code: "a"}), true)
         assertEquals(fn({code: "b"}), false)
