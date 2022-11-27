@@ -1,8 +1,13 @@
 export class Providers {
     #attrItems = {};
     #elementProviders = {};
+    #textProviders = [];
     #attrPartialKeys = [];
     #elementQueries = [];
+
+    get textProviders() {
+        return this.#textProviders;
+    }
 
     constructor(attrProviders, elementProviders) {
         for (const key of Object.keys(attrProviders)) {
@@ -53,6 +58,14 @@ export class Providers {
     }
 
     /**
+     * Add providers that will evaluate text.
+     * @param file
+     */
+    async addTextProvider(file) {
+        this.#textProviders.push(await this.#loadModule(file));
+    }
+
+    /**
      * Get provider registered as attribute provider based on attribute name
      * @param attrName
      * @returns {Promise<*>}
@@ -83,6 +96,10 @@ export class Providers {
                 return this.#elementProviders[query];
             }
         }
+    }
+
+    async getTextProviders() {
+        return this.#textProviders;
     }
 
     /**

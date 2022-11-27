@@ -57,3 +57,5 @@ globalThis.crs.binding = {
         getPathOfFile
     }
 }
+
+await crs.binding.providers.addTextProvider("$root/providers/text/text.js");
