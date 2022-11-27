@@ -2,7 +2,7 @@ import {tokenize} from "./exp-tokenizer.js";
 
 const sanitizeKeywords = ["false", "true", "null"];
 
-export function sanitize(exp, ctxName = "context") {
+export async function sanitize(exp, ctxName = "context") {
     let isHTML = false;
 
     if (typeof exp == "string" && exp.indexOf("$html") != -1) {
@@ -64,10 +64,12 @@ export function sanitize(exp, ctxName = "context") {
         }
     }
 
+    const expr = await crs.binding.expression.translateFactory(expression.join(""));
+
     return {
-        isLiteral: isLiteral,
-        isHTML: isHTML,
-        expression: expression.join(""),
+        isLiteral,
+        isHTML,
+        expression: expr,
         properties: Array.from(properties)
     }
 }

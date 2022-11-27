@@ -1,7 +1,7 @@
 import {Providers} from "./providers.js";
 import {parseElement, parseElements, parseAttribute, parseAttributes} from "./parsers.js";
 import {BindingData} from "./store/binding-data.js";
-import {sanitize} from "./expressions.js";
+import {sanitize, translateFactory} from "./expressions.js";
 import {compile, release} from "./events.js";
 import {disposeProperties, getValueOnPath, setValueOnPath, getPathOfFile} from "./utils.js";
 import {TranslationsManager} from "./translations.js";
@@ -48,6 +48,7 @@ globalThis.crs.binding = {
         sanitize,
         compile,
         release,
+        translateFactory
     },
 
     utils: {
