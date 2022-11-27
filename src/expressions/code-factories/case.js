@@ -1,6 +1,6 @@
 export async function caseFactory(exp) {
     const code = [];
-    exp = await crs.binding.expression.sanitize(exp).expression;
+    exp = (await crs.binding.expression.sanitize(exp)).expression;
 
     const parts = exp.split(",");
 

@@ -1,6 +1,6 @@
 export async function ifFactory(exp) {
     const code = [];
-    exp = await crs.binding.expression.sanitize(exp).expression.replaceAll("context.[", "[");
+    exp = (await crs.binding.expression.sanitize(exp)).expression.replaceAll("context.[", "[");
 
     if (exp.indexOf("?") == -1) {
         return new Function("context", `return ${exp}`);
