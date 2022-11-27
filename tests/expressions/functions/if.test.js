@@ -10,15 +10,15 @@ beforeAll(async () => {
 
 describe("if function tests", async () => {
     it( "ifFunction", async () => {
-        let fn = await crs.binding.expression.ifFunction("code == 'a'");
+        let fn = await crs.binding.expression.ifFactory("code == 'a'");
         assertEquals(fn({code: "a"}), true)
         assertEquals(fn({code: "b"}), false)
 
-        fn = await crs.binding.expression.ifFunction("code == 'a' ? true");
+        fn = await crs.binding.expression.ifFactory("code == 'a' ? true");
         assertEquals(fn({code: "a"}), true)
         assertEquals(fn({code: "b"}), undefined)
 
-        fn = await crs.binding.expression.ifFunction("code == 'a' ? true : false");
+        fn = await crs.binding.expression.ifFactory("code == 'a' ? true : false");
         assertEquals(fn({code: "a"}), true)
         assertEquals(fn({code: "b"}), false)
     })

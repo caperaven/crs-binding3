@@ -60,6 +60,7 @@ export function mockElement(instance, tag, id) {
     instance.performEvent = performEvent.bind(instance);
     instance.attachShadow = attachShadow.bind(instance);
     instance.getBoundingClientRect = getBoundingClientRect.bind(instance);
+    instance.matches = (query) => { return false; }
 
     Object.defineProperty(instance, "firstElementChild", {
         get() {

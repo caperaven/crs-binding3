@@ -1,4 +1,4 @@
-export async function caseFunction(exp) {
+export async function caseFactory(exp) {
     const code = [];
     exp = await crs.binding.expression.sanitize(exp).expression;
 
@@ -20,4 +20,4 @@ export async function caseFunction(exp) {
     return new Function("context", code.join("\n"));
 }
 
-crs.binding.expression.caseFunction = caseFunction;
+crs.binding.expression.caseFactory = caseFactory;

@@ -1,4 +1,4 @@
-export async function ifFunction(exp) {
+export async function ifFactory(exp) {
     const code = [];
     exp = await crs.binding.expression.sanitize(exp).expression.replaceAll("context.[", "[");
 
@@ -24,4 +24,4 @@ export async function ifFunction(exp) {
     return new Function("context", code.join("\n"));
 }
 
-crs.binding.expression.ifFunction = ifFunction;
+crs.binding.expression.ifFactory = ifFactory;

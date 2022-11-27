@@ -10,7 +10,7 @@ beforeAll(async () => {
 
 describe("case function tests", async () => {
     it ("caseFunction", async () => {
-        let fn = await crs.binding.expression.caseFunction("value < 10: 'yes', value < 20: 'ok', default: 'no'");
+        let fn = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok', default: 'no'");
         let value1 = fn({value: 5});
         let value2 = fn({value: 15});
         let value3 = fn({value: 25})
@@ -19,7 +19,7 @@ describe("case function tests", async () => {
         assertEquals(value2, 'ok');
         assertEquals(value3, 'no');
 
-        fn = await crs.binding.expression.caseFunction("value < 10: 'yes', value < 20: 'ok'");
+        fn = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok'");
         value1 = fn({value: 5});
         value2 = fn({value: 15});
         value3 = fn({value: 25})

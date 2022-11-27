@@ -27,7 +27,7 @@ describe("call provider tests", async () => {
         const child = new ElementMock("div", "child", element);
         child["setAttribute"]("click.call", "log");
 
-        provider = await crs.binding.providers.get("call");
+        provider = await crs.binding.providers.getAttrProvider(".call");
         await crs.binding.parsers.parseElement(element, context);
     })
 
