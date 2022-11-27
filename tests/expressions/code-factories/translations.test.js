@@ -11,16 +11,16 @@ beforeAll(async () => {
 describe("translate factory tests", async () => {
     it( "translateFactory - simple", async () => {
         let exp = await crs.binding.expression.translateFactory("&{save}");
-        assertEquals(exp, "${crs.binding.translations.get('save')}");
+        assertEquals(exp, "${await crs.binding.translations.get('save')}");
     })
 
     it( "translateFactory - sentance", async () => {
         let exp = await crs.binding.expression.translateFactory("&{save} changes");
-        assertEquals(exp, "${crs.binding.translations.get('save')} changes");
+        assertEquals(exp, "${await crs.binding.translations.get('save')} changes");
     })
 
     it( "translateFactory - sentance multiple", async () => {
         let exp = await crs.binding.expression.translateFactory("&{save} changes &{there}");
-        assertEquals(exp, "${crs.binding.translations.get('save')} changes ${crs.binding.translations.get('there')}");
+        assertEquals(exp, "${await crs.binding.translations.get('save')} changes ${await crs.binding.translations.get('there')}");
     })
 })
