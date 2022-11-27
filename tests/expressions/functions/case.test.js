@@ -5,7 +5,7 @@ import {init} from "../../mockups/init.js";
 await init();
 
 beforeAll(async () => {
-    await import("../../../src/expressions/functions/case.js");
+    await import("../../../src/expressions/code-factories/case.js");
 });
 
 describe("case function tests", async () => {

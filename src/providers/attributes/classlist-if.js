@@ -1,4 +1,4 @@
-import "../../expressions/functions/if.js";
+import "../../expressions/code-factories/if.js";
 
 export default class ClassListIfProvider {
     async parse(attr, context, ctxName, parentId) {

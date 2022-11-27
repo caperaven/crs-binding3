@@ -5,7 +5,7 @@ import {init} from "../../mockups/init.js";
 await init();
 
 beforeAll(async () => {
-    await import("../../../src/expressions/functions/if.js");
+    await import("../../../src/expressions/code-factories/if.js");
 });
 
 describe("if function tests", async () => {

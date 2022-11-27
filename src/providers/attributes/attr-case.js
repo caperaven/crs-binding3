@@ -1,4 +1,4 @@
-import "../../expressions/functions/case.js";
+import "../../expressions/code-factories/case.js";
 
 export default class AttrCaseProvider {
     async parse(attr, context, ctxName, parentId) {
