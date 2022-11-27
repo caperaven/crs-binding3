@@ -1,14 +1,12 @@
 export const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
-export function compile(exp, parameters, options) {
+export async function compile(exp, parameters, options) {
     parameters = parameters || [];
     let sanitize = true;
-    let async = false;
     let ctxName = "context";
 
     if (options != null) {
         if (options.sanitize != null) sanitize = options.sanitize;
-        if (options.async != null) async = options.async;
         if (options.ctxName != null) ctxName = options.ctxName;
     }
 
@@ -22,7 +20,7 @@ export function compile(exp, parameters, options) {
     let san;
 
     if (sanitize == true) {
-        san = crs.binding.expression.sanitize(exp, ctxName);
+        san = await crs.binding.expression.sanitize(exp, ctxName);
 
         if (crs.binding.functions.has(san.expression)) {
             const x = crs.binding.functions.get(san.expression);
@@ -43,7 +41,7 @@ export function compile(exp, parameters, options) {
         }
     }
 
-    const fn = async == true ? new AsyncFunction(ctxName, ...parameters, src) : new Function(ctxName, ...parameters, src);
+    const fn = new AsyncFunction(ctxName, ...parameters, src);
 
     const result = {
         function: fn,

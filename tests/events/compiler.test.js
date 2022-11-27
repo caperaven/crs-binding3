@@ -9,7 +9,7 @@ describe("compiler tests", async () => {
         const expr = "firstName == 'John'";
         assertEquals(crs.binding.functions.size, 0);
 
-        const exp = crs.binding.expression.compile(expr);
+        const exp = await crs.binding.expression.compile(expr);
         assertEquals(crs.binding.functions.size, 1);
         assert(exp.function != null);
         assertEquals(exp.parameters.isLiteral, false);
@@ -21,7 +21,7 @@ describe("compiler tests", async () => {
 
         // register same express.
         // don't create a new function but increase the count
-        const exp2 = crs.binding.expression.compile(expr);
+        const exp2 = await crs.binding.expression.compile(expr);
         assertEquals(crs.binding.functions.size, 1);
         assertEquals(exp2.count, 2);
 
