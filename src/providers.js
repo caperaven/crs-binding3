@@ -13,14 +13,17 @@ export class Providers {
         this.#attrPartialKeys.length = 0;
     }
 
-    async #getModule(key) {
+    async #loadModule(file) {
+        file = file.replace("$root", crs.binding.root);
+        return new (await import(file)).default();
+    }
+
+    async #getAttrModule(key) {
         const module = this.#attrItems[key];
         if (typeof module !== "string") return module;
 
-        const file = module.replace("$root", crs.binding.root);
-        const result = new (await import(file)).default();
-        this.#attrItems[key] = result;
-        return result;
+        this.#attrItems[key] = await this.#loadModule(module);
+        return this.#attrItems[key];
     }
 
     /**
@@ -40,11 +43,11 @@ export class Providers {
      * @returns {Promise<*>}
      */
     async getAttrProvider(attrName) {
-        if (this.#attrItems[attrName] != null) return await this.#getModule(attrName);
+        if (this.#attrItems[attrName] != null) return await this.#getAttrModule(attrName);
 
         for (const key of this.#attrPartialKeys) {
             if (attrName.indexOf(key) != -1) {
-                return await this.#getModule(key);
+                return await this.#getAttrModule(key);
             }
         }
     }

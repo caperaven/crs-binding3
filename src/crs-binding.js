@@ -10,7 +10,8 @@ globalThis.crs ||= {};
 
 globalThis.crs.binding = {
     root: import.meta.url.replace("/crs-binding.js", ""),
-
+    ignore: ["template", "script", "style"],
+    
     data: new BindingData(),
     translations: new TranslationsManager(),
     functions: new Map(),
