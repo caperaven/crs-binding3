@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+    <style></style>
     <div change.call="change"></div>
     <div style.if="change"></div>
     <div style.case="change"></div>
@@ -15,6 +16,8 @@
     <div hidden.if="change"></div>
     <div hidden.case="change"></div>
 
+    <template src=""></template>
+    <template repeat=""></template>
 
     <button click.call="log" style.background="firstName == 'John' ? 'red': 'blue'">Log</button>
     <button click.call="log('hello world')" hidden.if="firstName != 'John'">Log 2</button>

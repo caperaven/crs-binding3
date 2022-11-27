@@ -11,7 +11,7 @@ globalThis.crs ||= {};
 globalThis.crs.binding = {
     root: import.meta.url.replace("/crs-binding.js", ""),
     ignore: ["template", "script", "style"],
-    
+
     data: new BindingData(),
     translations: new TranslationsManager(),
     functions: new Map(),
@@ -21,16 +21,21 @@ globalThis.crs.binding = {
     },
 
     providers: new Providers({
-        "style.if": "$root/providers/style-if.js",
-        "style.case": "$root/providers/style-case.js",
-        "classlist.if": "$root/providers/classlist-if.js",
-        "classlist.case": "$root/providers/classlist-case.js",
-        ".call": "$root/providers/call.js",
-        ".attr": "$root/providers/attr.js",
-        "style.": "$root/providers/style-property.js",
-        ".if": "$root/providers/attr-if.js",
-        ".case": "$root/providers/attr-case.js",
-    }),
+            "style.if": "$root/providers/attributes/style-if.js",
+            "style.case": "$root/providers/attributes/style-case.js",
+            "classlist.if": "$root/providers/attributes/classlist-if.js",
+            "classlist.case": "$root/providers/attributes/classlist-case.js",
+            ".call": "$root/providers/attributes/call.js",
+            ".attr": "$root/providers/attributes/attr.js",
+            "style.": "$root/providers/attributes/style-property.js",
+            ".if": "$root/providers/attributes/attr-if.js",
+            ".case": "$root/providers/attributes/attr-case.js",
+        },
+        {
+            "template[repeat]": "$root/providers/element/template-repeat-for.js",
+            "template[src]": "$root/providers/element/template-src.js",
+        }
+    ),
 
     parsers: {
         parseElement,

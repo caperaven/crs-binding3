@@ -11,11 +11,30 @@ export async function parseElement(element, context, options) {
         folder = options["folder"] || null; // required for template parsing
     }
 
-    const nodeName = element.nodeName.toLowerCase();
+    const elementProvider = await crs.binding.providers.getElementProvider(element);
 
-    if ((nodeName !== "template" && nodeName !== "perspective-element") && element.children?.length > 0) {
+    if (elementProvider != null) {
+        return elementProvider.parse(element, context, ctxName, parentId);
+    }
+
+    if (ignore(element)) {
+        console.log("ignore:", element.nodeName);
+        return;
+    }
+
+    if ((element.nodeName !== "TEMPLATE" && element.nodeName !== "PERSPECTIVE-ELEMENT") && element.children?.length > 0) {
         await crs.binding.parsers.parseElements(element.children, context, options);
     }
 
     await crs.binding.parsers.parseAttributes(element, context, ctxName, parentId);
+}
+
+function ignore(element) {
+    for (const query of crs.binding.ignore) {
+        if (element.matches(query)) {
+            return true;
+        }
+    }
+
+    return false;
 }

@@ -1,4 +1,4 @@
-import "./../expressions/functions/if.js";
+import "../../expressions/functions/if.js";
 
 export default class AttrIfProvider {
     async parse(attr, context, ctxName, parentId) {

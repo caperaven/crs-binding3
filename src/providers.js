@@ -1,10 +1,16 @@
 export class Providers {
     #attrItems = {};
+    #elementProviders = {};
     #attrPartialKeys = [];
+    #elementQueries = [];
 
-    constructor(attrProviders) {
+    constructor(attrProviders, elementProviders) {
         for (const key of Object.keys(attrProviders)) {
             this.addAttributeProvider(key, attrProviders[key]);
+        }
+
+        for (const key of Object.keys(elementProviders)) {
+            this.addElementProvider(key, elementProviders[key]);
         }
     }
 
@@ -38,6 +44,15 @@ export class Providers {
     }
 
     /**
+     * Add a provider that can be used during element parsing
+     * The key must be a query string used to match the element with the provider
+     */
+    addElementProvider(key, file) {
+        this.#elementProviders[key] = file;
+        this.#elementQueries.push(key);
+    }
+
+    /**
      * Get provider registered as attribute provider based on attribute name
      * @param attrName
      * @returns {Promise<*>}
@@ -48,6 +63,24 @@ export class Providers {
         for (const key of this.#attrPartialKeys) {
             if (attrName.indexOf(key) != -1) {
                 return await this.#getAttrModule(key);
+            }
+        }
+    }
+
+    /**
+     * Get the provider for this element
+     * @param element
+     * @returns {Promise<void>}
+     */
+    async getElementProvider(element) {
+        for (const query of this.#elementQueries) {
+            if (element.matches(query)) {
+                if (typeof this.#elementProviders[query] === "object") {
+                    return this.#elementProviders[query];
+                }
+
+                this.#elementProviders[query] = await this.#loadModule(this.#elementProviders[query]);
+                return this.#elementProviders[query];
             }
         }
     }

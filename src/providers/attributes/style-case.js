@@ -1,4 +1,4 @@
-import "./../expressions/functions/case.js";
+import "../../expressions/functions/case.js";
 
 export default class StyleCaseProvider {
     async parse(attr, context, ctxName, parentId) {
