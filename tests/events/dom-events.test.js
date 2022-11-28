@@ -59,4 +59,11 @@ describe("dom event tests", async () => {
 
         crs.binding.dom.disableEvents(element);
     })
+
+    it ("remove undefined event without failing", async () => {
+        const element = new ElementMock("div");
+        crs.binding.dom.enableEvents(element);
+
+        assertEquals(element.unregisterEvent(element, "none", null), undefined);
+    })
 })

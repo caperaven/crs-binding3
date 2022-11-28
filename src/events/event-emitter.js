@@ -1,18 +1,12 @@
 export class EventEmitter {
     #events = {};
 
-    dispose() {
-        this.#events = null;
+    get events() {
+        return this.#events;
     }
 
     async on(event, callback) {
-        let events = [];
-
-        if (this.#events[event]) {
-            events = this.#events[event];
-        } else {
-            this.#events[event] = events;
-        }
+        let events = this.#events[event] ||= [];
 
         if (events.indexOf(callback) == -1) {
             events.push(callback);

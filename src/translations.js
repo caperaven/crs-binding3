@@ -1,10 +1,6 @@
 export class TranslationsManager {
     #dictionary = {};
 
-    dispose() {
-        this.#dictionary = null;
-    }
-
     async add(obj, context) {
         flattenPropertyPath(context || "", obj, this.#dictionary);
     }

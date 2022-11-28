@@ -10,6 +10,24 @@ beforeAll(async () => {
 });
 
 describe("event emitter tests", async () => {
+    it ("multiple callbacks on single event key", async () => {
+        const f1 = () => {};
+        const f2 = () => {};
+
+        await crs.binding.events.emitter.on("test", f1);
+        await crs.binding.events.emitter.on("test", f2);
+
+        const events = crs.binding.events.emitter.events.test;
+        assertEquals(events[0], f1);
+        assertEquals(events[1], f2);
+
+        await crs.binding.events.emitter.remove("test", f1);
+        assertEquals(events[0], f2);
+
+        await crs.binding.events.emitter.remove("test", f2);
+        assertEquals(events.length, 0);
+    })
+
     it ("postMessage", async () => {
         let message = null;
         const element = document.createElement("div");
@@ -32,5 +50,17 @@ describe("event emitter tests", async () => {
         message = null;
         await crs.binding.events.emitter.emit("test", "test");
         assertEquals(message, null);
+    })
+
+    it ("emit multiple", async () => {
+        let count = 0;
+        const element = document.createElement("div");
+
+        await crs.binding.events.emitter.on("test-count", () => count += 1);
+        await crs.binding.events.emitter.on("test-count", () => count += 1);
+
+        await crs.binding.events.emitter.emit("test-count");
+
+        assertEquals(count, 2);
     })
 })
