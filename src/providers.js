@@ -1,5 +1,5 @@
 export class Providers {
-    #attrItems = {};
+    #attrProviders = {};
     #elementProviders = {};
     #textProviders = [];
     #attrPartialKeys = [];
@@ -20,7 +20,7 @@ export class Providers {
     }
 
     dispose() {
-        this.#attrItems = null;
+        this.#attrProviders = null;
         this.#attrPartialKeys.length = 0;
     }
 
@@ -30,18 +30,18 @@ export class Providers {
     }
 
     async #getAttrModule(key) {
-        const module = this.#attrItems[key];
+        const module = this.#attrProviders[key];
         if (typeof module !== "string") return module;
 
-        this.#attrItems[key] = await this.#loadModule(module);
-        return this.#attrItems[key];
+        this.#attrProviders[key] = await this.#loadModule(module);
+        return this.#attrProviders[key];
     }
 
     /**
      * Add a provider that can be used during parsing processes.
      */
     addAttributeProvider(key, file) {
-        this.#attrItems[key] = file;
+        this.#attrProviders[key] = file;
 
         if (key.indexOf(".") != -1) {
             this.#attrPartialKeys.push(key);
@@ -71,7 +71,7 @@ export class Providers {
      * @returns {Promise<*>}
      */
     async getAttrProvider(attrName) {
-        if (this.#attrItems[attrName] != null) return await this.#getAttrModule(attrName);
+        if (this.#attrProviders[attrName] != null) return await this.#getAttrModule(attrName);
 
         for (const key of this.#attrPartialKeys) {
             if (attrName.indexOf(key) != -1) {
@@ -106,13 +106,13 @@ export class Providers {
      * Clear the providers for the element being released based on it's uuid
      */
     async clear(elements) {
-        const providers = Object.keys(this.#attrItems);
+        const providers = Object.keys(this.#attrProviders);
 
         for (const element of elements) {
             if (element["__uuid"] == null) continue;
 
             for (const provider of providers) {
-                this.#attrItems[provider].clear(element)
+                this.#attrProviders[provider].clear(element)
             }
 
             delete element["__uuid"];

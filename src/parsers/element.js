@@ -29,10 +29,11 @@ export async function parseElement(element, context, options) {
     // 3. Parse the attributes
     await crs.binding.parsers.parseAttributes(element, context, ctxName, parentId);
 
-    if ((element.nodeName !== "TEMPLATE" && element.nodeName !== "PERSPECTIVE-ELEMENT") && element.children?.length > 0) {
+    if (element.children?.length > 0) {
         return await crs.binding.parsers.parseElements(element.children, context, options);
     }
 
+    // 4. If there are no children then check the textContent for processing
     for (const provider of crs.binding.providers.textProviders) {
         await provider.parseElement(element, context, ctxName, parentId)
     }

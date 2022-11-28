@@ -10,7 +10,7 @@ globalThis.crs ||= {};
 
 globalThis.crs.binding = {
     root: import.meta.url.replace("/crs-binding.js", ""),
-    ignore: ["template", "script", "style"],
+    ignore: ["TEMPLATE", "SCRIPT", "STYLE", "PERSPECTIVE-ELEMENT"],
 
     data: new BindingData(),
     translations: new TranslationsManager(),
@@ -32,7 +32,7 @@ globalThis.crs.binding = {
             ".case": "$root/providers/attributes/attr-case.js",
         },
         {
-            "template[repeat]": "$root/providers/element/template-repeat-for.js",
+            "template[for]": "$root/providers/element/template-repeat-for.js",
             "template[src]": "$root/providers/element/template-src.js",
         }
     ),

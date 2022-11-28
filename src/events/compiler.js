@@ -1,5 +1,3 @@
-export const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-
 export async function compile(exp, parameters, options) {
     parameters = parameters || [];
     let sanitize = true;
@@ -41,7 +39,7 @@ export async function compile(exp, parameters, options) {
         }
     }
 
-    const fn = new AsyncFunction(ctxName, ...parameters, src);
+    const fn = new crs.binding.classes.AsyncFunction(ctxName, ...parameters, src);
 
     const result = {
         function: fn,
