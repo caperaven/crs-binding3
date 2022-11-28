@@ -33,4 +33,33 @@ describe("compiler tests", async () => {
         crs.binding.expression.release(exp);
         assertEquals(crs.binding.functions.size, 0);
     })
+
+    it ("compile but don't sanitize", async () => {
+        const expr = "firstName == 'John'";
+        const exp = await crs.binding.expression.compile(expr, null, {
+            sanitize: false
+        });
+
+        assertEquals(exp.parameters.expression, "firstName == 'John'");
+    })
+
+    it ("compile custom context name", async () => {
+        const expr = "firstName == 'John'";
+        const exp = await crs.binding.expression.compile(expr, null, {
+            ctxName: "custom"
+        });
+
+        assertEquals(exp.parameters.expression, "custom.firstName == 'John'");
+    })
+
+    it ("string literals", async () => {
+        const expr = "${firstName} is ${age} old";
+        const exp = await crs.binding.expression.compile(expr);
+
+        assertEquals(exp.parameters.expression, "${context.firstName} is ${context.age} old");
+    })
+
+    it ("release null - don't fall over", async () => {
+        assertEquals(crs.binding.expression.release(null), undefined);
+    })
 })
