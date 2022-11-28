@@ -19,11 +19,6 @@ export class Providers {
         }
     }
 
-    dispose() {
-        this.#attrProviders = null;
-        this.#attrPartialKeys.length = 0;
-    }
-
     async #loadModule(file) {
         file = file.replace("$root", crs.binding.root);
         return new (await import(file)).default();

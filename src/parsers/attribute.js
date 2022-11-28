@@ -8,7 +8,7 @@ export async function parseAttribute(attr, context, ctxName, parentId) {
         element["__uuid"] = crypto.randomUUID();
     }
 
-    element["__bid"] = context.bid;
+    element["__bid"] ||= context.bid;
 
     await provider.parse(attr, context, ctxName, parentId);
 }
