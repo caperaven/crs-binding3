@@ -40,4 +40,23 @@ describe("dom event tests", async () => {
 
         crs.binding.dom.disableEvents(element);
     })
+
+    it ("remove events on disable", async () => {
+        const callback = () => {};
+        const element = new ElementMock("div");
+        crs.binding.dom.enableEvents(element);
+
+        element.registerEvent(element, "click", callback);
+        assertEquals(element._domEvents.length, 1);
+        assertEquals(element._domEvents[0].element, element);
+        assertEquals(element._domEvents[0].event, "click");
+        assertEquals(element._domEvents[0].callback, callback);
+
+        crs.binding.dom.disableEvents(element);
+        assertEquals(element.registerEvent, undefined);
+        assertEquals(element.unregisterEvent, undefined);
+        assertEquals(element._domEvents, undefined);
+
+        crs.binding.dom.disableEvents(element);
+    })
 })
