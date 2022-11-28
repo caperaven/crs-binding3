@@ -7,9 +7,9 @@ await init();
 
 describe("parse element tests", async () => {
     it ("parse ignore element", async () => {
-        const ignoreStyleElement = new ElementMock("style");
-        const ignoreScriptElement = new ElementMock("script");
-        const ignoreTemplateElement = new ElementMock("template");
+        const ignoreStyleElement = new ElementMock("style", null, null, true);
+        const ignoreScriptElement = new ElementMock("script", null, null, true);
+        const ignoreTemplateElement = new ElementMock("template", null, null, true);
 
         await crs.binding.parsers.parseElement(ignoreStyleElement, { bid: 0 });
         await crs.binding.parsers.parseElement(ignoreScriptElement, { bid: 0 });
@@ -28,7 +28,7 @@ describe("parse element tests", async () => {
         const element = new ElementMock("test");
         element.matches = () => true;
 
-        await crs.binding.parsers.parseElement(element, { bid: 0 });
+        await crs.binding.parsers.parseElement(element, { bid: 0 }, { ctxName: "context" });
         assert(element["__uuid"] != null);
         assertEquals(element["__bid"], 0);
     })
@@ -44,5 +44,12 @@ describe("parse element tests", async () => {
         assert(element["__bid"] == null);
         assert(li["__uuid"] != null);
         assertEquals(li["__bid"], 0);
+    })
+
+    it ("skip inflated", async () => {
+        const element = new ElementMock("div");
+        element["__inflated"] = true;
+
+        assertEquals(await crs.binding.parsers.parseElement(element, { bid: 0 }), undefined);
     })
 })
