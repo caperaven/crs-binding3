@@ -4,11 +4,7 @@ export async function parseAttribute(attr, context, ctxName, parentId) {
     if (provider == null) return;
 
     const element = attr.ownerElement;
-    if (element["__uuid"] == null) {
-        element["__uuid"] = crypto.randomUUID();
-    }
-
-    element["__bid"] ||= context.bid;
+    crs.binding.utils.markElement(element, context.bid);
 
     await provider.parse(attr, context, ctxName, parentId);
 }

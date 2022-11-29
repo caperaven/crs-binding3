@@ -8,8 +8,7 @@ export async function parseElement(element, context, options) {
     const elementProvider = await crs.binding.providers.getElementProvider(element);
 
     if (elementProvider != null) {
-        element["__uuid"] ||= crypto.randomUUID();
-        element["__bid"] ||= context.bid;
+        crs.binding.utils.markElement(element, context.bid);
         return elementProvider.parse(element, context, ctxName);
     }
 

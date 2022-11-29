@@ -5,6 +5,7 @@ import {sanitize, translateFactory} from "./expressions.js";
 import {compile, release} from "./events.js";
 import {disposeProperties, getValueOnPath, setValueOnPath, getPathOfFile} from "./utils.js";
 import {TranslationsManager} from "./translations.js";
+import {markElement, unmarkElement} from "./utils/mark-element.js";
 
 globalThis.crs ||= {};
 
@@ -15,6 +16,7 @@ globalThis.crs.binding = {
     data: new BindingData(),
     translations: new TranslationsManager(),
     functions: new Map(),
+    elements: {},
 
     classes: {
         AsyncFunction: Object.getPrototypeOf(async function(){}).constructor
@@ -55,7 +57,9 @@ globalThis.crs.binding = {
         disposeProperties,
         getValueOnPath,
         setValueOnPath,
-        getPathOfFile
+        getPathOfFile,
+        markElement,
+        unmarkElement
     }
 }
 
