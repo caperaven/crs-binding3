@@ -1,4 +1,4 @@
-export default class TemplateSrcProvider {
+export default class TextProvider {
     async parseElement(element, context, ctxName, parentId) {
         if (element.textContent.length == 0) return "";
 
