@@ -8,6 +8,8 @@ export class IndexViewModel {
     constructor() {
         this.#bid = crs.binding.data.addObject("indexViewModel");
         crs.binding.data.addContext(this.#bid, this);
+
+        crs.binding.data.setProperty(this.#bid, "firstName", "My First Name");
     }
 
     log(...args) {

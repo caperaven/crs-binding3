@@ -97,6 +97,12 @@ export class Providers {
         return this.#textProviders;
     }
 
+    async update(uuid, ...properties) {
+        for (const key of Object.keys(this.#attrProviders)) {
+            this.#attrProviders[key].update?.(uuid, ...properties);
+        }
+    }
+
     /**
      * Clear the providers for the element being released based on it's uuid
      */

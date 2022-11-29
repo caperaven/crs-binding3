@@ -8,14 +8,12 @@ export async function parseElement(element, context, options) {
     const elementProvider = await crs.binding.providers.getElementProvider(element);
 
     if (elementProvider != null) {
-        crs.binding.utils.markElement(element, context.bid);
         return elementProvider.parse(element, context, ctxName);
     }
 
     // 2. Should this element be ignored.
     // If so, don't parse anything further.
     if (ignore(element)) {
-        console.log("ignore:", element.nodeName);
         return;
     }
 

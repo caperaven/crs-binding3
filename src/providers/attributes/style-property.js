@@ -1,5 +1,7 @@
 export default class StyleIfProvider {
-    async parse(attr, context, ctxName, parentId) {
-        console.log("style property provider");
+    async parse(attr, context) {
+    }
+
+    async update(uuid, ...properties) {
     }
 }

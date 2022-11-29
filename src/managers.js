@@ -1,0 +1,1 @@
+export {TranslationsManager} from "./managers/translations-manager.js";

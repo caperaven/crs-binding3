@@ -63,6 +63,14 @@ export class BindingData {
         return this.#data[id];
     }
 
+    getDataForElement(element) {
+        const bid = element?.["__bid"];
+        if (bid == null) return;
+
+        const data = crs.binding.data.getData(bid);
+        return data.data;
+    }
+
     /**
      * Remove the data and context objects and do cleanup
      */

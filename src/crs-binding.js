@@ -4,7 +4,7 @@ import {BindingData} from "./store/binding-data.js";
 import {sanitize, translateFactory} from "./expressions.js";
 import {compile, release} from "./events.js";
 import {disposeProperties, getValueOnPath, setValueOnPath, getPathOfFile} from "./utils.js";
-import {TranslationsManager} from "./translations.js";
+import {TranslationsManager} from "./managers.js";
 import {markElement, unmarkElement} from "./utils/mark-element.js";
 
 globalThis.crs ||= {};
