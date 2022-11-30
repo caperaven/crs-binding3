@@ -1,6 +1,8 @@
 export default class AttrProvider {
     #store = {};
 
+    get store() { return this.#store; }
+
     async parse(attr, context) {
         const attrName = attr.name.split(".")[0];
         const element = attr.ownerElement;
@@ -15,8 +17,6 @@ export default class AttrProvider {
                 [attrName]: expo.key
             }
         }
-
-        console.log(this.#store);
     }
 
     async update(uuid, ...properties) {

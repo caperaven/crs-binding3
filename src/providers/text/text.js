@@ -1,14 +1,22 @@
 export default class TextProvider {
     #store = {};
 
+    get store() { return this.#store; }
+
     async parseElement(element, context) {
         if (element.textContent.length == 0) return "";
 
         if (element.textContent.indexOf("${") !== -1 || element.textContent.indexOf("&{") !== -1) {
+            const value = element.textContent;
+            element.textContent = "";
+
             crs.binding.utils.markElement(element, context.bid);
-            const expo = await crs.binding.expression.compile(element.textContent);
+            const expo = await crs.binding.expression.compile(value);
             this.#store[element["__uuid"]] = expo.key;
+
+            crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties);
         }
+
     }
 
     async update(uuid) {
@@ -18,6 +26,6 @@ export default class TextProvider {
         const expo = crs.binding.functions.get(storeItem);
 
         const result = await expo.function(data);
-        element.textContent = result;
+        element.textContent = result || "";
     }
 }

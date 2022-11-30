@@ -22,6 +22,23 @@ export class BindingData {
         return id;
     }
 
+    async #performUpdate(bid, property) {
+        const uuid = this.#callbacks[bid]?.[property];
+
+        if (uuid != null) {
+            await crs.binding.providers.update(uuid, property)
+        }
+    }
+
+    setCallback(uuid, bid, properties) {
+        const obj = this.#callbacks[bid] ||= {};
+
+        for (const property of properties) {
+            obj[property] = uuid;
+            this.#performUpdate(bid, property).catch(e => console.error(e));
+        }
+    }
+
     /**
      * Create a binding context data object.
      * This is the starting point for all bindable context objects
@@ -95,5 +112,6 @@ export class BindingData {
      */
     setProperty(id, property, value) {
         crs.binding.utils.setValueOnPath(this.getData(id)?.data, property, value);
+        this.#performUpdate(id, property);
     }
 }

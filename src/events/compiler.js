@@ -20,6 +20,8 @@ export async function compile(exp, parameters, options) {
     if (sanitize == true) {
         san = await crs.binding.expression.sanitize(exp, ctxName);
 
+        san.expression = san.expression.split(".").join("?.");
+
         src = san.isLiteral === true ?
             ["return `", san.expression, "`"].join("") :
             ["return ", san.expression].join("");

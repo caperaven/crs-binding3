@@ -98,8 +98,16 @@ export class Providers {
     }
 
     async update(uuid, ...properties) {
+        for (const key of Object.keys(this.#textProviders)) {
+            if (this.#textProviders[key].store?.[uuid] != null) {
+                await this.#textProviders[key].update?.(uuid);
+            }
+        }
+
         for (const key of Object.keys(this.#attrProviders)) {
-            this.#attrProviders[key].update?.(uuid, ...properties);
+            if (this.#attrProviders[key].store?.[uuid] != null) {
+                await this.#attrProviders[key].update?.(uuid, ...properties);
+            }
         }
     }
 
