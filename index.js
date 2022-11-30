@@ -9,7 +9,7 @@ export class IndexViewModel {
         this.#bid = crs.binding.data.addObject("indexViewModel");
         crs.binding.data.addContext(this.#bid, this);
 
-        crs.binding.data.setProperty(this.#bid, "firstName", "My First Name");
+        crs.binding.data.setProperty(this.#bid, "person.firstName", "My First Name");
     }
 
     log(...args) {

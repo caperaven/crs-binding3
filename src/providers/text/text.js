@@ -26,6 +26,6 @@ export default class TextProvider {
         const expo = crs.binding.functions.get(storeItem);
 
         const result = await expo.function(data);
-        element.textContent = result || "";
+        element.textContent = result == "undefined" ? "" : result;
     }
 }
