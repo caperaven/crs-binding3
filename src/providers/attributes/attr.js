@@ -17,6 +17,8 @@ export default class AttrProvider {
                 [attrName]: expo.key
             }
         }
+
+        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties);
     }
 
     async update(uuid, ...properties) {
@@ -27,6 +29,8 @@ export default class AttrProvider {
         const storeItem  = this.#store[uuid];
 
         for (const property of properties) {
+            if (storeItem[property] == null) continue;
+
             const attributes = Object.keys(storeItem[property]);
             for (const attribute of attributes) {
                 const fnKey = storeItem[property][attribute];

@@ -19,4 +19,8 @@ export class IndexViewModel {
     async clear(index) {
         await crs.binding.providers.clear([document.body.children[index]]);
     }
+
+    async addPerson() {
+        await crs.binding.data.setProperty(0, "person", {firstName: "Daniel", lastName: "Doe"});
+    }
 }

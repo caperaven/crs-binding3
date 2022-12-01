@@ -23,10 +23,22 @@ export class BindingData {
     }
 
     async #performUpdate(bid, property) {
-        const uuid = this.#callbacks[bid]?.[property];
+        const uuids = this.#callbacks[bid]?.[property];
 
-        if (uuid != null) {
-            await crs.binding.providers.update(uuid, property)
+        // item found on full path
+        if (uuids != null) {
+            for (const uuid of uuids.values()) {
+                await crs.binding.providers.update(uuid, property);
+            }
+
+            return;
+        }
+
+        // scan paths
+        for (const dataProperty of Object.keys(this.#callbacks[bid])) {
+            if (dataProperty.indexOf(property) == 0) {
+                await this.#performUpdate(bid, dataProperty);
+            }
         }
     }
 
@@ -34,7 +46,12 @@ export class BindingData {
         const obj = this.#callbacks[bid] ||= {};
 
         for (const property of properties) {
-            obj[property] = uuid;
+            if (obj[property] == null) {
+                obj[property] = new Set();
+            }
+
+            obj[property].add(uuid);
+
             this.#performUpdate(bid, property).catch(e => console.error(e));
         }
     }
