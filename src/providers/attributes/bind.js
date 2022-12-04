@@ -2,7 +2,11 @@ import "../../expressions/code-factories/if.js";
 
 export default class BindProvider {
     #store = {};
-    #onEventHandler
+    #onEventHandler = this.#onEvent.bind(this);
+
+    constructor() {
+        document.addEventListener("change", this.#onEventHandler);
+    }
 
     get store() {
         return this.#store;
@@ -32,7 +36,18 @@ export default class BindProvider {
 
         for (const property of properties) {
             const targetProperty = this.store[uuid]?.[property];
-            element[targetProperty] = await crs.binding.data.getProperty(bid, property);
+            if (targetProperty == null) continue;
+
+            element[targetProperty] = await crs.binding.data.getProperty(bid, property) || "";
         }
+    }
+
+    async #onEvent(event) {
+        const bid = event.target["__bid"];
+        const field = event.target.dataset.field;
+
+        if (bid == null || field == null) return;
+
+        await crs.binding.data.setProperty(bid, field, event.target.value);
     }
 }
