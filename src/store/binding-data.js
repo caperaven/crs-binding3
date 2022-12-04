@@ -121,6 +121,7 @@ export class BindingData {
      * Set a property for a given binding context on a provided path
      */
     getProperty(id, property) {
+        id = this.#getContextId(id);
         return crs.binding.utils.getValueOnPath(this.getData(id)?.data, property);
     }
 
@@ -128,6 +129,7 @@ export class BindingData {
      * Get a property for a given binding context on a provided path
      */
     setProperty(id, property, value) {
+        id = this.#getContextId(id);
         crs.binding.utils.setValueOnPath(this.getData(id)?.data, property, value);
         this.#performUpdate(id, property);
     }
