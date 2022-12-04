@@ -18,11 +18,16 @@ export class ViewBase {
         return this.#element;
     }
 
+    set element(newValue) {
+        this.#element = newValue;
+    }
+
     constructor(element) {
         this.#bid = crs.binding.data.addObject(this.constructor.name);
         crs.binding.data.addContext(this.#bid, this);
         this.#element = element;
         this.#element.dataset.ready = "false";
+        this.#element["__bid"] = this.#bid;
     }
 
     async connectedCallback() {
@@ -31,7 +36,7 @@ export class ViewBase {
         }
 
         const path = crs.binding.utils.getPathOfFile(this.html);
-        await crs.binding.parsers.parseElement(this.element, this.#bid, path ? {folder: path} : null);
+        await crs.binding.parsers.parseElement(this.element, this, path ? {folder: path} : null);
         await this.load();
     }
 
@@ -53,3 +58,5 @@ export class ViewBase {
         this.#element.dataset.ready = "true";
     }
 }
+
+crs.classes.ViewBase = ViewBase;

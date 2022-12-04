@@ -23,6 +23,8 @@ export class BindingData {
     }
 
     async #performUpdate(bid, property) {
+        if (this.#callbacks[bid] == null) return;
+
         const uuids = this.#callbacks[bid]?.[property];
 
         // item found on full path
