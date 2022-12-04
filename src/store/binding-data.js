@@ -51,8 +51,6 @@ export class BindingData {
             }
 
             obj[property].add(uuid);
-
-            this.#performUpdate(bid, property).catch(e => console.error(e));
         }
     }
 
@@ -130,5 +128,18 @@ export class BindingData {
     setProperty(id, property, value) {
         crs.binding.utils.setValueOnPath(this.getData(id)?.data, property, value);
         this.#performUpdate(id, property);
+    }
+
+    /**
+     * Update this element so that the bindings are applied
+     */
+    async updateElement(element) {
+        const bid = element["__bid"];
+        const uuid = element["__uuid"];
+        if (bid == null || uuid == null) return;
+
+        for (const property of Object.keys(this.#callbacks[bid])) {
+            await crs.binding.providers.update(uuid, property);
+        }
     }
 }

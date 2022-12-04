@@ -6,27 +6,15 @@
 </head>
 <body>
     <button click.call="addPerson">Add Person</button>
-    <style></style>
-<!--    <div change.call="change">Hello World</div>-->
-<!--    <div style.if="change"></div>-->
-<!--    <div style.case="change"></div>-->
-<!--    <div classlist.if="change"></div>-->
-<!--    <div classlist.case="change"></div>-->
-<!--    <div style.background="change"></div>-->
+
+    <label>
+        <div>First Name</div>
+        <input value.bind="person.firstName" />
+    </label>
+
     <div data-value.attr="person.firstName">${person.firstName}</div>
     <div data-value.attr="person.firstName">${person.lastName}</div>
-<!--    <div hidden.if="change"></div>-->
-<!--    <div hidden.case="change"></div>-->
 
-<!--    <template src=""></template>-->
-<!--    <template repeat=""></template>-->
-
-<!--    <button click.call="log" style.background="firstName == 'John' ? 'red': 'blue'">Log</button>-->
-<!--    <button click.call="log('hello world')" hidden.if="firstName != 'John'">Log 2</button>-->
-<!--    <button click.call="log($event)">Log 3</button>-->
-<!--    <button click.call="log('hello world', $event, 10)">Log 4</button>-->
-
-<!--    <button click.call="clear(0)">Clear</button>-->
 
     <script type="module">
         import "./src/crs-binding.js";

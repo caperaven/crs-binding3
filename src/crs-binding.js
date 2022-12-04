@@ -8,6 +8,8 @@ import {TranslationsManager} from "./managers.js";
 import {markElement, unmarkElement} from "./utils/mark-element.js";
 
 globalThis.crs ||= {};
+globalThis.crs.classes ||= {};
+globalThis.crs.classes.AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
 
 globalThis.crs.binding = {
     root: import.meta.url.replace("/crs-binding.js", ""),
@@ -18,20 +20,17 @@ globalThis.crs.binding = {
     functions: new Map(),
     elements: {},
 
-    classes: {
-        AsyncFunction: Object.getPrototypeOf(async function(){}).constructor
-    },
-
     providers: new Providers({
             "style.if": "$root/providers/attributes/style-if.js",
             "style.case": "$root/providers/attributes/style-case.js",
             "classlist.if": "$root/providers/attributes/classlist-if.js",
             "classlist.case": "$root/providers/attributes/classlist-case.js",
+            ".bind": "$root/providers/attributes/bind.js",
             ".call": "$root/providers/attributes/call.js",
             ".attr": "$root/providers/attributes/attr.js",
-            "style.": "$root/providers/attributes/style-property.js",
             ".if": "$root/providers/attributes/attr-if.js",
             ".case": "$root/providers/attributes/attr-case.js",
+            "style.": "$root/providers/attributes/style-property.js"
         },
         {
             "template[for]": "$root/providers/element/template-repeat-for.js",

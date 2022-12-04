@@ -35,7 +35,7 @@ export async function compile(exp, parameters, options) {
     // 3. compile a function for the src generated
     const result = {
         key: key,
-        function: new crs.binding.classes.AsyncFunction(ctxName, ...parameters, src),
+        function: new crs.classes.AsyncFunction(ctxName, ...parameters, src),
         parameters: san,
         count: 1
     };
