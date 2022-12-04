@@ -12,9 +12,12 @@
         <input value.bind="person.firstName" />
     </label>
 
-    <div data-value.attr="person.firstName">${person.firstName}</div>
-    <div data-value.attr="person.firstName">${person.lastName}</div>
+    <label>
+        <div>Last Name</div>
+        <input value.bind="person.lastName" />
+    </label>
 
+    <div>${person.firstName} ${person.lastName}</div>
 
     <script type="module">
         import "./src/crs-binding.js";
