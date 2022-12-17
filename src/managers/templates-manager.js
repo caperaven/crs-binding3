@@ -30,6 +30,9 @@ export class TemplatesManager {
                     resolve(this.#store[name].template.slice(0));
                 })
             }
+            else {
+                resolve(this.#store[name].template.slice(0));
+            }
         })
     }
 
