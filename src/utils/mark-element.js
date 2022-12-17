@@ -8,6 +8,10 @@ export function markElement(element, bid) {
 }
 
 export function unmarkElement(element) {
+    if (element.children.length > 0) {
+        unmarkElements(element.children);
+    }
+
     const uuid = element["__uuid"];
     if (uuid == null) return;
 
@@ -16,4 +20,10 @@ export function unmarkElement(element) {
     }
 
     delete crs.binding.elements[uuid];
+}
+
+export function unmarkElements(elements) {
+    for (const element of elements) {
+        unmarkElement(element);
+    }
 }

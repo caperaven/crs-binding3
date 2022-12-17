@@ -41,6 +41,7 @@ export class ViewBase {
 
     async disconnectedCallback() {
         await crs.binding.data.remove(this.#bid);
+        crs.binding.utils.unmarkElement(this.#element);
         this.#element = null;
     }
 

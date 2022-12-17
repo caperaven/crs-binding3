@@ -46,7 +46,9 @@ export class BindableElement extends HTMLElement {
 
     async disconnectedCallback() {
         this.dispose();
+        crs.binding.utils.unmarkElement(this);
         crs.binding.utils.disposeProperties(this);
+        await crs.binding.data.remove(this.#bid);
     }
 
     getProperty(property) {
