@@ -48,6 +48,8 @@ export class BindableElement extends HTMLElement {
         this.dispose();
         crs.binding.utils.unmarkElement(this);
         crs.binding.utils.disposeProperties(this);
+
+        await crs.binding.templates.remove(this.constructor.name);
         await crs.binding.data.remove(this.#bid);
     }
 
@@ -86,18 +88,18 @@ async function load(component) {
 }
 
 async function loadHtml(component) {
-    if (component.html != null) {
-        const html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
+    if (component.html == null) return;
 
-        if (component.shadowRoot != null) {
-            component.shadowRoot.innerHTML = html;
-        }
-        else {
-            component.innerHTML = html;
-        }
+    const html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
 
-        await crs.binding.parsers.parseElements(component.shadowRoot ? component.shadowRoot.children : component.children, component);
+    if (component.shadowRoot != null) {
+        component.shadowRoot.innerHTML = html;
     }
+    else {
+        component.innerHTML = html;
+    }
+
+    await crs.binding.parsers.parseElements(component.shadowRoot ? component.shadowRoot.children : component.children, component);
 }
 
 crs.classes.BindableElement = BindableElement;
