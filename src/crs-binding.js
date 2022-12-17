@@ -6,6 +6,8 @@ import {compile, release} from "./events.js";
 import {disposeProperties, getValueOnPath, setValueOnPath, getPathOfFile} from "./utils.js";
 import {TranslationsManager} from "./managers.js";
 import {markElement, unmarkElement} from "./utils/mark-element.js";
+import {disableEvents, enableEvents} from "./events/dom-events.js";
+import {TemplatesManager} from "./managers/templates-manager.js";
 
 globalThis.crs ||= {};
 globalThis.crs.classes ||= {};
@@ -20,12 +22,17 @@ globalThis.crs.binding = {
     functions: new Map(),
     elements: {},
 
+    dom: {
+        enableEvents,
+        disableEvents
+    },
+
     providers: new Providers({
             "style.if": "$root/providers/attributes/style-if.js",
             "style.case": "$root/providers/attributes/style-case.js",
             "classlist.if": "$root/providers/attributes/classlist-if.js",
             "classlist.case": "$root/providers/attributes/classlist-case.js",
-            ".bind": "$root/providers/attributes/bind.js",
+            ".bind": "$root/providers/properties/bind.js",
             ".call": "$root/providers/attributes/call.js",
             ".attr": "$root/providers/attributes/attr.js",
             ".if": "$root/providers/attributes/attr-if.js",
@@ -59,7 +66,9 @@ globalThis.crs.binding = {
         getPathOfFile,
         markElement,
         unmarkElement
-    }
+    },
+
+    templates: new TemplatesManager()
 }
 
 await crs.binding.providers.addTextProvider("$root/providers/text/text.js");

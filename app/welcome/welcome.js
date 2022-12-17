@@ -1,3 +1,5 @@
+import "./my-component.js";
+
 export default class Welcome extends crs.classes.ViewBase {
     get mobi() {
         return import.meta.url.replace(".js", ".mobi.html");

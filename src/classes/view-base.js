@@ -20,14 +20,13 @@ export class ViewBase {
 
     set element(newValue) {
         this.#element = newValue;
-    }
-
-    constructor(element) {
-        this.#bid = crs.binding.data.addObject(this.constructor.name);
-        crs.binding.data.addContext(this.#bid, this);
-        this.#element = element;
         this.#element.dataset.ready = "false";
         this.#element["__bid"] = this.#bid;
+    }
+
+    constructor() {
+        this.#bid = crs.binding.data.addObject(this.constructor.name);
+        crs.binding.data.addContext(this.#bid, this);
     }
 
     async connectedCallback() {

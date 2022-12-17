@@ -38,7 +38,3 @@ function unregisterEvent(element, event, callback) {
     delete item.callback;
     delete item.event;
 }
-
-crs.binding.dom ||= {};
-crs.binding.dom.enableEvents = enableEvents;
-crs.binding.dom.disableEvents = disableEvents;

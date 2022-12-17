@@ -5,10 +5,6 @@ import {ElementMock} from "../mockups/element-mock.js";
 
 await init();
 
-beforeAll(async () => {
-    await import("./../../src/events/dom-events.js");
-});
-
 describe("dom event tests", async () => {
     it ("enable and disable events on element", async () => {
         const element = new ElementMock("div");

@@ -8,19 +8,21 @@
 
 <label>
     <div>First Name</div>
-    <input value.bind="person.firstName" />
+    <input id="edtFirstName" value.bind="person.firstName" />
 </label>
 
 <label>
     <div>Last Name</div>
-    <input value.bind="person.lastName" />
+    <input id="edtLastName" value.bind="person.lastName" />
 </label>
 
 <label>
     <div>Age</div>
-    <input value.bind="person.age" type="number" />
+    <input id="edtAge" value.bind="person.age" type="number" />
 </label>
 
 <div>${person.firstName} ${person.lastName} is ${person.age} old</div>
 
 <button click.call="reset">Reset</button>
+
+<my-component></my-component>

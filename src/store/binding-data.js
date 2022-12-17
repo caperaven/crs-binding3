@@ -134,6 +134,12 @@ export class BindingData {
         this.#performUpdate(id, property);
     }
 
+    setName(id, name) {
+        id = this.#getContextId(id);
+        const data = crs.binding.data.getData(id);
+        data.name = name;
+    }
+
     /**
      * Update this element so that the bindings are applied
      */
