@@ -5,6 +5,7 @@ export function markElement(element, bid) {
     }
 
     element["__bid"] ||= bid;
+    return element["__uuid"];
 }
 
 export function unmarkElement(element) {

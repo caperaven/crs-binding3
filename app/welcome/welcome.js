@@ -15,6 +15,17 @@ export default class Welcome extends crs.classes.ViewBase {
             lastName: "Doe",
             age: 30
         })
+
+        this.setProperty("people", [
+            {
+                firstName: "John",
+                lastName: "Doe",
+            },
+            {
+                firstName: "Jane",
+                lastName: "Smith",
+            }
+        ])
     }
 
     async reset() {

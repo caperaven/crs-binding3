@@ -26,3 +26,11 @@
 <button click.call="reset">Reset</button>
 
 <my-component></my-component>
+
+<ul>
+    <template for="person of people">
+        <li>
+            <span>${person.firstName} ${person.lastName}</span>
+        </li>
+    </template>
+</ul>

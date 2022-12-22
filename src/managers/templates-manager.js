@@ -14,7 +14,12 @@ export class TemplatesManager {
 
             if (this.#store[name].template == null && this.#store[name].loading === false) {
                 this.#store[name].loading = true;
-                this.#store[name].template = await fetch(path).then(result => result.text());
+
+                const html = await fetch(path).then(result => result.text());
+                const template = document.createElement("template");
+                template.innerHTML = html;
+
+                this.#store[name].template = template;
 
                 for (const callback of this.#store[name].queue) {
                     callback();
@@ -22,16 +27,16 @@ export class TemplatesManager {
 
                 delete this.#store[name].loading;
                 delete this.#store[name].queue;
-                resolve(this.#store[name].template.slice(0));
+                resolve(getTemplateText(this.#store[name].template));
             }
 
             if (this.#store[name].template == null) {
                 this.#store[name].queue.push(() => {
-                    resolve(this.#store[name].template.slice(0));
+                    resolve(getTemplateText(this.#store[name].template));
                 })
             }
             else {
-                resolve(this.#store[name].template.slice(0));
+                resolve(getTemplateText(this.#store[name].template));
             }
         })
     }
@@ -47,4 +52,9 @@ export class TemplatesManager {
             delete this.#store[name];
         }
     }
+}
+
+function getTemplateText(template) {
+    const copy = template.content.cloneNode(true);
+    return copy.innerHTML || copy.textContent;
 }
