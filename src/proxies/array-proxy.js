@@ -10,7 +10,7 @@ class ArrayProxyFunctions {
 
         const uuids = crs.binding.data.getCallbacks(bid, property);
         for (const uuid of uuids) {
-            crs.binding.dom.collection.append(uuid, item);
+            crs.binding.dom.collection.append(uuid, [item]);
         }
     }
 }
