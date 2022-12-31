@@ -1,8 +1,8 @@
 import "./../utils/dom-collection-manager.js";
 
 class ArrayProxyFunctions {
-    static push(item) {
-        this.push(item);
+    static push(...items) {
+        this.push(...items);
 
         const bid = this["__bid"];
         const property = this["__property"];
@@ -10,7 +10,20 @@ class ArrayProxyFunctions {
 
         const uuids = crs.binding.data.getCallbacks(bid, property);
         for (const uuid of uuids) {
-            crs.binding.dom.collection.append(uuid, [item]);
+            crs.binding.dom.collection.append(uuid, ...items);
+        }
+    }
+
+    static splice(start, deleteCount, ...items) {
+        this.splice(start, deleteCount, ...items);
+
+        const bid = this["__bid"];
+        const property = this["__property"];
+        if (bid == null || property == null) return;
+
+        const uuids = crs.binding.data.getCallbacks(bid, property);
+        for (const uuid of uuids) {
+            crs.binding.dom.collection.splice(uuid, start, deleteCount, ...items);
         }
     }
 }

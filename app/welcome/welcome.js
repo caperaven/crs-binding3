@@ -44,4 +44,19 @@ export default class Welcome extends crs.classes.ViewBase {
             age: 20
         })
     }
+
+    async splice() {
+        const array = this.getProperty("people");
+        array.splice(0, 1,
+            {
+                firstName: "First Name 1",
+                lastName: "Last Name 1",
+                age: 20
+            },
+            {
+                firstName: "First Name 2",
+                lastName: "Last Name 2",
+                age: 21
+            })
+    }
 }
