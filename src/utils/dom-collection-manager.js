@@ -24,7 +24,10 @@ class DomCollection {
             if (i > element.children.length) {
                 break;
             }
-            element.removeChild(element.children[i]);
+
+            if (element.children[i]) {
+                element.removeChild(element.children[i]);
+            }
         }
 
         const details = crs.binding.inflation.store.get(uuid);
@@ -38,6 +41,24 @@ class DomCollection {
 
         const target = element.children[start];
         element.insertBefore(fragment, target);
+    }
+
+    static pop(uuid) {
+        const element = crs.binding.elements[uuid];
+        if (element == null) return;
+
+        if (element.lastElementChild) {
+            element.removeChild(element.lastElementChild);
+        }
+    }
+
+    static shift(uuid) {
+        const element = crs.binding.elements[uuid];
+        if (element == null) return;
+
+        if (element.firstElementChild) {
+            element.removeChild(element.firstElementChild);
+        }
     }
 }
 
