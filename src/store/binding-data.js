@@ -97,6 +97,11 @@ export class BindingData {
         return this.#data[id];
     }
 
+    getCallbacks(id, property) {
+        const set = this.#callbacks[id]?.[property];
+        return set == null ? [] : Array.from(set);
+    }
+
     getDataForElement(element) {
         const bid = element?.["__bid"];
         if (bid == null) return;
@@ -128,10 +133,17 @@ export class BindingData {
     /**
      * Get a property for a given binding context on a provided path
      */
-    setProperty(id, property, value) {
+    async setProperty(id, property, value) {
         id = this.#getContextId(id);
+
+        if (Array.isArray(value)) {
+            value.__bid = id;
+            value.__property = property;
+            value = (await import("./../proxies/array-proxy.js")).default(value)
+        }
+
         crs.binding.utils.setValueOnPath(this.getData(id)?.data, property, value);
-        this.#performUpdate(id, property);
+        await this.#performUpdate(id, property);
     }
 
     setName(id, name) {

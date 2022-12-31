@@ -9,6 +9,10 @@ export class Providers {
         return this.#textProviders;
     }
 
+    get elementProviders() {
+        return this.#elementProviders;
+    }
+
     constructor(attrProviders, elementProviders) {
         for (const key of Object.keys(attrProviders)) {
             this.addAttributeProvider(key, attrProviders[key]);

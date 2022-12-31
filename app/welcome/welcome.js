@@ -35,4 +35,13 @@ export default class Welcome extends crs.classes.ViewBase {
             age: 30
         })
     }
+
+    async add() {
+        const array = this.getProperty("people");
+        array.push({
+            firstName: "Andrew",
+            lastName: "Smith",
+            age: 20
+        })
+    }
 }

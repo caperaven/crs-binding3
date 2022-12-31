@@ -8,6 +8,7 @@ import {TranslationsManager} from "./managers.js";
 import {markElement, unmarkElement} from "./utils/mark-element.js";
 import {disableEvents, enableEvents} from "./events/dom-events.js";
 import {TemplatesManager} from "./managers/templates-manager.js";
+import {TemplateInflationStore} from "./store/template-inflation-store.js";
 
 globalThis.crs ||= {};
 globalThis.crs.classes ||= {};
@@ -66,6 +67,10 @@ globalThis.crs.binding = {
         getPathOfFile,
         markElement,
         unmarkElement
+    },
+
+    inflation: {
+        store: new TemplateInflationStore()
     },
 
     templates: new TemplatesManager()
