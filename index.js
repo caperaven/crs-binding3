@@ -1,26 +1,16 @@
-export class IndexViewModel {
-    #bid;
-
-    get bid() {
-        return this.#bid;
-    }
-
+export class IndexViewModel extends crs.classes.ViewBase {
     constructor() {
-        this.#bid = crs.binding.data.addObject("indexViewModel");
-        crs.binding.data.addContext(this.#bid, this);
-
-        crs.binding.data.setProperty(this.#bid, "person.firstName", "My First Name");
+        super();
+        this.element = document.body;
     }
 
-    log(...args) {
-        console.log(...args);
-    }
-
-    async clear(index) {
-        await crs.binding.providers.clear([document.body.children[index]]);
-    }
-
-    async addPerson() {
-        await crs.binding.data.setProperty(0, "person", {firstName: "Daniel", lastName: "Doe"});
+    async preLoad() {
+        const menu = await fetch("/app/routes.json").then(result => result.json());
+        this.setProperty("menu", menu.routes);
     }
 }
+
+globalThis.viewModel = new IndexViewModel();
+requestAnimationFrame(() => {
+    globalThis.viewModel.connectedCallback();
+})

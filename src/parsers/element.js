@@ -1,5 +1,6 @@
+const ignoreElements = ["STYLE", "CRS-ROUTER"];
 export async function parseElement(element, context, options) {
-    if (element["__inflated"] === true) return;
+    if (element["__inflated"] === true || ignoreElements.indexOf(element.nodeName) != -1) return;
 
     let ctxName = options?.ctxName || "context";
 

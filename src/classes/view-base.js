@@ -1,3 +1,5 @@
+import {parseElements} from "../parsers/elements.js";
+
 export class ViewBase {
     #element;
     #bid
@@ -30,13 +32,20 @@ export class ViewBase {
     }
 
     async connectedCallback() {
-        if(this["preLoad"] != null) {
-            await this["preLoad"]();
-        }
+        return new Promise(async resolve => {
+            if(this["preLoad"] != null) {
+                await this["preLoad"]();
+            }
 
-        const path = crs.binding.utils.getPathOfFile(this.html);
-        await crs.binding.parsers.parseElement(this.element, this, path ? {folder: path} : null);
-        await this.load();
+            const path = crs.binding.utils.getPathOfFile(this.html);
+
+            requestAnimationFrame(async () => {
+                await crs.binding.parsers.parseElements(this.element.children, this, path ? {folder: path} : null);
+                await this.load();
+            })
+
+            resolve();
+        })
     }
 
     async disconnectedCallback() {

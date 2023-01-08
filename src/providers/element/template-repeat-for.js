@@ -18,11 +18,13 @@ export default class TemplateRepeatForProvider {
 
     async update(uuid) {
         const element = crs.binding.elements[uuid];
-        const storeItem = crs.binding.inflation.store.get(uuid);
-
         const path = element["__path"];
         const data = crs.binding.data.getDataForElement(element);
         const collection = crs.binding.utils.getValueOnPath(data, path);
+
+        if (collection == null) return;
+
+        const storeItem = crs.binding.inflation.store.get(uuid);
 
         const fragment = document.createDocumentFragment();
         for (const item of collection) {

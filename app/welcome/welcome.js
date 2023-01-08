@@ -5,10 +5,6 @@ export default class Welcome extends crs.classes.ViewBase {
         return import.meta.url.replace(".js", ".mobi.html");
     }
 
-    async connectedCallback() {
-        await super.connectedCallback();
-    }
-
     async preLoad() {
         this.setProperty("person", {
             firstName: "John",

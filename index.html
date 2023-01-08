@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         html, body {
             font-family: 'Open Sans', sans-serif;
             font-size: 16px;
@@ -15,6 +21,22 @@
 
         body {
             display: grid;
+            grid-template-columns: 30rem 1fr;
+            grid-template-rows: 3rem 1fr;
+            grid-template-areas: "header header" "aside main"
+        }
+
+        header {
+            grid-area: header;
+            padding: 0.5rem;
+        }
+
+        aside {
+            grid-area: aside;
+        }
+
+        main {
+            grid-area: main;
         }
 
         crs-router {
@@ -24,6 +46,16 @@
     </style>
 </head>
 <body>
+    <header>
+        <h1>crs binding</h1>
+    </header>
+
+    <aside>
+        <template for="item of menu">
+            <a href="${item.hash}">${item.title}</a>
+        </template>
+    </aside>
+
     <main autofocus tabindex="0">
         <crs-router routes="app/routes.json"></crs-router>
     </main>
@@ -32,6 +64,7 @@
         import "./src/crs-binding.js";
         import "./src/classes/view-base.js";
         import "./packages/crs-router/crs-router.js";
+        import "./index.js";
     </script>
 </body>
 </html>
