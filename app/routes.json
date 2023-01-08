@@ -13,14 +13,13 @@
       "title": "About",
       "hash": "#about",
       "view": "about",
-      "html-only": true
+      "htmlOnly": true
     },
     {
       "title": "404",
       "hash": "#404",
       "view": "404",
-      "html-only": true,
-      "hasStyle": true
+      "htmlOnly": true
     }
   ]
 }
