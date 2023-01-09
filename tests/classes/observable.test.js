@@ -43,9 +43,7 @@ Deno.test("Observable: dispose", () => {
 Deno.test("Observable: with details", () => {
     const observable = new Observable();
     let details;
-    const listener = (event) => {
-        details = event.detail;
-    };
+    const listener = (event) => { details = event.detail };
     observable.addEventListener("event", listener);
     observable.notify("event", {code: "A"});
     assert(details.code == "A");
