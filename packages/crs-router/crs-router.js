@@ -92,18 +92,17 @@ class Router extends HTMLElement {
         const parameters = await getParameters();
         const route = await findRoute(this.#data, parameters.hash);
         const html = await loadHTML(route?.view || "404", this.#data.root, route?.["hasStyle"] === true);
-
         this.innerHTML = html;
         if (route == null) return;
-
-        for (const jsPath of route["js"] || []){
+        for (const jsPath of route?.["js"] || []){
             await import(jsPath);
         }
-        if (route["htmlOnly"] === true) {
+        if (route?.["htmlOnly"] === true) {
             this.style.visibility = "";
             return;
         }
         this.#viewModel = await loadViewModel(route?.view, this.#data.root, this);
+        this.#viewModel.title = route.title;
         requestAnimationFrame(async ()=>{
             this.#viewModel.resources = parameters;
             await this.#viewModel?.connectedCallback?.();
