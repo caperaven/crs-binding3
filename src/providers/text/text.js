@@ -21,9 +21,10 @@ export default class TextProvider {
 
     async update(uuid) {
         const element = crs.binding.elements[uuid];
+        const expr  = this.#store[uuid];
+        const expo = crs.binding.functions.get(expr);
+
         const data = crs.binding.data.getDataForElement(element);
-        const storeItem  = this.#store[uuid];
-        const expo = crs.binding.functions.get(storeItem);
 
         const result = await expo.function(data);
         element.textContent = result == "undefined" ? "" : result;

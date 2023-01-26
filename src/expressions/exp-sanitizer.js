@@ -36,7 +36,7 @@ export async function sanitize(exp, ctxName = "context") {
     for (let token of tokens) {
         if (token.type == "property") {
             if (token.value.indexOf("$globals") != -1) {
-                expression.push(token.value.replace("$globals", "crsbinding.data.globals"));
+                expression.push(token.value.replace("$globals", "crs.binding.data.globals"));
             }
             else if (token.value.indexOf("$event") != -1) {
                 expression.push(token.value.replace("$event", "event"));
@@ -45,7 +45,7 @@ export async function sanitize(exp, ctxName = "context") {
                 expression.push(token.value.replace("$context", "context"));
             }
             else if (token.value.indexOf("$data") != -1) {
-                expression.push(token.value.replace("$data", "crsbinding.data.getValue"));
+                expression.push(token.value.replace("$data", "crs.binding.data.getValue"));
             }
             else if (token.value.indexOf("$parent") != -1) {
                 expression.push(token.value.replace("$parent", "parent"));

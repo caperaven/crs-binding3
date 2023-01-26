@@ -10,6 +10,7 @@ import {disableEvents, enableEvents} from "./events/dom-events.js";
 import {TemplatesManager} from "./managers/templates-manager.js";
 import {TemplateInflationStore} from "./store/template-inflation-store.js";
 
+globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
 globalThis.crs.classes ||= {};
 globalThis.crs.classes.AsyncFunction = Object.getPrototypeOf(async function(){}).constructor

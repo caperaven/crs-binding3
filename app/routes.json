@@ -10,6 +10,11 @@
       "view": "welcome"
     },
     {
+      "title": "Globals",
+      "hash": "#globals",
+      "view": "globals"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

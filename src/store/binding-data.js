@@ -28,6 +28,10 @@ export class BindingData {
         return id;
     }
 
+    get globals() {
+        return this.#data[0].data;
+    }
+
     async #performUpdate(bid, property) {
         if (this.#callbacks[bid] == null) return;
 
@@ -54,6 +58,11 @@ export class BindingData {
         const obj = this.#callbacks[bid] ||= {};
 
         for (const property of properties) {
+            if (property.indexOf(GLOBALS) !== -1) {
+                this.setCallback(uuid, 0, [property.replace(GLOBALS, "")]);
+                continue;
+            }
+
             if (obj[property] == null) {
                 obj[property] = new Set();
             }
@@ -132,6 +141,11 @@ export class BindingData {
      * Set a property for a given binding context on a provided path
      */
     getProperty(id, property) {
+        if (property.indexOf(GLOBALS) !== -1) {
+            id = 0;
+            property = property.replace(GLOBALS, "");
+        }
+
         id = this.#getContextId(id);
         return crs.binding.utils.getValueOnPath(this.getData(id)?.data, property);
     }
@@ -140,16 +154,23 @@ export class BindingData {
      * Get a property for a given binding context on a provided path
      */
     async setProperty(id, property, value) {
+        let setProperty = property;
+
+        if (setProperty.indexOf(GLOBALS) !== -1) {
+            id = 0;
+            setProperty = property.replace(GLOBALS, "");
+        }
+
         id = this.#getContextId(id);
 
         if (Array.isArray(value)) {
             value.__bid = id;
-            value.__property = property;
+            value.__property = setProperty;
             value = (await import("./../proxies/array-proxy.js")).default(value)
         }
 
-        crs.binding.utils.setValueOnPath(this.getData(id)?.data, property, value);
-        await this.#performUpdate(id, property);
+        crs.binding.utils.setValueOnPath(this.getData(id)?.data, setProperty, value);
+        await this.#performUpdate(id, setProperty);
     }
 
     setName(id, name) {

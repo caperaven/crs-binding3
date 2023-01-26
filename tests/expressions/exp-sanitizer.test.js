@@ -17,7 +17,7 @@ Deno.test("sanitize - with translation", async () => {
 
 Deno.test("sanitize - globals variable", async () => {
     const result = await sanitize("$globals.menu.isVisible = !$globals.menu.isVisible");
-    assertEquals(result.expression, "crsbinding.data.globals.menu.isVisible = !crsbinding.data.globals.menu.isVisible");
+    assertEquals(result.expression, "crs.binding.data.globals.menu.isVisible = !crs.binding.data.globals.menu.isVisible");
     assertEquals(result.properties.length, 1);
     assertEquals(result.properties[0], "$globals.menu.isVisible");
 })
@@ -153,7 +153,7 @@ Deno.test("sanitize - array in expression", async () => {
 
 Deno.test("sanitize - set object", async () => {
     const result = await sanitize("$globals.date = {title: ${title}}");
-    assertEquals(result.expression, "crsbinding.data.globals.date = {title: ${context.title}}");
+    assertEquals(result.expression, "crs.binding.data.globals.date = {title: ${context.title}}");
     assertEquals(result.properties[0], "$globals.date");
     assertEquals(result.properties[1], "title");
 });
@@ -195,7 +195,7 @@ Deno.test("sanitize - $parentId in expression", async () => {
 
 Deno.test("sanitize - $data", async () => {
     const result = await sanitize("selectedObj = $data($event.target.dataset.id)");
-    assertEquals(result.expression, "context.selectedObj = crsbinding.data.getValue(event.target.dataset.id)");
+    assertEquals(result.expression, "context.selectedObj = crs.binding.data.getValue(event.target.dataset.id)");
     assertEquals(result.properties.length, 1);
     assertEquals(result.properties[0], "selectedObj");
 });
@@ -316,7 +316,7 @@ Deno.test("sanitize - Not expressions in expressions", async () => {
 
 Deno.test("sanitize - Not expression with prefix", async () => {
     const result = await sanitize("!$globals.isActive");
-    assertEquals(result.expression, "!crsbinding.data.globals.isActive")
+    assertEquals(result.expression, "!crs.binding.data.globals.isActive")
 })
 
 Deno.test("sanitize - Bracket array check", async () => {
