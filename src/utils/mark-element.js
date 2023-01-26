@@ -16,6 +16,8 @@ export function unmarkElement(element) {
     const uuid = element["__uuid"];
     if (uuid == null) return;
 
+    crs.binding.providers.clear(uuid).catch(error => console.error(error));
+
     if (crs.binding.elements[uuid]) {
         crs.binding.elements[uuid] = null;
     }

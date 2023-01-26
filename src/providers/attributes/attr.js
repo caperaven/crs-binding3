@@ -40,4 +40,8 @@ export default class AttrProvider {
             }
         }
     }
+
+    async clear(uuid) {
+        delete this.#store[uuid];
+    }
 }

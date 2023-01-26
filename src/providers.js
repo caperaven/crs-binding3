@@ -102,15 +102,19 @@ export class Providers {
     }
 
     async update(uuid, ...properties) {
-        for (const key of Object.keys(this.#textProviders)) {
-            if (this.#textProviders[key].store?.[uuid] != null) {
-                await this.#textProviders[key].update?.(uuid);
+        for (const textProvider of this.#textProviders) {
+            if (textProvider.store[uuid] != null) {
+                textProvider.update(uuid);
             }
         }
 
-        for (const key of Object.keys(this.#attrProviders)) {
-            if (this.#attrProviders[key].store?.[uuid] != null) {
-                await this.#attrProviders[key].update?.(uuid, ...properties);
+        for (const key of this.#attrPartialKeys) {
+            const provider = this.#attrProviders[key];
+
+            if (typeof provider === "string") continue;
+
+            if (provider.store?.[uuid] != null) {
+                provider.update?.(uuid, ...properties);
             }
         }
     }
@@ -118,18 +122,13 @@ export class Providers {
     /**
      * Clear the providers for the element being released based on it's uuid
      */
-    async clear(elements) {
-        const providers = Object.keys(this.#attrProviders);
+    async clear(uuid) {
+        for (const textProvider of this.#textProviders) {
+            textProvider.clear(uuid);
+        }
 
-        for (const element of elements) {
-            if (element["__uuid"] == null) continue;
-
-            for (const provider of providers) {
-                this.#attrProviders[provider].clear(element)
-            }
-
-            delete element["__uuid"];
-            delete element["__bid"];
+        for (const key of this.#attrPartialKeys) {
+            this.#attrProviders[key].clear?.(uuid);
         }
     }
 }

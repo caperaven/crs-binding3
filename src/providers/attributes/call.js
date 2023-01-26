@@ -37,11 +37,9 @@ export default class CallProvider {
     /**
      * Free the memory associated with this element based on it's uuid
      */
-    async clear(element) {
-        if (element["__uuid"] == null) return;
-
+    async clear(uuid) {
         for (const event of Object.keys(this.#events)) {
-            delete this.#events[event][element["__uuid"]];
+            delete this.#events[event][uuid];
 
             // if no more items use the event, remove the event listener
             if (Object.keys(this.#events[event]).length === 0) {

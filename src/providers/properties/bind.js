@@ -12,6 +12,15 @@ export default class BindProvider {
         return this.#store;
     }
 
+    async #onEvent(event) {
+        const bid = event.target["__bid"];
+        const field = event.target.dataset.field;
+
+        if (bid == null || field == null) return;
+
+        await crs.binding.data.setProperty(bid, field, event.target.value);
+    }
+
     async parse(attr, context) {
         const parts = attr.name.split(".");
         const element = attr.ownerElement;
@@ -42,12 +51,7 @@ export default class BindProvider {
         }
     }
 
-    async #onEvent(event) {
-        const bid = event.target["__bid"];
-        const field = event.target.dataset.field;
-
-        if (bid == null || field == null) return;
-
-        await crs.binding.data.setProperty(bid, field, event.target.value);
+    async clear(uuid) {
+        delete this.#store[uuid];
     }
 }
