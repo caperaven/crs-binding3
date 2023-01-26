@@ -76,4 +76,9 @@ globalThis.crs.binding = {
     templates: new TemplatesManager()
 }
 
+Object.defineProperty(globalThis.crs.binding, '$global', {
+    value: 0,
+    writable: false
+});
+
 await crs.binding.providers.addTextProvider("$root/providers/text/text.js");

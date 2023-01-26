@@ -4,9 +4,15 @@
  */
 
 export class BindingData {
-    #nextId = 0;
+    #nextId = 1;
     #context = {};
-    #data = {};
+    #data = {
+        0: {
+            name: "global",
+            type: "data",
+            data: {}
+        }
+    };
     #callbacks = {};
 
     #getNextId() {
