@@ -1,6 +1,24 @@
 import "./../../expressions/code-factories/inflation.js";
 
+/**
+ * @class TemplateRepeatForProvider - Generates a collection of elements based on a collection of data
+ *
+ * @example
+ * <ul>
+ *     <template for="person of people">
+ *         <li>
+ *             <span>${person.firstName} ${person.lastName}</span>
+ *         </li>
+ *     </template>
+ * </ul>
+ */
 export default class TemplateRepeatForProvider {
+    /**
+     * @method parse - Parses the element and generates the collection of elements
+     * @param element {HTMLTemplateElement} - The element to parse
+     * @param context {BindingContext} - The context of the element
+     * @returns {Promise<void>}
+     */
     async parse(element, context) {
         const forExp = element.getAttribute("for");
         const forExpParts = forExp.split(" ");
@@ -16,6 +34,11 @@ export default class TemplateRepeatForProvider {
         await this.update(uuid);
     }
 
+    /**
+     * @method update - Updates the collection of elements
+     * @param uuid {string} - The uuid of the element
+     * @returns {Promise<void>}
+     */
     async update(uuid) {
         const element = crs.binding.elements[uuid];
         const path = element["__path"];
