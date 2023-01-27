@@ -1,4 +1,13 @@
 const ignoreDispose = ["_element"];
+
+/**
+ * Disposes all properties of an object that are objects.
+ * If the object has a dispose method, it will be called.
+ * Properties are deleted from the object.
+ *
+ * This is a recursive function, so it does an aggressive cleanup.
+ * @param obj {Object} - The object to dispose.
+ */
 export function disposeProperties(obj) {
     if (obj == null || obj.autoDispose == false) return;
     if (typeof obj != "object") return;
