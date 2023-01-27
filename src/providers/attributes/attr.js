@@ -67,6 +67,16 @@ export default class AttrProvider {
      * @returns {Promise<void>}
      */
     async clear(uuid) {
+        const obj = this.#store[uuid];
+
+        if (obj == null) return;
+
+        for (const attr of Object.values(obj)) {
+            for (const fnKey of Object.values(attr)) {
+                const exp = crs.binding.functions.get(fnKey);
+                crs.binding.expression.release(exp);
+            }
+        }
         delete this.#store[uuid];
     }
 }

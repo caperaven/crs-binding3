@@ -15,6 +15,11 @@
       "view": "globals"
     },
     {
+      "title": "Styles",
+      "hash": "#styles",
+      "view": "styles"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

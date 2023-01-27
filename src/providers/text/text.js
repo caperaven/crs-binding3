@@ -48,6 +48,12 @@ export default class TextProvider {
      * @returns {Promise<void>}
      */
     async clear(uuid) {
+        const fnKey = this.#store[uuid];
+        if (fnKey == null) return;
+
+        const exp = crs.binding.functions.get(fnKey);
+        crs.binding.expression.release(exp);
+
         delete this.#store[uuid];
     }
 }
