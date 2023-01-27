@@ -1,8 +1,21 @@
+/**
+ * Attribute binding provider for binding attributes to data.
+ *
+ * @example
+ * <div data-value.bind="age"></div>
+ */
 export default class AttrProvider {
     #store = {};
 
     get store() { return this.#store; }
 
+    /**
+     * Parses the attribute and sets the callback for the data.
+     * The callback will be called when the data changes and the attribute will be updated.
+     * @param attr {Attr} - The attribute to parse.
+     * @param context {BindingContext} - The context of the binding.
+     * @returns {Promise<void>}
+     */
     async parse(attr, context) {
         const attrName = attr.name.split(".")[0];
         const element = attr.ownerElement;
@@ -21,6 +34,12 @@ export default class AttrProvider {
         crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties);
     }
 
+    /**
+     * Updates the attribute of the element for the given properties.
+     * @param uuid {string} - The uuid of the element.
+     * @param properties {string[]} - The properties to update.
+     * @returns {Promise<void>}
+     */
     async update(uuid, ...properties) {
         if (this.#store[uuid] == null) return;
 
@@ -41,6 +60,11 @@ export default class AttrProvider {
         }
     }
 
+    /**
+     * Clears the store for the given uuid.
+     * @param uuid {string} - The uuid of the element.
+     * @returns {Promise<void>}
+     */
     async clear(uuid) {
         delete this.#store[uuid];
     }
