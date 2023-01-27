@@ -1,3 +1,9 @@
+/**
+ * @function getValueOnPath - Get value on object by path (e.g. "person.name")
+ * @param obj {object} - The object to get the value from.
+ * @param path {string} - The path to the value.
+ * @returns {null|*}
+ */
 export function getValueOnPath(obj, path) {
     if (obj == null || (path || "").length == 0) return;
 
