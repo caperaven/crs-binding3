@@ -1,4 +1,15 @@
 const ignoreElements = ["STYLE", "CRS-ROUTER"];
+
+/**
+ * Parses an element and its children.
+ * This will manage the parsing of textContent, attributes and child elements.
+ * Some elements will not be parsed, such as STYLE and CRS-ROUTER.
+ * 
+ * @param element {Element} - The element to parse.
+ * @param context {Object} - The binding context.
+ * @param options {Object} - The options.
+ * @returns {Promise<void|*>}
+ */
 export async function parseElement(element, context, options) {
     if (element["__inflated"] === true || ignoreElements.indexOf(element.nodeName) != -1) return;
 
