@@ -1,3 +1,14 @@
+/**
+ * @class Providers - A class that holds all providers used by the binding engine.
+ * When working with providers you do so through this class.
+ * This is for internal use only.
+ *
+ * @property textProviders - A list of text providers.
+ * @property elementProviders - A list of element providers.
+ * @property attrPartialKeys - A list of attribute queries that are partial keys.
+ * @property attrProviders - A list of attribute providers, either a string or a instance of the provider.
+ * @property elementQueries - A list of element queries.
+ */
 export class Providers {
     #attrProviders = {};
     #elementProviders = {};
@@ -5,14 +16,27 @@ export class Providers {
     #attrPartialKeys = [];
     #elementQueries = [];
 
+    /**
+     * @property textProviders - A list of text providers.
+     * @returns {*[]}
+     */
     get textProviders() {
         return this.#textProviders;
     }
 
+    /**
+     * @property elementProviders - A list of element providers.
+     * @returns {{}}
+     */
     get elementProviders() {
         return this.#elementProviders;
     }
 
+    /**
+     * @constructor
+     * @param attrProviders - A list of attribute providers.
+     * @param elementProviders - A list of element providers.
+     */
     constructor(attrProviders, elementProviders) {
         for (const key of Object.keys(attrProviders)) {
             this.addAttributeProvider(key, attrProviders[key]);
@@ -23,11 +47,21 @@ export class Providers {
         }
     }
 
+    /**
+     * @function #loadModule - Load the code from file and return the default export.
+     * @param file {string} - The file to load.
+     * @returns {Promise<Object>} - The default export.
+     */
     async #loadModule(file) {
         file = file.replace("$root", crs.binding.root);
         return new (await import(file)).default();
     }
 
+    /**
+     * @function #getAttrModule - Get the attribute provider.
+     * @param key {string} - The attribute name.
+     * @returns {Promise<*>} - The attribute provider.
+     */
     async #getAttrModule(key) {
         const module = this.#attrProviders[key];
         if (typeof module !== "string") return module;
@@ -37,7 +71,7 @@ export class Providers {
     }
 
     /**
-     * Add a provider that can be used during parsing processes.
+     * @function addAttributeProvider - Add a provider that can be used during parsing processes.
      */
     addAttributeProvider(key, file) {
         this.#attrProviders[key] = file;
@@ -48,8 +82,11 @@ export class Providers {
     }
 
     /**
-     * Add a provider that can be used during element parsing
+     * @function addElementProvider - Add a provider that can be used during element parsing
      * The key must be a query string used to match the element with the provider
+     *
+     * @param key {string} - The query string to match the element with the provider.
+     * @param file {string} - The file to load the provider from.
      */
     addElementProvider(key, file) {
         this.#elementProviders[key] = file;
@@ -57,16 +94,16 @@ export class Providers {
     }
 
     /**
-     * Add providers that will evaluate text.
-     * @param file
+     * @function addTextProvider - Add providers that will evaluate text.
+     * @param file {string} - The file to load the provider from.
      */
     async addTextProvider(file) {
         this.#textProviders.push(await this.#loadModule(file));
     }
 
     /**
-     * Get provider registered as attribute provider based on attribute name
-     * @param attrName
+     * @function getAttrProvider - Get provider registered as attribute provider based on attribute name
+     * @param attrName {string} - The attribute name to get the provider for.
      * @returns {Promise<*>}
      */
     async getAttrProvider(attrName) {
@@ -80,8 +117,8 @@ export class Providers {
     }
 
     /**
-     * Get the provider for this element
-     * @param element
+     * @function getElementProvider - Get provider registered as element provider based on element
+     * @param element {Element} - The element to get the provider for.
      * @returns {Promise<void>}
      */
     async getElementProvider(element) {
@@ -97,10 +134,20 @@ export class Providers {
         }
     }
 
+    /**
+     * @function getTextProviders - Get all text providers
+     * @returns {Promise<*[]>}
+     */
     async getTextProviders() {
         return this.#textProviders;
     }
 
+    /**
+     * @function update - Update the UI based on the uuid and properties
+     * @param uuid {string} - The uuid of the element to update.
+     * @param properties {string[]} - The properties to update.
+     * @returns {Promise<void>}
+     */
     async update(uuid, ...properties) {
         for (const textProvider of this.#textProviders) {
             if (textProvider.store[uuid] != null) {
@@ -120,7 +167,8 @@ export class Providers {
     }
 
     /**
-     * Clear the providers for the element being released based on it's uuid
+     * @function clear - Clear the providers for the element being released based on it's uuid
+     * @param uuid {string} - The uuid of the element to clear.
      */
     async clear(uuid) {
         for (const textProvider of this.#textProviders) {
