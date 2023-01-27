@@ -1,7 +1,8 @@
 import "../../expressions/code-factories/case.js";
 
 /**
- * Set an element style based on a case expression.
+ * @class StyleCaseProvider
+ * @description Set an element style based on a case expression.
  * These are processed as if statements, the first condition that passes will set the style.
  *
  * @example <caption>case expression</caption>

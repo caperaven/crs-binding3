@@ -1,7 +1,8 @@
 import "../../expressions/code-factories/if.js";
 
 /**
- * Set an element style based on an if expression.
+ * @class StyleIfProvider
+ * @description Set an element style based on an if expression.
  *
  * @example <caption>if expression</caption>
  * <div style.background.if="isActive == true ? 'blue'"></div>

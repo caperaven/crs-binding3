@@ -1,5 +1,6 @@
 /**
- * Parses a collection of attributes of an element and uses parseAttribute to parse them.
+ * @function
+ * @description Parses a collection of attributes of an element and uses parseAttribute to parse them.
  * @param element {Element} - The element to parse.
  * @param context {Object} - The binding context.
  * @param ctxName {string} - The name of the context.

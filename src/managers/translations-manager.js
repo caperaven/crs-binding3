@@ -1,3 +1,7 @@
+/**
+ * @class TranslationsManager
+ * @description Manage a dictionary of translations
+ */
 export class TranslationsManager {
     #dictionary = {};
 
@@ -54,6 +58,13 @@ export class TranslationsManager {
     }
 }
 
+/**
+ * @function flattenPropertyPath
+ * @description Flatten a property path into a single object
+ * @param prefix
+ * @param obj
+ * @param target
+ */
 function flattenPropertyPath(prefix, obj, target) {
     if (typeof obj === "string") {
         if (prefix[0] === ".") {

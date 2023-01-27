@@ -1,5 +1,6 @@
 /**
- * This provider will execute a function on the binding context when an event is triggered.
+ * @class CallProvider
+ * @description This provider will execute a function on the binding context when an event is triggered.
  * Only a single event will be registered. No matter how many elements have the same event.
  * You can use this to listen to any event that gets dispatched.
  *
@@ -82,7 +83,8 @@ export default class CallProvider {
 }
 
 /**
- * Execute the function on the binding context.
+ * @function execute
+ * @description Execute the function on the binding context.
  * @param bid {number} - The binding id.
  * @param expr {string} - The expression to execute.
  * @param event {Event} - The event that was triggered.
@@ -100,7 +102,8 @@ async function execute(bid, expr, event) {
 }
 
 /**
- * Process the arguments and convert them to the correct type.
+ * @function processArgs
+ * @description Process the arguments and convert them to the correct type.
  * @param expr {string} - The expression to process.
  * @param event {Event} - The event that was triggered.
  * @returns {*[]}

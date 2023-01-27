@@ -1,7 +1,8 @@
 import "../../expressions/code-factories/case.js";
 
 /**
- * Provider that deals with the .case attribute. It is used to create a switch statement.
+ * @class AttrCaseProvider
+ * @description Provider that deals with the .case attribute. It is used to create a switch statement.
  *
  * @example
  * <div data-value.case="age <= 10: 'red', age <= 20: 'blue', default: 'green'" class="attr">Attr: </div>

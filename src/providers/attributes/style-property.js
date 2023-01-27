@@ -1,5 +1,6 @@
 /**
- * Set the style of an element based on a property value on the binding context.
+ * @class StyleProvider
+ * @description Set the style of an element based on a property value on the binding context.
  * When the property value changes the style will be updated.
  *
  * @example <caption>style expression</caption>

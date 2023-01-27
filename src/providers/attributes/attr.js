@@ -1,5 +1,6 @@
 /**
- * Attribute binding provider for binding attributes to data.
+ * @class AttrProvider
+ * @description Attribute binding provider for binding attributes to data.
  *
  * @example
  * <div data-value.bind="age"></div>

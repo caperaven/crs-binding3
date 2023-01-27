@@ -1,5 +1,6 @@
 /**
- * Parses an attribute and calls the provider to handle it.
+ * @function parseAttribute
+ * @description Parses an attribute and calls the provider to handle it.
  * @param attr {Attr} - The attribute to parse.
  * @param context {Object} - The binding context.
  * @param ctxName {string} - The name of the context.

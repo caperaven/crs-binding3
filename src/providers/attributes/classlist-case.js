@@ -1,7 +1,8 @@
 import "../../expressions/code-factories/case.js";
 
 /**
- * Add and remove classes on a element based on a case expression.
+ * @class ClassListCaseProvider
+ * @description Add and remove classes on a element based on a case expression.
  * These are processed as if statements, the first condition that passes will set determine the class.
  *
  * @example
