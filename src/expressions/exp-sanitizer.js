@@ -2,6 +2,14 @@ import {tokenize} from "./exp-tokenizer.js";
 
 const sanitizeKeywords = ["false", "true", "null"];
 
+/**
+ * @function sanitize - Sanitizes the expression prefixing properties with the context name.
+ * This is required to avoid conflicts with the global scope and security issues.
+ * There are some tokens that are replaced with the corresponding value such as $event, $data, $globals, $context and $parent.
+ * @param exp - The expression to sanitize.
+ * @param ctxName - The context name to use.
+ * @returns {Promise<Object>}
+ */
 export async function sanitize(exp, ctxName = "context") {
     let isHTML = false;
 

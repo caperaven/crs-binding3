@@ -1,3 +1,14 @@
+/**
+ * @function - compiles an binding expression into a function that can be executed
+ *
+ * NOTE: used internally only
+ *
+ * @param exp - the expression to compile
+ * @param parameters - the parameters to pass to the function
+ * @param options - the options to use when compiling the expression
+ * @returns {Promise<Object>}
+ *
+ */
 export async function compile(exp, parameters, options) {
     const ctxName = options?.ctxName || "context";
     const key = `${ctxName}:${exp}`;
