@@ -1,8 +1,13 @@
 /**
- * This is the main management of the binding data.
+ * @class BindingData - This is the main management of the binding data.
  * This includes context data.
+ * This is a singleton class.
+ *
+ * @property #nextId {number} - The next id to use for a context
+ * @property #context {object} - This provides access to the binding context / view model to call functions on it
+ * @property #data {object} - The data is stored here for the binding context
+ * @property #callbacks {object} - The callbacks are stored here for the binding context, when a property changes this determines what gets updated.
  */
-
 export class BindingData {
     #nextId = 1;
     #context = {};
@@ -15,12 +20,21 @@ export class BindingData {
     };
     #callbacks = {};
 
+    /**
+     * @property #getNextId - Get the next id to use for a context
+     * @returns {number}
+     */
     #getNextId() {
         const result = this.#nextId;
         this.#nextId += 1;
         return result;
     }
 
+    /**
+     * @property #getContextId - Get the context id from the id provided
+     * @param id
+     * @returns {*|number|number}
+     */
     #getContextId(id) {
         if (typeof id == "object") {
             return id.bid;
@@ -28,10 +42,20 @@ export class BindingData {
         return id;
     }
 
+    /**
+     * @property globals - Get the global data object. Used in compiled functions to access globals data.
+     * @returns {*}
+     */
     get globals() {
         return this.#data[0].data;
     }
 
+    /**
+     * @method #performUpdate - Perform an update on the given property
+     * @param bid {number} - The binding id to use
+     * @param property {string} - The property to update
+     * @returns {Promise<void>}
+     */
     async #performUpdate(bid, property) {
         if (this.#callbacks[bid] == null) return;
 
@@ -54,6 +78,14 @@ export class BindingData {
         }
     }
 
+    /**
+     * @method setCallback - Set the callback for the given property.
+     * This is used to determine what to update when a property changes.
+     *
+     * @param uuid {string} - The uuid of the element
+     * @param bid {number} - The binding id to use
+     * @param properties {string[]} - The properties to set the callback for
+     */
     setCallback(uuid, bid, properties) {
         const obj = this.#callbacks[bid] ||= {};
 
@@ -72,8 +104,9 @@ export class BindingData {
     }
 
     /**
-     * Create a binding context data object.
+     * @method addObject - Create a binding context data object.
      * This is the starting point for all bindable context objects
+     *
      * @param name {string} debug name to use
      * @param struct {any} object structure to use, leave empty to default to standard empty object literal
      * @returns {number} the new context id to use as reference
@@ -91,32 +124,48 @@ export class BindingData {
     }
 
     /**
-     * add a binding context for the binding id
+     * @method addContext - Add a binding context to the binding data
+     * @param id {number} - The id to use for the context. This is the same as the binding id
+     * @param obj {object} - The context object
      */
     addContext(id, obj) {
         this.#context[id] = obj;
     }
 
     /**
-     * Get the context object
+     * @method getContext - Get the context object for the id provided
+     * @param id {number} - The id to use for the context. This is the same as the binding id
      */
     getContext(id) {
         return this.#context[id];
     }
 
     /**
-     * Get the binding data object for the id provided
+     * @method getData - Get the data object for the id provided (this is the binding context)
+     * @param id {number} - The id to use for the context. This is the same as the binding id
      */
     getData(id) {
         id = this.#getContextId(id);
         return this.#data[id];
     }
 
+    /**
+     * @method getCallback - Get the callback for the given property and id provided
+     * @param id {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property to get the callback for
+     * @returns {*[]|unknown[]}
+     */
     getCallbacks(id, property) {
         const set = this.#callbacks[id]?.[property];
         return set == null ? [] : Array.from(set);
     }
 
+    /**
+     * @method getDataForElement - Get the data object for the element provided.
+     * It will read the __bid property on the element to get the id to use.
+     * @param element {HTMLElement} - The element to get the data for
+     * @returns {*}
+     */
     getDataForElement(element) {
         const bid = element?.["__bid"];
         if (bid == null) return;
@@ -126,7 +175,8 @@ export class BindingData {
     }
 
     /**
-     * Remove the data and context objects and do cleanup
+     * @method remove - Remove the data and context objects and do cleanup for the id provided
+     * @param id {number} - The id to use for the context. This is the same as the binding id
      */
     remove(id) {
         id = this.#getContextId(id);
@@ -138,7 +188,9 @@ export class BindingData {
     }
 
     /**
-     * Set a property for a given binding context on a provided path
+     * @method getProperty - Get a property for a given binding context on a provided path (supports global properties)
+     * @param id {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property to get the value for
      */
     getProperty(id, property) {
         if (property.indexOf(GLOBALS) !== -1) {
@@ -151,7 +203,10 @@ export class BindingData {
     }
 
     /**
-     * Get a property for a given binding context on a provided path
+     * @method setProperty - Set a property for a given binding context on a provided path (supports global properties)
+     * @param id {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property to set the value for
+     * @param value {any} - The value to set
      */
     async setProperty(id, property, value) {
         let setProperty = property;
@@ -173,6 +228,11 @@ export class BindingData {
         await this.#performUpdate(id, setProperty);
     }
 
+    /**
+     * @method setName - Set the name for the binding context to help with debugging
+     * @param id {number} - The id to use for the context. This is the same as the binding id
+     * @param name {string} - The name to set
+     */
     setName(id, name) {
         id = this.#getContextId(id);
         const data = crs.binding.data.getData(id);
@@ -180,7 +240,8 @@ export class BindingData {
     }
 
     /**
-     * Update this element so that the bindings are applied
+     * @method updateElement - Update the element provided with the binding context data
+     * @param element {HTMLElement} - The element to update
      */
     async updateElement(element) {
         const bid = element["__bid"];

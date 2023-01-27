@@ -1,5 +1,10 @@
 import "./../utils/dom-collection-manager.js";
 
+/**
+ * @class ArrayProxyFunctions - Functions to be called when an array is modified
+ * This is used internally to update UI elements when an array is modified
+ * The template-for provider is a example of this.
+ */
 class ArrayProxyFunctions {
     static push(...items) {
         this.push(...items);
