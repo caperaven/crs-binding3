@@ -11,6 +11,12 @@ const TokenTypes = Object.freeze({
     STRING  : "string"
 })
 
+/**
+ * @function tokenize - Tokenizes an expression into an array of tokens for parsing later during sanitization
+ * @param exp {string} - The expression to tokenize
+ * @param isLiteral {boolean} - If the expression is a literal expression
+ * @returns {*}
+ */
 export function tokenize(exp, isLiteral) {
     const result = [];
     let word = [];
