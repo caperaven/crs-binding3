@@ -165,6 +165,7 @@ async function loadHtml(component) {
     }
 
     await crs.binding.parsers.parseElements(component.shadowRoot ? component.shadowRoot.children : component.children, component);
+    await crs.binding.data.updateContext(component.bid);
 }
 
 crs.classes.BindableElement = BindableElement;

@@ -277,7 +277,7 @@ export class BindingData {
      */
     async updateContext(bid) {
         const context = this.getContext(bid);
-        if (context == null) return;
+        if (context == null || context.boundElements == null) return;
 
         for (const uuid of context.boundElements) {
             // call providers don't need to be updated but, they still marked with a uuid
