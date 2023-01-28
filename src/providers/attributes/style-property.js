@@ -17,12 +17,12 @@ export default class StyleProvider {
         element.removeAttribute(attr.name);
 
         const cssProperty = parts[1];
-        crs.binding.utils.markElement(element, context.bid);
+        crs.binding.utils.markElement(element, context);
         const expo = await crs.binding.expression.compile(attr.value);
         const obj = this.#store[element["__uuid"]] ||= {};
         obj[cssProperty] = expo.key;
 
-        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties);
+        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties, "style.");
     }
 
     async update(uuid) {

@@ -41,8 +41,6 @@ export async function parseElement(element, context, options) {
     for (const provider of crs.binding.providers.textProviders) {
         await provider.parseElement(element, context, ctxName)
     }
-
-    await crs.binding.data.updateElement(element);
 }
 
 function ignore(element) {

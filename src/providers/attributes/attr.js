@@ -22,7 +22,7 @@ export default class AttrProvider {
         const element = attr.ownerElement;
         element.removeAttribute(attr.name);
 
-        crs.binding.utils.markElement(element, context.bid);
+        crs.binding.utils.markElement(element, context);
         const expo = await crs.binding.expression.compile(attr.value);
         const obj = this.#store[element["__uuid"]] ||= {};
 
@@ -32,7 +32,7 @@ export default class AttrProvider {
             }
         }
 
-        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties);
+        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties, ".attr");
     }
 
     /**
@@ -47,6 +47,10 @@ export default class AttrProvider {
         const element = crs.binding.elements[uuid];
         const data = crs.binding.data.getDataForElement(element);
         const storeItem  = this.#store[uuid];
+
+        if (properties.length == 0) {
+            properties = Object.keys(storeItem);
+        }
 
         for (const property of properties) {
             if (storeItem[property] == null) continue;

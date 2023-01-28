@@ -15,7 +15,7 @@ export async function parseAttribute(attr, context, ctxName, parentId) {
     if (provider == null) return;
 
     const element = attr.ownerElement;
-    crs.binding.utils.markElement(element, context.bid);
+    crs.binding.utils.markElement(element, context);
 
     await provider.parse(attr, context, ctxName, parentId);
 }

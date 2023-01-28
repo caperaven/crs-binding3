@@ -51,14 +51,14 @@ export default class BindProvider {
         const property = parts[0];
         const path = attr.value;
 
-        crs.binding.utils.markElement(element, context.bid);
+        crs.binding.utils.markElement(element, context);
         element.removeAttribute(attr.name);
         element.setAttribute("data-field", path);
 
         const eventObj = this.#store[element["__uuid"]] ||= {};
         eventObj[path] = property;
 
-        crs.binding.data.setCallback(element["__uuid"], context.bid, [path]);
+        crs.binding.data.setCallback(element["__uuid"], context.bid, [path], ".bind");
     }
 
     /**
@@ -72,6 +72,10 @@ export default class BindProvider {
         if (element == null) return;
 
         const bid = element["__bid"];
+
+        if (properties.length === 0) {
+            properties = Object.keys(this.store[uuid]);
+        }
 
         for (const property of properties) {
             const targetProperty = this.store[uuid]?.[property];

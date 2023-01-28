@@ -70,6 +70,7 @@ export class ViewBase {
 
             requestAnimationFrame(async () => {
                 await crs.binding.parsers.parseElements(this.element.children, this, path ? {folder: path} : null);
+                await crs.binding.data.updateContext(this.#bid);
                 await this.load();
             })
 

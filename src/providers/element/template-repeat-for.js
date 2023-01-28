@@ -23,15 +23,13 @@ export default class TemplateRepeatForProvider {
         const forExp = element.getAttribute("for");
         const forExpParts = forExp.split(" ");
 
-        const uuid = crs.binding.utils.markElement(element.parentElement, context.bid);
+        const uuid = crs.binding.utils.markElement(element.parentElement, context);
         element.parentElement["__path"] = forExpParts[2];
         element.parentElement.removeChild(element);
 
         const fn = await crs.binding.expression.inflationFactory(element, forExpParts[0]);
         crs.binding.inflation.store.add(uuid, element, fn);
-        crs.binding.data.setCallback(uuid, context.bid, [forExpParts[2]]);
-
-        await this.update(uuid);
+        crs.binding.data.setCallback(uuid, context.bid, [forExpParts[2]], "template[for]");
     }
 
     /**

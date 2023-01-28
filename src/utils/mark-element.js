@@ -5,13 +5,18 @@
  * @param bid {string} - The binding id.
  * @returns {string} - The uuid of the element.
  */
-export function markElement(element, bid) {
+export function markElement(element, context) {
+    const bid = context.bid;
     if (element["__uuid"] == null) {
         element["__uuid"] ||= crypto.randomUUID();
         crs.binding.elements[element["__uuid"]] = element;
     }
 
     element["__bid"] ||= bid;
+
+    context.boundElements ||= new Set();
+    context.boundElements.add(element["__uuid"]);
+
     return element["__uuid"];
 }
 

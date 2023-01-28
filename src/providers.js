@@ -166,6 +166,23 @@ export class Providers {
         }
     }
 
+    async updateProviders(uuid, ...providerKeys) {
+        for (const providerKey of providerKeys) {
+            let provider;
+
+            if (providerKey === ".textContent") {
+                provider = this.#textProviders[0];
+            }
+            else {
+                provider =
+                    this.#attrProviders[providerKey] ||
+                    this.#elementProviders[providerKey];
+            }
+
+            provider.update(uuid);
+        }
+    }
+
     /**
      * @function clear - Clear the providers for the element being released based on it's uuid
      * @param uuid {string} - The uuid of the element to clear.

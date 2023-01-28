@@ -18,11 +18,11 @@ export default class TextProvider {
             const value = element.textContent;
             element.textContent = "";
 
-            crs.binding.utils.markElement(element, context.bid);
+            crs.binding.utils.markElement(element, context);
             const expo = await crs.binding.expression.compile(value);
             this.#store[element["__uuid"]] = expo.key;
 
-            crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties);
+            crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties, ".textContent");
         }
     }
 

@@ -7,6 +7,19 @@
  * @property #context {object} - This provides access to the binding context / view model to call functions on it
  * @property #data {object} - The data is stored here for the binding context
  * @property #callbacks {object} - The callbacks are stored here for the binding context, when a property changes this determines what gets updated.
+ * @property #elementProviders {object} - The providers are stored here for the binding context, when a property changes this determines what gets updated.
+ *
+ * #callbacks is grouped as follows:
+ * 1. The context id
+ * 2. The property name
+ * 3. The uuid of elements to update
+ * When a property changes on a context, this makes it easy to lookup what elements need to be updated.
+ *
+ * The context has a property "boundElements" which is an array of elements that are bound to the context.
+ * This makes it easier to update only those elements associated with the context.
+ * It also makes cleanup of the context easier since you know what elements to clean up.
+ * You can look up those elements in the #elementProviders object and see what providers are associated with the element.
+ * This way you can target what providers need to be called for an update.
  */
 export class BindingData {
     #nextId = 1;
@@ -19,6 +32,7 @@ export class BindingData {
         }
     };
     #callbacks = {};
+    #elementProviders = {};
 
     /**
      * @property #getNextId - Get the next id to use for a context
@@ -51,7 +65,7 @@ export class BindingData {
     }
 
     /**
-     * @method #performUpdate - Perform an update on the given property
+     * @method #performUpdate - Perform an update on the given context and property
      * @param bid {number} - The binding id to use
      * @param property {string} - The property to update
      * @returns {Promise<void>}
@@ -86,7 +100,7 @@ export class BindingData {
      * @param bid {number} - The binding id to use
      * @param properties {string[]} - The properties to set the callback for
      */
-    setCallback(uuid, bid, properties) {
+    setCallback(uuid, bid, properties, provider) {
         const obj = this.#callbacks[bid] ||= {};
 
         for (const property of properties) {
@@ -100,6 +114,9 @@ export class BindingData {
             }
 
             obj[property].add(uuid);
+
+            this.#elementProviders[uuid] ||= new Set();
+            this.#elementProviders[uuid].add(provider);
         }
     }
 
@@ -250,6 +267,25 @@ export class BindingData {
 
         for (const property of Object.keys(this.#callbacks[bid])) {
             await crs.binding.providers.update(uuid, property);
+        }
+    }
+
+    /**
+     * @method updateContext - Update all the elements bound to the context.
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @returns {Promise<void>}
+     */
+    async updateContext(bid) {
+        const context = this.getContext(bid);
+        if (context == null) return;
+
+        for (const uuid of context.boundElements) {
+            // call providers don't need to be updated but, they still marked with a uuid
+            const providers = this.#elementProviders[uuid];
+            if (providers == null) continue;
+
+            const providersCollection = Array.from(providers);
+            await crs.binding.providers.updateProviders(uuid, ...providersCollection);
         }
     }
 }
