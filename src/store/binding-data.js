@@ -197,6 +197,13 @@ export class BindingData {
      */
     remove(id) {
         id = this.#getContextId(id);
+
+        const context = this.#context[id];
+        for (const uuid of context.boundElements) {
+            delete this.#elementProviders[uuid];
+        }
+        delete context.boundElements;
+
         crs.binding.utils.disposeProperties(this.#data[id]);
         crs.binding.utils.disposeProperties(this.#context[id]);
 
