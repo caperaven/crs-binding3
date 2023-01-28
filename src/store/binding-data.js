@@ -105,7 +105,7 @@ export class BindingData {
 
         for (const property of properties) {
             if (property.indexOf(GLOBALS) !== -1) {
-                this.setCallback(uuid, 0, [property.replace(GLOBALS, "")]);
+                this.setCallback(uuid, 0, [property.replace(GLOBALS, "")], provider);
                 continue;
             }
 
