@@ -1,8 +1,7 @@
 const ignoreElements = ["STYLE", "CRS-ROUTER"];
 
 /**
- * @function parseElement
- * @description Parses an element and its children.
+ * @function parseElement - Parses an element and its children.
  * This will manage the parsing of textContent, attributes and child elements.
  * Some elements will not be parsed, such as STYLE and CRS-ROUTER.
  * 

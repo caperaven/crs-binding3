@@ -1,6 +1,5 @@
 /**
- * @function parseElements
- * @description Parses a collection of elements and uses parseElement to parse them.
+ * @function parseElements - Parses a collection of elements and uses parseElement to parse them.
  * @param collection {NodeList} - The collection of elements to parse.
  * @param context {Object} - The binding context.
  * @param options {Object} - The options.

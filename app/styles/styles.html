@@ -1,3 +1,21 @@
+<style>
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .color {
+        padding: 1rem;
+    }
+</style>
 <h2>${title}</h2>
 
-<div data-color.attr="color" style.background.one-way="color">${color}</div>
+<label>
+    <div>Color</div>
+    <input value.bind="background" />
+</label>
+
+<div class="color"
+     data-color.attr="color"
+     style.background="background"
+     style.color="background == 'red' ? 'white' : 'black'">${background}</div>
