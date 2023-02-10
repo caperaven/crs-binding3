@@ -10,16 +10,31 @@ beforeAll(async () => {
 
 describe("if factory tests", async () => {
     it( "ifFactory", async () => {
-        let fn = await crs.binding.expression.ifFactory("code == 'a'");
-        assertEquals(fn({code: "a"}), true)
-        assertEquals(fn({code: "b"}), false)
+        let exp = await crs.binding.expression.ifFactory("code == 'a'");
+        assertEquals(await exp.function({code: "a"}), true);
+        assertEquals(await exp.function({code: "b"}), false);
+        crs.binding.expression.release(exp);
 
-        fn = await crs.binding.expression.ifFactory("code == 'a' ? true");
-        assertEquals(fn({code: "a"}), true)
-        assertEquals(fn({code: "b"}), undefined)
+        exp = await crs.binding.expression.ifFactory("code == 'a' ? true");
+        assertEquals(await exp.function({code: "a"}), true);
+        assertEquals(await exp.function({code: "b"}), undefined);
 
-        fn = await crs.binding.expression.ifFactory("code == 'a' ? true : false");
-        assertEquals(fn({code: "a"}), true)
-        assertEquals(fn({code: "b"}), false)
+        exp = await crs.binding.expression.ifFactory("code == 'a' ? true : false");
+        assertEquals(await exp.function({code: "a"}), true);
+        assertEquals(await exp.function({code: "b"}), false);
+    })
+
+    it ("duplicate test", async () => {
+        let exp = await crs.binding.expression.ifFactory("code == 'hello world'");
+        assertEquals(crs.binding.functions.get(exp.key).count, 1);
+
+        await crs.binding.expression.ifFactory("code == 'hello world'");
+        assertEquals(crs.binding.functions.get(exp.key).count, 2);
+
+        crs.binding.expression.release(exp);
+        assertEquals(crs.binding.functions.get(exp.key).count, 1);
+
+        crs.binding.expression.release(exp);
+        assertEquals(crs.binding.functions.get(exp.key), undefined);
     })
 })

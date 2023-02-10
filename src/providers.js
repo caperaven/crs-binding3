@@ -10,6 +10,7 @@
  * @property elementQueries - A list of element queries.
  */
 export class Providers {
+    #regex = {};
     #attrProviders = {};
     #elementProviders = {};
     #textProviders = [];
@@ -107,9 +108,25 @@ export class Providers {
      * @returns {Promise<*>}
      */
     async getAttrProvider(attrName) {
+        if (attrName.indexOf(".") == -1) return null;
         if (this.#attrProviders[attrName] != null) return await this.#getAttrModule(attrName);
 
         for (const key of this.#attrPartialKeys) {
+            // key is a regex so test it as a regex
+            if (key[0] === "^") {
+                let regex = this.#regex[key];
+
+                if (regex == null) {
+                    regex = new RegExp(key);
+                    this.#regex[key] = regex;
+                }
+
+                if (regex.test(attrName)) {
+                    return await this.#getAttrModule(key);
+                }
+            }
+
+            // key is a partial string so use index
             if (attrName.indexOf(key) != -1) {
                 return await this.#getAttrModule(key);
             }

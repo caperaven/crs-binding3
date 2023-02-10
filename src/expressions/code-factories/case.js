@@ -16,7 +16,15 @@
  * @example <caption>using caseFactory</caption>
  * let fn = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok', default: 'no'");
  */
-export async function caseFactory(exp) {
+export async function caseFactory(exp, ctxName = "context") {
+    const key = `${ctxName}:${exp}`;
+
+    if (crs.binding.functions.has(key)) {
+        const result = crs.binding.functions.get(key);
+        result.count += 1;
+        return result;
+    }
+
     const code = [];
     exp = (await crs.binding.expression.sanitize(exp)).expression;
 
@@ -35,7 +43,15 @@ export async function caseFactory(exp) {
         }
     }
 
-    return new Function("context", code.join("\n"));
+    const result = {
+        key: key,
+        function: new crs.classes.AsyncFunction(ctxName, code.join("\r")),
+        parameters: exp,
+        count: 1
+    };
+
+    crs.binding.functions.set(key, result);
+    return result;
 }
 
 crs.binding.expression.caseFactory = caseFactory;

@@ -4,7 +4,7 @@
  * NOTE: This is not loaded by default so to enable this feature you need to import this file.
  *
  * @param exp {string} - the expression to parse
- * @returns {Promise<Function>}
+ * @returns {Promise<{function, count: number, parameters, key}>}
  *
  * @example <caption>if expression</caption>
  * "value < 10 ? 'yes' : 'no'"
@@ -15,12 +15,20 @@
  * @example <caption>using ifFactory</caption>
  * let fn = await crs.binding.expression.ifFactory("value < 10 ? 'yes' : 'no'");
  */
-export async function ifFactory(exp) {
+export async function ifFactory(exp, ctxName = "context") {
+    const key = `${ctxName}:${exp}`;
+
+    if (crs.binding.functions.has(key)) {
+        const result = crs.binding.functions.get(key);
+        result.count += 1;
+        return result;
+    }
+
     const code = [];
     exp = (await crs.binding.expression.sanitize(exp)).expression.replaceAll("context.[", "[");
 
     if (exp.indexOf("?") == -1) {
-        return new Function("context", `return ${exp}`);
+        return setFunction(key, exp, `return ${exp}`, ctxName);
     }
 
     const parts = exp.split("?").map(item => item.trim());
@@ -38,7 +46,19 @@ export async function ifFactory(exp) {
         code.push("}");
     }
 
-    return new Function("context", code.join("\n"));
+    return setFunction(key, exp, code.join("\r"), ctxName);
+}
+
+function setFunction(key, exp, src, ctxName) {
+    const result = {
+        key: key,
+        function: new crs.classes.AsyncFunction(ctxName, src),
+        parameters: exp,
+        count: 1
+    };
+
+    crs.binding.functions.set(key, result);
+    return result;
 }
 
 crs.binding.expression.ifFactory = ifFactory;

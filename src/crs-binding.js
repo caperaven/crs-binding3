@@ -68,8 +68,8 @@ globalThis.crs.binding = {
      * Once requested the provider is loaded and the value is replaced with the provider instance.
      */
     providers: new Providers({
-            "style.if": "$root/providers/attributes/style-if.js",
-            "style.case": "$root/providers/attributes/style-case.js",
+            "^style\..*\.if$": "$root/providers/attributes/style-if.js",
+            "^style\..*\.case$": "$root/providers/attributes/style-case.js",
             "classlist.if": "$root/providers/attributes/classlist-if.js",
             "classlist.case": "$root/providers/attributes/classlist-case.js",
             ".bind": "$root/providers/properties/bind.js",

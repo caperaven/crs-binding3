@@ -10,22 +10,38 @@ beforeAll(async () => {
 
 describe("case factory tests", async () => {
     it ("caseFactory", async () => {
-        let fn = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok', default: 'no'");
-        let value1 = fn({value: 5});
-        let value2 = fn({value: 15});
-        let value3 = fn({value: 25})
+        let exp = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok', default: 'no'");
+        let value1 = await exp.function({value: 5});
+        let value2 = await exp.function({value: 15});
+        let value3 = await exp.function({value: 25});
+        crs.binding.expression.release(exp);
 
         assertEquals(value1, 'yes');
         assertEquals(value2, 'ok');
         assertEquals(value3, 'no');
 
-        fn = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok'");
-        value1 = fn({value: 5});
-        value2 = fn({value: 15});
-        value3 = fn({value: 25})
+        exp = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok'");
+        value1 = await exp.function({value: 5});
+        value2 = await exp.function({value: 15});
+        value3 = await exp.function({value: 25})
+        crs.binding.expression.release(exp);
 
         assertEquals(value1, 'yes');
         assertEquals(value2, 'ok');
         assertEquals(value3, undefined);
+    })
+
+    it ("duplicate test", async () => {
+        let exp = await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok'");
+        assertEquals(crs.binding.functions.get(exp.key).count, 1);
+
+        await crs.binding.expression.caseFactory("value < 10: 'yes', value < 20: 'ok'");
+        assertEquals(crs.binding.functions.get(exp.key).count, 2);
+
+        crs.binding.expression.release(exp);
+        assertEquals(crs.binding.functions.get(exp.key).count, 1);
+
+        crs.binding.expression.release(exp);
+        assertEquals(crs.binding.functions.get(exp.key), undefined);
     })
 })
