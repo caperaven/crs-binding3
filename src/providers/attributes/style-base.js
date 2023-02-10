@@ -19,7 +19,7 @@ export class StyleBase {
         const obj = this.#store[element["__uuid"]] ||= {};
         obj[cssProperty] = expo.key;
 
-        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties, "style.");
+        crs.binding.data.setCallback(element["__uuid"], context.bid, expo.parameters.properties, this.providerKey);
     }
 
     async update(uuid) {

@@ -12,6 +12,8 @@ import {StyleBase} from "./style-base.js";
  * <div style.background.if="isActive == true ? 'blue' : 'red'"></div>
  */
 export default class StyleIfProvider extends StyleBase {
+    get providerKey() { return "^style\..*\.if$"; }
+
     async parse(attr, context) {
         await super.parse(attr, context, async (value) => {
             return await crs.binding.expression.ifFactory(value);

@@ -14,6 +14,8 @@ import {StyleBase} from "./style-base.js";
  * if the first two conditions don't pass set background to 'green'
  */
 export default class StyleCaseProvider extends StyleBase {
+    get providerKey() { return "^style\..*\.case$"; }
+
     async parse(attr, context) {
         await super.parse(attr, context, async (value) => {
             return await crs.binding.expression.caseFactory(value);
