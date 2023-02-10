@@ -1,4 +1,5 @@
 import "../../expressions/code-factories/case.js";
+import {StyleBase} from "./style-base.js";
 
 /**
  * @class StyleCaseProvider
@@ -12,10 +13,10 @@ import "../../expressions/code-factories/case.js";
  * if (age <= 20) set background to 'blue'
  * if the first two conditions don't pass set background to 'green'
  */
-export default class StyleCaseProvider {
+export default class StyleCaseProvider extends StyleBase {
     async parse(attr, context) {
-    }
-
-    async update(uuid, ...properties) {
+        await super.parse(attr, context, async (value) => {
+            return await crs.binding.expression.caseFactory(value);
+        });
     }
 }

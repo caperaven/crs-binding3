@@ -25,10 +25,12 @@ export async function ifFactory(exp, ctxName = "context") {
     }
 
     const code = [];
-    exp = (await crs.binding.expression.sanitize(exp)).expression.replaceAll("context.[", "[");
+
+    const expo = await crs.binding.expression.sanitize(exp);
+    exp = expo.expression.replaceAll("context.[", "[");
 
     if (exp.indexOf("?") == -1) {
-        return setFunction(key, exp, `return ${exp}`, ctxName);
+        return setFunction(key, expo, `return ${exp}`, ctxName);
     }
 
     const parts = exp.split("?").map(item => item.trim());
@@ -46,7 +48,7 @@ export async function ifFactory(exp, ctxName = "context") {
         code.push("}");
     }
 
-    return setFunction(key, exp, code.join("\r"), ctxName);
+    return setFunction(key, expo, code.join("\r"), ctxName);
 }
 
 function setFunction(key, exp, src, ctxName) {

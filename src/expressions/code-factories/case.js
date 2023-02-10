@@ -26,7 +26,8 @@ export async function caseFactory(exp, ctxName = "context") {
     }
 
     const code = [];
-    exp = (await crs.binding.expression.sanitize(exp)).expression;
+    const expo = await crs.binding.expression.sanitize(exp);
+    exp = expo.expression;
 
     const parts = exp.split(",");
 
@@ -46,7 +47,7 @@ export async function caseFactory(exp, ctxName = "context") {
     const result = {
         key: key,
         function: new crs.classes.AsyncFunction(ctxName, code.join("\r")),
-        parameters: exp,
+        parameters: expo,
         count: 1
     };
 

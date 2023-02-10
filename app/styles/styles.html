@@ -15,7 +15,11 @@
     <input value.bind="background" />
 </label>
 
-<div class="color"
-     data-color.attr="color"
-     style.background="background"
-     style.color.if="background == 'red' ? 'white' : 'black'">${background}</div>
+<strong>Standard binding</strong>
+<div class="color" style.background="background">${background}</div>
+
+<strong>If binding</strong>
+<div class="color" style.color.if="background == 'red' ? 'red' : 'blue'">${background}</div>
+
+<strong>Case binding</strong>
+<div class="color" style.color.case="background == 'red': 'red', background == 'blue': 'blue', default: 'green'">${background}</div>
