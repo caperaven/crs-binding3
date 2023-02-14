@@ -20,6 +20,11 @@
       "view": "styles"
     },
     {
+      "title": "Class List",
+      "hash": "#classlist",
+      "view": "classlist"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

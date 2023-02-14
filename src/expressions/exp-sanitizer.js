@@ -72,7 +72,12 @@ export async function sanitize(exp, ctxName = "context") {
         }
     }
 
-    const expr = await crs.binding.expression.translateFactory(expression.join(""));
+    let expr = expression
+        .join("")
+        .replaceAll("context.[", "[")
+        .replaceAll("context.]", "]")
+
+    expr = await crs.binding.expression.translateFactory(expr);
 
     return {
         isLiteral,
@@ -83,7 +88,7 @@ export async function sanitize(exp, ctxName = "context") {
 }
 
 const fnNames = [".trim", ".toLowerCase", "toUpperCase"];
-const ignoreProperties = ["$data", "$event"];
+const ignoreProperties = ["$data", "$event", "[", "]"];
 
 function addProperty(set, property, ctxName) {
     if (property.length == 0) return;

@@ -1,0 +1,51 @@
+<style>
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .color {
+        padding: 1rem;
+    }
+
+    .red {
+        color: red;
+    }
+
+    .blue {
+        background: blue;
+    }
+
+    .green {
+        background: green;
+    }
+
+    .yellow {
+        background: yellow;
+    }
+
+    .white {
+        color: white;
+    }
+</style>
+<h2>${title}</h2>
+
+<label>
+    <div>Color</div>
+    <input value.bind="background" />
+</label>
+
+<strong>If - Add / Remove</strong>
+<div class="color" classlist.if="background == 'red' ? 'red'">${background}</div>
+
+<strong>If / else binding</strong>
+<div class="color" classlist.if="background == 'red' ? 'red' : 'blue'">${background}</div>
+
+<strong>If / binding with arrays</strong>
+<div class="color" classlist.if="background == 'red' ? ['white', 'green'] : ['blue', 'yellow']">${background}</div>
+
+<strong>Case binding - no default</strong>
+<div class="color" classlist.case="background == 'red': 'red', background == 'blue': 'blue'">${background}</div>
+
+<strong>Case binding - with default</strong>
+<div class="color" classlist.case="background == 'red': 'red', background == 'blue': 'blue', default: 'green'">${background}</div>
