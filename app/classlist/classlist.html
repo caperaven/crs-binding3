@@ -49,3 +49,6 @@
 
 <strong>Case binding - with default</strong>
 <div class="color" classlist.case="background == 'red': 'red', background == 'blue': 'blue', default: 'green'">${background}</div>
+
+<strong>Case / binding with arrays</strong>
+<div class="color" classlist.case="background == 'red': ['white', 'green'], background == 'blue': ['blue', 'yellow'], default: ['green', 'white']">${background}</div>

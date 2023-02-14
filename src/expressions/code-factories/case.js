@@ -27,7 +27,7 @@ export async function caseFactory(exp, ctxName = "context") {
 
     const code = [];
     const expo = await crs.binding.expression.sanitize(exp);
-    exp = expo.expression;
+    exp = sanitizeArrays(expo.expression);
 
     const parts = exp.split(",");
 
@@ -46,13 +46,41 @@ export async function caseFactory(exp, ctxName = "context") {
 
     const result = {
         key: key,
-        function: new crs.classes.AsyncFunction(ctxName, code.join("\r")),
+        function: new crs.classes.AsyncFunction(ctxName, code.join("\r").replaceAll("@", ",")),
         parameters: expo,
         count: 1
     };
 
     crs.binding.functions.set(key, result);
     return result;
+}
+
+/**
+ * Check if the exp has an array syntax in it.
+ * If there is a [ and ] replace all the commas between the quotes to ;
+ * @param exp
+ * @returns {*}
+ */
+function sanitizeArrays(exp) {
+    if (exp.indexOf("[") == -1) {
+        return exp;
+    }
+
+    const code = [];
+
+    const parts = exp.split("[");
+    for (const part of parts) {
+        if (part.indexOf("]") == -1) {
+            code.push(part);
+            continue;
+        }
+
+        const subParts = part.split("]");
+        const array = `[${subParts[0].replaceAll(",", "@")}] ${subParts[1]}`;
+        code.push(array);
+    }
+
+    return code.join("");
 }
 
 crs.binding.expression.caseFactory = caseFactory;
