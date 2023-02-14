@@ -42,7 +42,6 @@ export class StyleBase {
      */
     async clear(uuid) {
         const obj = this.#store[uuid];
-
         if (obj == null) return;
 
         for (const fnKey of Object.values(obj)) {

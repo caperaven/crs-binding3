@@ -53,6 +53,11 @@ export class ClassListBase {
      * @returns {Promise<void>}
      */
     async clear(uuid) {
+        const obj = this.#store[uuid];
+        if (obj == null) return;
 
+        obj.classes = null;
+        obj.fnKey = null;
+        delete this.#store[uuid];
     }
 }
