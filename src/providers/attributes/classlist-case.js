@@ -6,8 +6,11 @@ import {ClassListBase} from "./classlist-base.js";
  * @description Add and remove classes on a element based on a case expression.
  * These are processed as if statements, the first condition that passes will set determine the class.
  *
- * @example
+ * @example <caption>html, case expression with default</caption>
  * <div classlist.case="age <= 10: 'red', age <= 20: 'blue', default: 'green'">Class list Test</div>
+ *
+ * @example <caption>html, case expression with arrays</caption>
+ * <div classlist.case="age <= 10: ['red', 'blue'], age <= 20: ['blue', 'white'], default: 'green'">Class list Test</div>
  *
  * if (age <= 10) add class 'red' but remove 'blue' and 'green'
  * if (age <= 20) add class 'blue' but remove 'red' and 'green'
