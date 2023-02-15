@@ -25,6 +25,11 @@
       "view": "classlist"
     },
     {
+      "title": "Attributes",
+      "hash": "#attributes",
+      "view": "attributes"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

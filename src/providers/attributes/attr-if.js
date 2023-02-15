@@ -1,4 +1,5 @@
 import "../../expressions/code-factories/if.js";
+import {AttrBase} from "./attr-base.js";
 
 /**
  * @class AttrIfProvider
@@ -13,11 +14,12 @@ import "../../expressions/code-factories/if.js";
  * @example <caption>change if condition is met, otherwise remove attribute</caption>
  * <div data-value.if="value > 0">...</div>
  */
-export default class AttrIfProvider {
+export default class AttrIfProvider extends AttrBase {
+    get providerKey() { return ".if"; }
+
     async parse(attr, context) {
+        await super.parse(attr, context, async (value) => {
+            return await crs.binding.expression.ifFactory(value);
+        });
     }
-
-    async update(uuid, ...properties) {
-    }
-
 }

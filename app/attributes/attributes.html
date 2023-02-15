@@ -1,0 +1,32 @@
+<style>
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    div {
+        padding: 0.5rem;
+    }
+
+    div::after {
+        content: attr(data-value);
+    }
+</style>
+<h2>${title}</h2>
+
+<label>
+    <div>Age</div>
+    <input id="edtAge" value.bind="age" />
+</label>
+
+<strong>Attribute Binding</strong>
+<div data-value.attr="age"></div>
+
+<strong>If Attribute Binding</strong>
+<div data-value.if="age < 20 ? 'young'"></div>
+
+<strong>If / Else Attribute Binding</strong>
+<div data-value.if="age < 20 ? 'young' : 'old'"></div>
+
+<strong>Case Attribute Binding</strong>
+<div data-value.case="age < 20: 'young', age < 30: 'mid', default: 'old'"></div>
