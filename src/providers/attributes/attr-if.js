@@ -2,8 +2,7 @@ import "../../expressions/code-factories/if.js";
 import {AttrBase} from "./attr-base.js";
 
 /**
- * @class AttrIfProvider
- * @description Conditional attribute provider that updates the attribute if a condition is met.
+ * @class AttrIfProvider - Conditional attribute provider that updates the attribute if a condition is met.
  *
  * @example <caption>only change if condition is met</caption>
  * <div data-value.if="value > 0 ? 'valid'">...</div>
