@@ -61,7 +61,7 @@ export class BindableElement extends HTMLElement {
      * @returns {Promise<void>}
      */
     async connectedCallback() {
-        await this.preLoad?.();
+        await this["preLoad"]?.();
 
         await loadHtml(this);
         await load(this);

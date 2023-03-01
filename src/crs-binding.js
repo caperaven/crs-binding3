@@ -32,7 +32,9 @@ globalThis.crs.binding = {
     /**
      * @property ignore - elements to ignore when parsing.
      */
-    ignore: ["TEMPLATE", "SCRIPT", "STYLE", "PERSPECTIVE-ELEMENT"],
+    ignore: ["TEMPLATE", "SCRIPT", "STYLE"],
+
+    ignoreChildren: ["PERSPECTIVE-ELEMENT"],
 
     /**
      * @property data - The binding data store where the binding context data is kept.

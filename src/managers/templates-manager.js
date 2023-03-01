@@ -64,7 +64,49 @@ export class TemplatesManager {
     }
 
     /**
-     * Remove a template from the store.
+     * @method createStoreFromElement - Create a store from an element.
+     * The element should contain templates.
+     * The templates are added to the store.
+     * The template id or data-id is used as the key on the store to identify the template.
+     * @param store {string} - The name of the store.
+     * @param element {HTMLElement} - The element that contains the templates.
+     */
+    async createStoreFromElement(store, element) {
+        const targetStore = this.#store[store] ||= {
+            count: 0,
+            template: {}
+        }
+
+        const templates = element.querySelectorAll("template");
+        let defaultView = null;
+
+        for (const template of templates) {
+            const id = template.id || template.dataset.id;
+            targetStore.template[id] = template;
+
+            if (template.dataset.default === "true") {
+                defaultView = id;
+            }
+        }
+
+        return defaultView;
+    }
+
+    /**
+     * @method getStoreTemplate - Get a template from a store.
+     * You would have to create the store first using the createStoreFromElement method.
+     * @param store {string} - The name of the store.
+     * @param name {string} - The name of the template.
+     */
+    async getStoreTemplate(store, name) {
+        const targetStore = this.#store[store];
+        const template = targetStore?.template[name];
+
+        return template?.content.cloneNode(true);
+    }
+
+    /**
+     * @method remove - Remove a template from the store.
      * The counter is decremented.
      * When the counter reaches 0 the template is removed from the store.
      * @param name {string} - The name of the template that was defined during the get call
@@ -84,7 +126,7 @@ export class TemplatesManager {
 }
 
 /**
- * Get the innerHTML or textContent of a template.
+ * @function - getTemplateText Get the innerHTML or textContent of a template.
  * @param template {HTMLTemplateElement} - The template to get the text from.
  * @returns {string}
  */

@@ -25,12 +25,17 @@ export async function parseElement(element, context, options) {
 
     // 2. Should this element be ignored.
     // If so, don't parse anything further.
-    if (ignore(element)) {
+    if (ignore(element, crs.binding.ignore)) {
         return;
     }
 
     // 3. Parse the attributes
     await crs.binding.parsers.parseAttributes(element, context, ctxName);
+
+
+    if (ignore(element, crs.binding.ignoreChildren)) {
+        return;
+    }
 
     if (element.children?.length > 0) {
         return await crs.binding.parsers.parseElements(element.children, context, options);
@@ -42,8 +47,8 @@ export async function parseElement(element, context, options) {
     }
 }
 
-function ignore(element) {
-    for (const query of crs.binding.ignore) {
+function ignore(element, options) {
+    for (const query of options) {
         if (element.matches(query)) {
             return true;
         }
