@@ -6,6 +6,12 @@ export default class Welcome extends crs.classes.ViewBase {
     }
 
     async preLoad() {
+        await crs.binding.translations.add({
+            firstName: "First Name",
+            lastName: "Last Name",
+            age: "Age"
+        }, "person")
+
         this.setProperty("person", {
             firstName: "John",
             lastName: "Doe",

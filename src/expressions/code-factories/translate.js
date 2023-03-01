@@ -22,7 +22,7 @@ function replaceTranslation(expArray) {
 
     const end = expArray.indexOf("}", start);
     const exp = expArray.slice(start + 2, end).join("");
-    const code = ["${await crs.binding.translations.get('", exp, "')}"].join("");
+    const code = ["${await crs.binding.translations.get('", exp.replace("context.", ""), "')}"].join("");
     expArray.splice(start, exp.length + 3, code);
     return replaceTranslation(expArray);
 }

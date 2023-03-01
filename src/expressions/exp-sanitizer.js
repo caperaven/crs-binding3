@@ -36,7 +36,7 @@ export async function sanitize(exp, ctxName = "context") {
     }
 
     const properties = new Set();
-    const isLiteral = exp.indexOf("${") != -1;
+    const isLiteral = exp.indexOf("${") != -1 || exp.indexOf("&{") != -1;
 
     const tokens = tokenize(exp, isLiteral);
     const expression = [];
