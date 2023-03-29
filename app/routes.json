@@ -35,6 +35,11 @@
       "view": "perspective-element"
     },
     {
+      "title": "set value",
+      "hash": "#set-value",
+      "view": "set-value"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

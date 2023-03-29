@@ -1,77 +1,77 @@
-# crsbinding. Usages
+# crs.binding. Usages
 
 ## Types:
 
-### crsbinding.classes
+### crs.binding.classes
 
-* crsbinding.classes.ViewBase
-* crsbinding.classes.RepeatBaseProvider
-* crsbinding.classes.BindableElement
-* crsbinding.classes.Widget
-* crsbinding.classes.PerspectiveElement
+* crs.binding.classes.ViewBase
+* crs.binding.classes.RepeatBaseProvider
+* crs.binding.classes.BindableElement
+* crs.binding.classes.Widget
+* crs.binding.classes.PerspectiveElement
 
-### crsbinding.data
-* crsbinding.data.updateUI()
-* crsbinding.data.setProperty()
-* crsbinding.data.getValue()
-* crsbinding.data.addCallback()
-* crsbinding.data.removeCallback()
-* crsbinding.data.getProperty()
-* crsbinding.data.setArrayEvents()
-* crsbinding.data.nextArrayId()
-* crsbinding.data.removeObject()
-* crsbinding.data.createReferenceTo()
-* crsbinding.data.makeShared()
-* crsbinding.data.array()
+### crs.binding.data
+* crs.binding.data.updateUI()
+* crs.binding.data.setProperty()
+* crs.binding.data.getValue()
+* crs.binding.data.addCallback()
+* crs.binding.data.removeCallback()
+* crs.binding.data.getProperty()
+* crs.binding.data.setArrayEvents()
+* crs.binding.data.nextArrayId()
+* crs.binding.data.removeObject()
+* crs.binding.data.createReferenceTo()
+* crs.binding.data.makeShared()
+* crs.binding.data.array()
 
-### crsbinding.events
-done - * crsbinding.events.emitter
-done - * crsbinding.events.emitter.postMessage()
-done - * crsbinding.events.emitter.emit()
-done - * crsbinding.events.emitter.on()
-done - * crsbinding.events.emitter.remove()
-* crsbinding.events.notifyPropertyChanged()
+### crs.binding.events
+done - * crs.binding.events.emitter
+done - * crs.binding.events.emitter.postMessage()
+done - * crs.binding.events.emitter.emit()
+done - * crs.binding.events.emitter.on()
+done - * crs.binding.events.emitter.remove()
+* crs.binding.events.notifyPropertyChanged()
 
-### crsbinding.utils
-done - * crsbinding.utils.getValueOnPath()
+### crs.binding.utils
+done - * crs.binding.utils.getValueOnPath()
 
-###  crsbinding.expression
-done - * crsbinding.expression.compile()
-done - * crsbinding.expression.release()
+###  crs.binding.expression
+done - * crs.binding.expression.compile()
+done - * crs.binding.expression.release()
 
-### crsbinding.providerManager
-* crsbinding.providerManager.provders.for.ds
-* crsbinding.providerManager.releaseElement()
+### crs.binding.providerManager
+* crs.binding.providerManager.provders.for.ds
+* crs.binding.providerManager.releaseElement()
 
-### crsbinding.observation
-* crsbinding.observation.releaseBinding()
-* crsbinding.observation.observe()
-* crsbinding.observation.releaseObserved()
+### crs.binding.observation
+* crs.binding.observation.releaseBinding()
+* crs.binding.observation.observe()
+* crs.binding.observation.releaseObserved()
 
-### crsbinding.parsers
-done - * crsbinding.parsers.parseElement()
-done - * crsbinding.parsers.parseElements()
+### crs.binding.parsers
+done - * crs.binding.parsers.parseElement()
+done - * crs.binding.parsers.parseElements()
 
-### crsbinding.idleTaskManager
-* crsbinding.idleTaskManager.add()
+### crs.binding.idleTaskManager
+* crs.binding.idleTaskManager.add()
 
-### crsbinding.translations
-* crsbinding.translations.parseElement()
+### crs.binding.translations
+* crs.binding.translations.parseElement()
 
-### crsbinding.inflationManager
-* crsbinding.inflationManager.register()
-* crsbinding.inflationManager.get()
-* crsbinding.inflationManager.unregister()
+### crs.binding.inflationManager
+* crs.binding.inflationManager.register()
+* crs.binding.inflationManager.get()
+* crs.binding.inflationManager.unregister()
 
-### crsbinding.staticInflationManager
-* crsbinding.staticInflationManager.inflateElement()
+### crs.binding.staticInflationManager
+* crs.binding.staticInflationManager.inflateElement()
 
-### crsbinding.dom
-done - * crsbinding.dom.enableEvents()
-done - * crsbinding.dom.disableEvents()
+### crs.binding.dom
+done - * crs.binding.dom.enableEvents()
+done - * crs.binding.dom.disableEvents()
 
-### crsbinding._exfn
-done - * crsbinding._exfn.size (now called "functions")
+### crs.binding._exfn
+done - * crs.binding._exfn.size (now called "functions")
 
 
 

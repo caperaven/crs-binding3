@@ -2,8 +2,8 @@
 
 This is a list of changes between the old binding api and the new
 
-1. crsbinding -> crs.binding
-2. crsbinding._exfn -> crs.binding.functions
+1. crs.binding -> crs.binding
+2. crs.binding._exfn -> crs.binding.functions
 
 ## Extensions
 

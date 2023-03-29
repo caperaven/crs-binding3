@@ -76,6 +76,7 @@ globalThis.crs.binding = {
             "classlist.case": "$root/providers/attributes/classlist-case.js",
             ".bind": "$root/providers/properties/bind.js",
             ".call": "$root/providers/attributes/call.js",
+            ".setvalue": "$root/providers/attributes/set-value.js",
             ".attr": "$root/providers/attributes/attr.js",
             ".if": "$root/providers/attributes/attr-if.js",
             ".case": "$root/providers/attributes/attr-case.js",
