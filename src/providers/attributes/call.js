@@ -36,14 +36,15 @@ export default class CallProvider {
      * @returns {Promise<void>}
      */
     async #onEvent(event) {
-        const uuid = event.target["__uuid"];
+        const target = event.composedPath()[0] || event.target;
+        const uuid = target["__uuid"];
         if (uuid == null) return;
 
         const data = this.#events[event.type];
         const elementData = data[uuid];
 
         if (elementData != null) {
-            await execute(event.target["__bid"], elementData, event);
+            await execute(target["__bid"], elementData, event);
         }
     }
 

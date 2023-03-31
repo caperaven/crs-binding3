@@ -12,11 +12,13 @@ export default class SetValueProvider {
     #onEventHandler = this.#onEvent.bind(this);
 
     async #onEvent(event) {
-        const uuid = event.target["__uuid"];
+        const target = event.composedPath()[0] || event.target;
+        const uuid = target["__uuid"];
         if (uuid == null) return;
 
         const data = this.#events[event.type];
-        console.log(data);
+        const fn = data[uuid];
+        await fn(event, target);
     }
 
     async parse(attr, context) {
@@ -28,18 +30,18 @@ export default class SetValueProvider {
             this.#events[event] = {}
         }
 
-        // refine this to be more specific
-        //this.#events[event][attr.ownerElement["__uuid"]] = attr.value;
-
+        const uuid = attr.ownerElement["__uuid"];
         const src = createSourceFrom.call(this, attr.value, context);
-        console.log(src);
+        this.#events[event][uuid] = new globalThis.crs.classes.AsyncFunction("event", "element", src);
 
         attr.ownerElement.removeAttribute(attr.name);
     }
 
     async clear(uuid) {
         for (const event of Object.keys(this.#events)) {
-
+            if (this.#events[event][uuid] != null) {
+                delete this.#events[event][uuid];
+            }
         }
     }
 }
@@ -58,7 +60,6 @@ export function createSourceFrom(exp, context) {
     const left = exp.substring(0, index).trim();
     const right = exp.substring(index + 1, exp.length).trim();
 
-    console.log(left, right);
     const preArray = [];
     const leftCode = getLeft(left, context, preArray);
     const rightCode = getRight(right, context, left, preArray);
