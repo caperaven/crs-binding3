@@ -112,7 +112,13 @@ function genAttr(exp, preArray) {
     const rightParts = right.split(" ");
     const global = rightParts[0] == "true";
 
-    preArray.push(`const getAttrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    if (query == "$element") {
+        preArray.push(`const getAttrElement = element;`);
+    }
+    else {
+        preArray.push(`const getAttrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    }
+
     preArray.push(`const attrValue = getAttrElement.getAttribute("${attr}");`);
 
     const index = exp.indexOf(")");
@@ -130,7 +136,13 @@ function setAttr(exp, preArray) {
     const rightParts = right.split(" ");
     const global = rightParts[0] == "true";
 
-    preArray.push(`const setAttrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    if (query == "$element") {
+        preArray.push(`const setAttrElement = element;`);
+    }
+    else {
+        preArray.push(`const setAttrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    }
+
     return `setAttrElement.setAttribute("${attr}", __value__);`;
 }
 
@@ -142,7 +154,13 @@ function genProp(exp, preArray) {
     const rightParts = right.split(" ");
     const global = rightParts[0] == "true";
 
-    preArray.push(`const getPropElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    if (query == "$element") {
+        preArray.push(`const getPropElement = element;`);
+    }
+    else {
+        preArray.push(`const getPropElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    }
+
     preArray.push(`const propValue = getPropElement["${property}"];`);
 
     const index = exp.indexOf(")");
@@ -160,7 +178,13 @@ function setProp(exp, preArray) {
     const rightParts = right.split(" ");
     const global = rightParts[0] == "true";
 
-    preArray.push(`const setPropElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    if (query == "$element") {
+        preArray.push(`const setPropElement = element;`);
+    }
+    else {
+        preArray.push(`const setPropElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    }
+
     return `setPropElement["${property}"] = __value__;`;
 }
 

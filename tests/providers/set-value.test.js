@@ -113,4 +113,33 @@ describe("set value provider tests", async () => {
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
     })
+
+    it ("createSourceFrom - property to property this element to another", async () => {
+        const exp = "prop($element, value, true) = prop('#input', value, true)";
+        const expected = `const setPropElement = element; const getPropElement = document.querySelector("'#input'"); const propValue = getPropElement["value"]; setPropElement["value"] = propValue;`;
+        const result = createSourceFrom(exp, 1);
+        assertEquals(result, expected);
+    });
+
+    it ("createSourceFrom - property to attribute, this elements to another", async () => {
+        const exp = "attr($element, value, true) = prop('#input', value, true)";
+        const expected = `const setAttrElement = element; const getPropElement = document.querySelector("'#input'"); const propValue = getPropElement["value"]; setAttrElement.setAttribute("value", propValue);`;
+        const result = createSourceFrom(exp, 1);
+        assertEquals(result, expected);
+    });
+
+    it ("createSourceFrom - attribte to attribte this element to another", async () => {
+        const exp = "attr($element, value, true) = attr('#input', value, true)";
+        const expected = `const setAttrElement = element; const getAttrElement = document.querySelector("'#input'"); const attrValue = getAttrElement.getAttribute("value"); setAttrElement.setAttribute("value", attrValue);`;
+        const result = createSourceFrom(exp, 1);
+        assertEquals(result, expected);
+    });
+
+    it ("createSourceFrom - attribute to property, this elements to another", async () => {
+        const exp = "prop($element, value, true) = attr('#input', value, true)";
+        const expected = `const setPropElement = element; const getAttrElement = document.querySelector("'#input'"); const attrValue = getAttrElement.getAttribute("value"); setPropElement["value"] = attrValue;`;
+        const result = createSourceFrom(exp, 1);
+        assertEquals(result, expected);
+    });
+
 });
