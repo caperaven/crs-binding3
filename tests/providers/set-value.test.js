@@ -25,7 +25,10 @@ describe("set value provider tests", async () => {
 
     it ("toggle property", async () => {
         const exp = `state = !state`;
-        // todo
+        const expected = `crs.binding.data.setProperty(1, "state", !crs.binding.data.getProperty(1, "state"));`;
+
+        const result = createSourceFrom(exp, 1);
+        assertEquals(result, expected);
     });
 
     it ("createSourceFrom - set value", async () => {

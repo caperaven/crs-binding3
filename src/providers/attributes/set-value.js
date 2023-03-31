@@ -31,7 +31,7 @@ export default class SetValueProvider {
         }
 
         const uuid = attr.ownerElement["__uuid"];
-        const src = createSourceFrom.call(this, attr.value, context);
+        const src = createSourceFrom.call(this, attr.value, context.bid);
         this.#events[event][uuid] = new globalThis.crs.classes.AsyncFunction("event", "element", src);
 
         attr.ownerElement.removeAttribute(attr.name);
