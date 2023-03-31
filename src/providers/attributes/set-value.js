@@ -151,7 +151,7 @@ function genProp(exp, preArray) {
     const parts = exp.replace("prop(", "").replace(")", "").split(",");
     const query = parts[0].trim();
     const property = parts[1].trim();
-    const right = parts[2].trim();
+    const right = (parts[2] ?? "").trim();
     const rightParts = right.split(" ");
     const global = rightParts[0] == "true";
 

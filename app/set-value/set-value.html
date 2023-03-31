@@ -4,6 +4,10 @@
         border: solid 1px silver;
         padding: 0.5rem;
     }
+
+    #static1:after {
+        content: attr(data-value);
+    }
 </style>
 <h2>${title}</h2>
 
@@ -33,7 +37,28 @@
 
 <section>
     <h2>Conditional state based on input</h2>
-    <input type="text" id="input1" type="number" value="1" />
+    <input id="input1" type="number" value="1" />
     <button click.setvalue="state3 = prop(#input1, value, true) == 1 ? 'value is 1' : 'value is not 1'">Set Value</button>
     <span>conditional state: ${state3}</span>
+</section>
+
+<section>
+    <h2>Property to context</h2>
+    <input type="text" id="input2" value="hello world" />
+    <button click.setvalue="state4 = prop(#input2, value, true)">Set Value</button>
+    <span>conditional state: ${state4}</span>
+</section>
+
+<section>
+    <h2>Attribute to attribute</h2>
+    <button data-value="Hello world 2" click.setvalue="attr(#static1, data-value, true) = attr($element, data-value, true)">Attr to Attr</button>
+    <div id="static1"></div>
+</section>
+
+<section>
+    <h2>property to property</h2>
+    <div>copy value from here</div>
+    <input id="input3" type="text" change.setvalue="prop(#input4, value, true) = prop($element, value)"/>
+    <div>to here</div>
+    <input id="input4" type="text" />
 </section>
