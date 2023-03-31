@@ -68,11 +68,11 @@ export function createSourceFrom(exp, context) {
 
 function getLeft(exp, context, preArray) {
     if (exp.indexOf("attr(") != -1) {
-        return genAttr(exp, preArray);
+        return setAttr(exp, preArray);
     }
 
     if (exp.indexOf("prop(") != -1) {
-        return genProp(exp, preArray);
+        return setProp(exp, preArray);
     }
 
     if (exp.indexOf("$global") != -1) {
@@ -99,6 +99,8 @@ function getRight(exp, context, left, preArray) {
         exp = exp.replace(left, `crs.binding.data.getProperty(${context}, "${left}")`);
     }
 
+    exp = exp.replace("$event", "event");
+
     return exp;
 }
 
@@ -110,8 +112,8 @@ function genAttr(exp, preArray) {
     const rightParts = right.split(" ");
     const global = rightParts[0] == "true";
 
-    preArray.push(`const attrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
-    preArray.push(`const attrValue = attrElement.getAttribute("${attr}");`);
+    preArray.push(`const getAttrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    preArray.push(`const attrValue = getAttrElement.getAttribute("${attr}");`);
 
     const index = exp.indexOf(")");
     const array = Array.from(exp);
@@ -120,15 +122,46 @@ function genAttr(exp, preArray) {
     return array.join("");
 }
 
+function setAttr(exp, preArray) {
+    const parts = exp.replace("attr(", "").replace(")", "").split(",");
+    const query = parts[0].trim();
+    const attr = parts[1].trim();
+    const right = parts[2].trim();
+    const rightParts = right.split(" ");
+    const global = rightParts[0] == "true";
+
+    preArray.push(`const setAttrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    return `setAttrElement.setAttribute("${attr}", __value__);`;
+}
+
 function genProp(exp, preArray) {
-    const parts = exp.replace("property(", "").replace(")", "").split(",");
+    const parts = exp.replace("prop(", "").replace(")", "").split(",");
     const query = parts[0].trim();
     const property = parts[1].trim();
-    const global = parts[2].trim() == "true";
+    const right = parts[2].trim();
+    const rightParts = right.split(" ");
+    const global = rightParts[0] == "true";
 
-    const code = [
-        `const ${query.remove("#").remove(".")}Element = ${global ? "document" : "element"}.querySelector(${query});`,
-    ];
+    preArray.push(`const getPropElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    preArray.push(`const propValue = getPropElement["${property}"];`);
+
+    const index = exp.indexOf(")");
+    const array = Array.from(exp);
+    array.splice(0, index + 1, "propValue");
+
+    return array.join("");
+}
+
+function setProp(exp, preArray) {
+    const parts = exp.replace("prop(", "").replace(")", "").split(",");
+    const query = parts[0].trim();
+    const property = parts[1].trim();
+    const right = parts[2].trim();
+    const rightParts = right.split(" ");
+    const global = rightParts[0] == "true";
+
+    preArray.push(`const setPropElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    return `setPropElement["${property}"] = __value__;`;
 }
 
 function getGlobalSetter(exp) {
