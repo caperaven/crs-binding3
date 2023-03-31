@@ -54,25 +54,25 @@ export default class SetValueProvider {
  * "$setvalue(state = prop('#input', 'value', true) == '1' ? 'state1' : 'state2')"
  */
 export function createSourceFrom(exp, context) {
-    const isExp = exp.indexOf("==") != -1;
     const index = exp.indexOf("=");
     const left = exp.substring(0, index).trim();
     const right = exp.substring(index + 1, exp.length).trim();
 
     console.log(left, right);
-    const leftCode = getLeft(left, context);
-    const rightCode = getRight(right, context, left);
+    const preArray = [];
+    const leftCode = getLeft(left, context, preArray);
+    const rightCode = getRight(right, context, left, preArray);
 
-    return leftCode.replace("__value__", rightCode);
+    return [...preArray, leftCode.replace("__value__", rightCode)].join(" ");
 }
 
-function getLeft(exp, context) {
+function getLeft(exp, context, preArray) {
     if (exp.indexOf("attr(") != -1) {
-        return genAttr(exp);
+        return genAttr(exp, preArray);
     }
 
     if (exp.indexOf("prop(") != -1) {
-        return genProp(exp);
+        return genProp(exp, preArray);
     }
 
     if (exp.indexOf("$global") != -1) {
@@ -82,13 +82,13 @@ function getLeft(exp, context) {
     return `crs.binding.data.setProperty(${context}, "${exp}", __value__);`;
 }
 
-function getRight(exp, context, left) {
+function getRight(exp, context, left, preArray) {
     if (exp.indexOf("attr(") != -1) {
-        return genAttr(exp);
+        return genAttr(exp, preArray);
     }
 
     if (exp.indexOf("prop(") != -1) {
-        return genProp(exp);
+        return genProp(exp, preArray);
     }
 
     if (exp.indexOf("$global") != -1) {
@@ -102,18 +102,25 @@ function getRight(exp, context, left) {
     return exp;
 }
 
-function genAttr(exp) {
+function genAttr(exp, preArray) {
     const parts = exp.replace("attr(", "").replace(")", "").split(",");
     const query = parts[0].trim();
     const attr = parts[1].trim();
-    const global = parts[2].trim() == "true";
+    const right = parts[2].trim();
+    const rightParts = right.split(" ");
+    const global = rightParts[0] == "true";
 
-    const code = [
-        `const ${query.remove("#").remove(".")}Element = ${global ? "document" : "element"}.querySelector(${query});`,
-    ];
+    preArray.push(`const attrElement = ${global ? "document" : "element"}.querySelector("${query}");`);
+    preArray.push(`const attrValue = attrElement.getAttribute("${attr}");`);
+
+    const index = exp.indexOf(")");
+    const array = Array.from(exp);
+    array.splice(0, index + 1, "attrValue");
+
+    return array.join("");
 }
 
-function genProp(exp) {
+function genProp(exp, preArray) {
     const parts = exp.replace("property(", "").replace(")", "").split(",");
     const query = parts[0].trim();
     const property = parts[1].trim();

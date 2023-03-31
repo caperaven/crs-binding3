@@ -23,6 +23,11 @@ describe("set value provider tests", async () => {
         assertEquals(result, expected);
     })
 
+    it ("toggle property", async () => {
+        const exp = `state = !state`;
+        // todo
+    });
+
     it ("createSourceFrom - set value", async () => {
         const exp = "property = 10";
         const expected = `crs.binding.data.setProperty(1, "property", 10);`;
@@ -35,8 +40,11 @@ describe("set value provider tests", async () => {
         // 1. element query
         // 2. attribute name
         // 3. if it is a global search or not - true is global
-        const exp = "state = attr('#input', 'value', true) == '1' ? 'state1' : 'state2')"
-        const expected = "const value = document.querySelector('#input').getAttribute('value'); crs.binding.data.setProperty(1, 'state', value == '1' ? 'state1' : 'state2')";
+        const exp = "state = attr('#input', 'value', true) == '1' ? 'state1' : 'state2'";
+        const expected = `const attrElement = document.querySelector("'#input'"); const attrValue = attrElement.getAttribute("'value'"); crs.binding.data.setProperty(1, "state", attrValue == '1' ? 'state1' : 'state2');`;
+
+        const result = createSourceFrom(exp, 1);
+        assertEquals(result, expected);
     })
 
     it ("createSourceFrom - attribute value", async () => {
@@ -62,8 +70,20 @@ describe("set value provider tests", async () => {
         const expected = "crs.binding.data.setProperty(1, 'state', event.clientX)";
     })
 
-    it ("createSourceFrom - mixed expressions", async () => {
+    it ("createSourceFrom - element attribute to element property", async () => {
         const exp = "property('#input', value, true) = attr('#numVal', value, true) + 10";
         const expected = "const inputElement = document.querySelector('#input'); const numValElement = document.querySelector('#numVal'); inputElement.value = numValElement.getAttribute('value') + 10";
+    })
+
+    it ("createSourceFrom - element property to element attribute", async () => {
+
+    })
+
+    it ("createSourceFrom - attribute to attribute based on event", async () => {
+
+    })
+
+    it ("createSourceFrom - element property to element property based on event", async () => {
+
     })
 });
