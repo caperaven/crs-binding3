@@ -1,21 +1,39 @@
 <style>
+    section {
+        margin: 0.5rem;
+        border: solid 1px silver;
+        padding: 0.5rem;
+    }
 </style>
 <h2>${title}</h2>
 
 <section>
     <h2>Globals</h2>
-    <button click.setValue="$globals.menuVisible = !$globals.menuVisible">Menu</button>
+    <button click.setvalue="$globals.menuVisible = !$globals.menuVisible">Menu</button>
     <span>global value: ${$globals.menuVisible}</span>
 </section>
 
 <section>
     <h2>Context Property</h2>
-    <button click.setValue="state = state == 'on' ? 'off' : 'on'">Change State</button>
+    <button click.setvalue="state = state == 'on' ? 'off' : 'on'">Change State</button>
     <span>state value: ${state}</span>
 </section>
 
 <section>
-    <h2>Context Property</h2>
-    <button click.setValue="state = state == 'on' ? 'off' : 'on'">Change State</button>
-    <span>state value: ${state}</span>
+    <h2>Toggle Context Property</h2>
+    <button click.setvalue="state2 = !state2">Toggle</button>
+    <span>state value: ${state2}</span>
+</section>
+
+<section>
+    <h2>Static Value</h2>
+    <button click.setvalue="value = 10">Static Value</button>
+    <span>static value: ${value}</span>
+</section>
+
+<section>
+    <h2>Conditional state based on input</h2>
+    <input type="text" id="input1" type="number" value="1" />
+    <button click.setvalue="state3 = prop(#input1, value, true) == 1 ? 'value is 1' : 'value is not 1'">Set Value</button>
+    <span>conditional state: ${state3}</span>
 </section>

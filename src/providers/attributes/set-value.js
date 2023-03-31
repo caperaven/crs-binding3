@@ -18,7 +18,7 @@ export default class SetValueProvider {
 
         const data = this.#events[event.type];
         const fn = data[uuid];
-        await fn(event, target);
+        await fn?.(event, target);
     }
 
     async parse(attr, context) {
