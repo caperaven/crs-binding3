@@ -40,6 +40,11 @@
       "view": "set-value"
     },
     {
+      "title": "inflation manager",
+      "hash": "#inflation-manager",
+      "view": "inflation-manager"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

@@ -13,6 +13,10 @@ const ignoreElements = ["STYLE", "CRS-ROUTER"];
 export async function parseElement(element, context, options) {
     if (element["__inflated"] === true || ignoreElements.indexOf(element.nodeName) != -1) return;
 
+    if (element.dataset.ref != null) {
+        context[element.dataset.ref] = element;
+    }
+
     let ctxName = options?.ctxName || "context";
 
     // 1. check if there is a custom element provider.

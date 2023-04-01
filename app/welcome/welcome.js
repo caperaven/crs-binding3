@@ -30,6 +30,10 @@ export default class Welcome extends crs.classes.ViewBase {
         ])
     }
 
+    async disconnectedCallback() {
+        await crs.binding.translations.delete("person");
+    }
+
     async reset() {
         this.setProperty("person", {
             firstName: "John",
