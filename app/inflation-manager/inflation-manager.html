@@ -14,7 +14,7 @@
 <template data-ref="template">
     <li data-id="${id}">
         <div classlist.if="age < 25 ? 'blue' : 'red'">First Name: ${firstName}</div>
-        <div>Last Name: ${lastName}</div>
+        <div style.color="color">Last Name: ${lastName}</div>
         <div style.color.if="age < 25 ? 'red' : 'blue'">Age: ${age}</div>
     </li>
 </template>
