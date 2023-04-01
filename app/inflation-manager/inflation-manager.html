@@ -1,9 +1,11 @@
 <h2>Inflation Manager</h2>
 
 <template data-ref="template">
-    <div>First Name: ${firstName}</div>
-    <div>Last Name: ${lastName}</div>
-    <div>Age: ${age}</div>
+    <li>
+        <div>First Name: ${context.firstName}</div>
+        <div>Last Name: ${context.lastName}</div>
+        <div>Age: ${context.age}</div>
+    </li>
 </template>
 
 <button click.call="add">Add</button>

@@ -17,7 +17,7 @@ export async function inflationFactory(element, ctxName = "context") {
     const code = [];
 
     if (element.nodeName === "TEMPLATE") {
-        element = element.content.cloneNode(true);
+        element = element.content.cloneNode(true).firstElementChild;
     }
 
     if (element.nodeName != "#document-fragment") {

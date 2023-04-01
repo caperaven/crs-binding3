@@ -49,7 +49,7 @@ export default class TemplateRepeatForProvider {
 
         const fragment = document.createDocumentFragment();
         for (const item of collection) {
-            const instance = storeItem.template.content.cloneNode(true);
+            const instance = storeItem.template.content.cloneNode(true).firstElementChild;
             storeItem.fn(instance, item);
             fragment.appendChild(instance);
         }

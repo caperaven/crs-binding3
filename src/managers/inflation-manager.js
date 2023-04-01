@@ -41,7 +41,7 @@ function syncCollection(elements, count, template) {
 
         if (templateElement == null) {
             if (template.nodeName == "TEMPLATE") {
-                templateElement = template.content.cloneNode(true);
+                templateElement = template.content.cloneNode(true).firstElementChild;
             }
             else {
                 templateElement = template;
