@@ -84,48 +84,63 @@ async function attributes(path, element, preCode, code, ctxName) {
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
         else if (attr.nodeName.indexOf("style.") != -1) {
-            const parts = attr.nodeName.split(".");
-            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-            preCode.push(`${path}.style.${parts[1]} = "";`);
+            await styles(attr, path, preCode, code, ctxName);
+        }
+        else if (attr.nodeName.indexOf("classlist.case") != -1) {
 
-            if (attr.nodeName.indexOf(".case") == -1) {
-                code.push([`${path}.style.${parts[1]} =`, exp.expression,  ";"].join(""));
-            }
-            else {
-                const codeParts = exp.expression.split(",");
-                for (const line of codeParts) {
-                    if (line.indexOf("context.default") != -1) {
-                        preCode.push(`${path}.style.${parts[1]} = ${line.split(":")[1].trim()};`);
-                        continue;
-                    }
-
-                    const lineParts = line.split("?");
-                    const condition = lineParts[0].trim();
-                    const values = (lineParts[1] || lineParts[0]).split(":");
-
-                    code.push(`if (${condition}) {`);
-                    code.push(`    ${path}.style.${parts[1]} = ${values[0].trim()};`);
-                    code.push(`}`);
-
-                    if (values.length > 1) {
-                        code.push(`else {`);
-                        code.push(`    ${path}.style.${parts[1]} = ${values[1].trim()};`);
-                        code.push(`}`);
-                    }
-                }
-            }
         }
         else if (attr.nodeName.indexOf("classlist.if") != -1) {
-            const parts = attr.nodeValue.split("?")[1].split(":");
-            preCode.push(`${path}.classList.remove(${parts.join(",")});`);
-
-            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-            code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
+            await classListIf(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf(".if") != -1) {
-            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-            code.push([`${path}.setAttribute("${attr.nodeName.replace(".if", "")}",`, exp.expression,  ");"].join(""));
+            await ifAttribute(attr, path, preCode, code, ctxName);
+        }
+    }
+}
+
+async function classListIf(attr, path, preCode, code, ctxName) {
+    const parts = attr.nodeValue.split("?")[1].split(":");
+    preCode.push(`${path}.classList.remove(${parts.join(",")});`);
+
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
+}
+
+async function ifAttribute(attr, path, preCode, code, ctxName) {
+    preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    code.push([`${path}.setAttribute("${attr.nodeName.replace(".if", "")}",`, exp.expression,  ");"].join(""));
+}
+
+async function styles(attr, path, preCode, code, ctxName) {
+    const parts = attr.nodeName.split(".");
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    preCode.push(`${path}.style.${parts[1]} = "";`);
+
+    if (attr.nodeName.indexOf(".case") == -1) {
+        code.push([`${path}.style.${parts[1]} =`, exp.expression,  ";"].join(""));
+    }
+    else {
+        const codeParts = exp.expression.split(",");
+        for (const line of codeParts) {
+            if (line.indexOf("context.default") != -1) {
+                preCode.push(`${path}.style.${parts[1]} = ${line.split(":")[1].trim()};`);
+                continue;
+            }
+
+            const lineParts = line.split("?");
+            const condition = lineParts[0].trim();
+            const values = (lineParts[1] || lineParts[0]).split(":");
+
+            code.push(`if (${condition}) {`);
+            code.push(`    ${path}.style.${parts[1]} = ${values[0].trim()};`);
+            code.push(`}`);
+
+            if (values.length > 1) {
+                code.push(`else {`);
+                code.push(`    ${path}.style.${parts[1]} = ${values[1].trim()};`);
+                code.push(`}`);
+            }
         }
     }
 }

@@ -8,6 +8,11 @@
         background: red;
         color: white;
     }
+
+    .silver {
+        background: silver;
+        color: black;
+    }
 </style>
 <h2>Inflation Manager</h2>
 
@@ -17,6 +22,7 @@
         <div style.color="color">Last Name: ${lastName}</div>
         <div style.color.if="age < 25 ? 'red' : 'blue'">Age: ${age}</div>
         <div style.color.case="age < 20 ? 'red', age > 27 ? 'green', default: 'silver'">Age2: ${age}</div>
+        <div classlist.case="age < 20 ? 'red', age > 27 ? 'green', default: 'silver'">Age2: ${age}</div>
     </li>
 </template>
 
