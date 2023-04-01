@@ -87,7 +87,7 @@ async function attributes(path, element, preCode, code, ctxName) {
             await styles(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf("classlist.case") != -1) {
-
+            await classListCase(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf("classlist.if") != -1) {
             await classListIf(attr, path, preCode, code, ctxName);
@@ -96,6 +96,33 @@ async function attributes(path, element, preCode, code, ctxName) {
             await ifAttribute(attr, path, preCode, code, ctxName);
         }
     }
+}
+
+async function classListCase(attr, path, preCode, code, ctxName) {
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    const codeParts = exp.expression.split(",");
+
+    const classes = [];
+
+    for (const line of codeParts) {
+        const lineParts = line.split("?");
+        const condition = lineParts[0].trim();
+        const values = (lineParts[1] || lineParts[0]).split(":");
+
+        classes.push(...values);
+
+        code.push(`if (${condition}) {`);
+        code.push(`    ${path}.classList.add(${values[0].trim()});`);
+        code.push(`}`);
+
+        if (values.length > 1) {
+            code.push(`else {`);
+            code.push(`    ${path}.classList.add(${values[0].trim()});`);
+            code.push(`}`);
+        }
+    }
+
+    preCode.push(`${path}.classList.remove(${classes.join(",")});`);
 }
 
 async function classListIf(attr, path, preCode, code, ctxName) {
