@@ -13,14 +13,16 @@
  *
  * const fn = await crs.binding.expression.inflationFactory(template);
  */
-export async function inflationFactory(element, ctxName) {
+export async function inflationFactory(element, ctxName = "context") {
     const code = [];
 
     if (element.nodeName === "TEMPLATE") {
         element = element.content.cloneNode(true);
     }
 
-    attributes("element", element, code);
+    if (element.nodeName != "#document-fragment") {
+        attributes("element", element, code);
+    }
 
     if (element.children.length === 0) {
         textContent("element", element, code);
@@ -50,7 +52,15 @@ function textContent(path, element, code) {
  */
 function children(path, element, code) {
     for (let i = 0; i < element.children.length; i++) {
-        code.push([path, ".children", `[${i}].textContent = `, "`", element.textContent, "`;"].join(""));
+        const child = element.children[i];
+
+        if (child.children.length > 0) {
+            children(`${path}.children[${i}]`, child, code);
+        }
+        else {
+            code.push([path, ".children", `[${i}].textContent = `, "`", child.textContent.trim(), "`;"].join(""));
+        }
+
         attributes(`${path}.children[${i}]`, element.children[i], code);
     }
 }

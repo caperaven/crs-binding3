@@ -15,30 +15,45 @@ export class InflationManager {
      * @returns {Promise<void>}
      */
     async get(id, data, elements) {
-        syncCollection(elements, data.length);
+        const {template, fn} = crs.binding.inflation.store.get(id);
 
-        const inflationDetails = crs.binding.inflation.store.get(id);
+        elements = syncCollection(elements, data.length, template);
 
         for (let i = 0; i < data.length; i++) {
             const element = elements[i];
-            inflationDetails.fn(element, data[i]);
+            fn(element, data[i]);
         }
 
         return elements;
     }
 }
 
-function syncCollection(elements, count) {
+function syncCollection(elements, count, template) {
+    elements = Array.from(elements);
+
     if (elements.length > count) {
         for (let i = elements.length - 1; i >= count; i--) {
             elements[i].remove();
         }
     }
     else if (elements.length < count) {
+        let templateElement = elements[0];
+
+        if (templateElement == null) {
+            if (template.nodeName == "TEMPLATE") {
+                templateElement = template.content.cloneNode(true);
+            }
+            else {
+                templateElement = template;
+            }
+        }
+
         for (let i = elements.length; i < count; i++) {
-            elements.push(elements[0].cloneNode(true));
+            elements.push(templateElement.cloneNode(true));
         }
     }
+
+    return elements;
 }
 
 crs.binding.inflation.manager = new InflationManager();
