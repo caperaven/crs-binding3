@@ -25,10 +25,10 @@ export async function inflationFactory(element, ctxName = "context") {
     }
 
     if (element.children.length === 0) {
-        textContent("element", element, code);
+        await textContent("element", element, code, ctxName);
     }
     else {
-        children("element", element, code);
+        await children("element", element, code, ctxName);
     }
 
     return new Function("element", ctxName, code.join("\n"));
@@ -40,8 +40,9 @@ export async function inflationFactory(element, ctxName = "context") {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-function textContent(path, element, code) {
-    code.push([path, ".textContent = `", element.textContent, "`;"].join(""));
+async function textContent(path, element, code, ctxName) {
+    const exp = await crs.binding.expression.sanitize(element.textContent.trim(), ctxName);
+    code.push([path, ".textContent = `", exp.expression, "`;"].join(""));
 }
 
 /**
@@ -50,15 +51,16 @@ function textContent(path, element, code) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-function children(path, element, code) {
+async function children(path, element, code, ctxName) {
     for (let i = 0; i < element.children.length; i++) {
         const child = element.children[i];
 
         if (child.children.length > 0) {
-            children(`${path}.children[${i}]`, child, code);
+            await children(`${path}.children[${i}]`, child, code, ctxName);
         }
         else {
-            code.push([path, ".children", `[${i}].textContent = `, "`", child.textContent.trim(), "`;"].join(""));
+            const exp = await crs.binding.expression.sanitize(child.textContent.trim(), ctxName);
+            code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
         }
 
         attributes(`${path}.children[${i}]`, element.children[i], code);
