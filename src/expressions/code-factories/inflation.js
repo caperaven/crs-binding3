@@ -83,20 +83,49 @@ async function attributes(path, element, preCode, code, ctxName) {
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
-
-        if (attr.nodeName.indexOf("style.") != -1) {
+        else if (attr.nodeName.indexOf("style.") != -1) {
             const parts = attr.nodeName.split(".");
-            preCode.push(`${path}.style.${parts[1]} = "";`);
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-            code.push([`${path}.style.${parts[1]} =`, exp.expression,  ";"].join(""));
-        }
+            preCode.push(`${path}.style.${parts[1]} = "";`);
 
-        if (attr.nodeName.indexOf("classlist.if") != -1) {
+            if (attr.nodeName.indexOf(".case") == -1) {
+                code.push([`${path}.style.${parts[1]} =`, exp.expression,  ";"].join(""));
+            }
+            else {
+                const codeParts = exp.expression.split(",");
+                for (const line of codeParts) {
+                    if (line.indexOf("context.default") != -1) {
+                        preCode.push(`${path}.style.${parts[1]} = ${line.split(":")[1].trim()};`);
+                        continue;
+                    }
+
+                    const lineParts = line.split("?");
+                    const condition = lineParts[0].trim();
+                    const values = (lineParts[1] || lineParts[0]).split(":");
+
+                    code.push(`if (${condition}) {`);
+                    code.push(`    ${path}.style.${parts[1]} = ${values[0].trim()};`);
+                    code.push(`}`);
+
+                    if (values.length > 1) {
+                        code.push(`else {`);
+                        code.push(`    ${path}.style.${parts[1]} = ${values[1].trim()};`);
+                        code.push(`}`);
+                    }
+                }
+            }
+        }
+        else if (attr.nodeName.indexOf("classlist.if") != -1) {
             const parts = attr.nodeValue.split("?")[1].split(":");
             preCode.push(`${path}.classList.remove(${parts.join(",")});`);
 
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
             code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
+        }
+        else if (attr.nodeName.indexOf(".if") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
+            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+            code.push([`${path}.setAttribute("${attr.nodeName.replace(".if", "")}",`, exp.expression,  ");"].join(""));
         }
     }
 }
