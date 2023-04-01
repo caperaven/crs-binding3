@@ -21,7 +21,7 @@ export async function inflationFactory(element, ctxName = "context") {
     }
 
     if (element.nodeName != "#document-fragment") {
-        attributes("element", element, code);
+        await attributes("element", element, code, ctxName);
     }
 
     if (element.children.length === 0) {
@@ -63,7 +63,7 @@ async function children(path, element, code, ctxName) {
             code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
         }
 
-        attributes(`${path}.children[${i}]`, element.children[i], code);
+        await attributes(`${path}.children[${i}]`, element.children[i], code, ctxName);
     }
 }
 
@@ -73,12 +73,13 @@ async function children(path, element, code, ctxName) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-function attributes(path, element, code) {
+async function attributes(path, element, code, ctxName) {
     if (element instanceof DocumentFragment) return;
 
     for (const attr of element.attributes) {
         if (attr.nodeValue.indexOf("${") != -1) {
-            code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", attr.nodeValue, "`",  ");"].join(""));
+            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+            code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
     }
 }

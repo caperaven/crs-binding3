@@ -16,7 +16,7 @@ export default class InflationManagerViewModel extends crs.classes.ViewBase {
     async add() {
         const data = []
         for (let i = 0; i < 10; i++) {
-            data.push(createRandomPerson());
+            data.push(createRandomPerson(i));
         }
 
         const elements = await crs.binding.inflation.manager.get("test", data, this.collection.children);
@@ -25,8 +25,9 @@ export default class InflationManagerViewModel extends crs.classes.ViewBase {
     }
 }
 
-function createRandomPerson() {
+function createRandomPerson(id) {
     return {
+        id,
         firstName: firstNames[Math.floor(Math.random() * firstNames.length)],
         lastName: lastNames[Math.floor(Math.random() * lastNames.length)],
         age: ages[Math.floor(Math.random() * ages.length)]
