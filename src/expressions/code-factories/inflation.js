@@ -81,6 +81,16 @@ async function attributes(path, element, code, ctxName) {
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
+
+        if (attr.nodeName.indexOf("style.") != -1 && attr.nodeName.indexOf(".if") != -1) {
+            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+            code.push([`${path}.style.${attr.nodeName.split(".")[1]} =`, exp.expression,  ";"].join(""));
+        }
+
+        if (attr.nodeName.indexOf("classlist.if") != -1) {
+            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+            code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
+        }
     }
 }
 

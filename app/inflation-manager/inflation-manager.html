@@ -1,10 +1,21 @@
+<style>
+    .blue {
+        background: blue;
+        color: white;
+    }
+
+    .red {
+        background: red;
+        color: white;
+    }
+</style>
 <h2>Inflation Manager</h2>
 
 <template data-ref="template">
     <li data-id="${id}">
-        <div>First Name: ${firstName}</div>
+        <div classlist.if="age < 25 ? 'blue' : 'red'">First Name: ${firstName}</div>
         <div>Last Name: ${lastName}</div>
-        <div>Age: ${age}</div>
+        <div style.color.if="age < 25 ? 'red' : 'blue'">Age: ${age}</div>
     </li>
 </template>
 
