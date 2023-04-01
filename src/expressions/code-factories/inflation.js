@@ -79,16 +79,22 @@ async function attributes(path, element, preCode, code, ctxName) {
 
     for (const attr of element.attributes) {
         if (attr.nodeValue.indexOf("${") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
 
         if (attr.nodeName.indexOf("style.") != -1) {
+            const parts = attr.nodeName.split(".");
+            preCode.push(`${path}.style.${parts[1]} = "";`);
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-            code.push([`${path}.style.${attr.nodeName.split(".")[1]} =`, exp.expression,  ";"].join(""));
+            code.push([`${path}.style.${parts[1]} =`, exp.expression,  ";"].join(""));
         }
 
         if (attr.nodeName.indexOf("classlist.if") != -1) {
+            const parts = attr.nodeValue.split("?")[1].split(":");
+            preCode.push(`${path}.classList.remove(${parts.join(",")});`);
+
             const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
             code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
         }
