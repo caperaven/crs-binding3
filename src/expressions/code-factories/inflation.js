@@ -15,23 +15,24 @@
  */
 export async function inflationFactory(element, ctxName = "context") {
     const code = [];
+    const preCode = [];
 
     if (element.nodeName === "TEMPLATE") {
         element = element.content.cloneNode(true).firstElementChild;
     }
 
     if (element.nodeName != "#document-fragment") {
-        await attributes("element", element, code, ctxName);
+        await attributes("element", element, preCode, code, ctxName);
     }
 
     if (element.children.length === 0) {
         await textContent("element", element, code, ctxName);
     }
     else {
-        await children("element", element, code, ctxName);
+        await children("element", element, preCode, code, ctxName);
     }
 
-    return new Function("element", ctxName, code.join("\n"));
+    return new Function("element", ctxName, [...preCode, ...code].join("\n"));
 }
 
 /**
@@ -51,19 +52,19 @@ async function textContent(path, element, code, ctxName) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-async function children(path, element, code, ctxName) {
+async function children(path, element, preCode, code, ctxName) {
     for (let i = 0; i < element.children.length; i++) {
         const child = element.children[i];
 
         if (child.children.length > 0) {
-            await children(`${path}.children[${i}]`, child, code, ctxName);
+            await children(`${path}.children[${i}]`,preCode, child, code, ctxName);
         }
         else {
             const exp = await crs.binding.expression.sanitize(child.textContent.trim(), ctxName);
             code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
         }
 
-        await attributes(`${path}.children[${i}]`, element.children[i], code, ctxName);
+        await attributes(`${path}.children[${i}]`, element.children[i], preCode, code, ctxName);
     }
 }
 
@@ -73,7 +74,7 @@ async function children(path, element, code, ctxName) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-async function attributes(path, element, code, ctxName) {
+async function attributes(path, element, preCode, code, ctxName) {
     if (element instanceof DocumentFragment) return;
 
     for (const attr of element.attributes) {
