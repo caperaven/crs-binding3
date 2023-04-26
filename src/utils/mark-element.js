@@ -27,6 +27,8 @@ export function markElement(element, context) {
  * @param element {HTMLElement} - The element to unmark.
  */
 export function unmarkElement(element) {
+    if (element.nodeName === "STYLE") return;
+
     if (element.children.length > 0) {
         unmarkElements(element.children);
     }
@@ -37,10 +39,8 @@ export function unmarkElement(element) {
     crs.binding.providers.clear(uuid).catch(error => console.error(error));
 
     if (crs.binding.elements[uuid]) {
-        crs.binding.elements[uuid] = null;
+        delete crs.binding.elements[uuid];
     }
-
-    delete crs.binding.elements[uuid];
 }
 
 /**

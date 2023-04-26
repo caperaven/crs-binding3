@@ -1,4 +1,2 @@
-export default class SetValue extends crs.classes.ViewBase {
-    async preLoad() {
-    }
+export default class SetValueViewModel extends crs.classes.ViewBase {
 }

@@ -1,2 +1,2 @@
-export default class Welcome extends crs.classes.ViewBase {
+export default class GlobalsViewModel extends crs.classes.ViewBase {
 }

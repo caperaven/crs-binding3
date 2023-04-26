@@ -45,6 +45,11 @@
       "view": "inflation-manager"
     },
     {
+      "title": "crs-widget",
+      "hash": "#crs-widget",
+      "view": "crs-widget"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

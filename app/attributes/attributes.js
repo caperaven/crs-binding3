@@ -1,4 +1,4 @@
-export default class Attributes extends crs.classes.ViewBase {
+export default class AttributesViewModel extends crs.classes.ViewBase {
     get mobi() {
         return import.meta.url.replace(".js", ".mobi.html");
     }
