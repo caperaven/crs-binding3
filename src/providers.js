@@ -108,6 +108,8 @@ export class Providers {
      * @returns {Promise<*>}
      */
     async getAttrProvider(attrName) {
+        if (attrName === "ref") return await this.#getAttrModule("ref");
+
         if (attrName.indexOf(".") == -1) return null;
         if (this.#attrProviders[attrName] != null) return await this.#getAttrModule(attrName);
 

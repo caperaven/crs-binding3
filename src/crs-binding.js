@@ -70,21 +70,22 @@ globalThis.crs.binding = {
      * Once requested the provider is loaded and the value is replaced with the provider instance.
      */
     providers: new Providers({
-            "^style\..*\.if$": "$root/providers/attributes/style-if.js",
-            "^style\..*\.case$": "$root/providers/attributes/style-case.js",
-            "classlist.if": "$root/providers/attributes/classlist-if.js",
-            "classlist.case": "$root/providers/attributes/classlist-case.js",
-            ".bind": "$root/providers/properties/bind.js",
-            ".call": "$root/providers/attributes/call.js",
-            ".setvalue": "$root/providers/attributes/set-value.js",
-            ".attr": "$root/providers/attributes/attr.js",
-            ".if": "$root/providers/attributes/attr-if.js",
-            ".case": "$root/providers/attributes/attr-case.js",
-            "style.": "$root/providers/attributes/style-property.js"
+            "^style\..*\.if$"   : "$root/providers/attributes/style-if.js",
+            "^style\..*\.case$" : "$root/providers/attributes/style-case.js",
+            "classlist.if"      : "$root/providers/attributes/classlist-if.js",
+            "classlist.case"    : "$root/providers/attributes/classlist-case.js",
+            ".bind"             : "$root/providers/properties/bind.js",
+            ".call"             : "$root/providers/attributes/call.js",
+            ".setvalue"         : "$root/providers/attributes/set-value.js",
+            ".attr"             : "$root/providers/attributes/attr.js",
+            ".if"               : "$root/providers/attributes/attr-if.js",
+            ".case"             : "$root/providers/attributes/attr-case.js",
+            "style."            : "$root/providers/attributes/style-property.js",
+            "ref"               : "$root/providers/attributes/ref.js"
         },
         {
-            "template[for]": "$root/providers/element/template-repeat-for.js",
-            "template[src]": "$root/providers/element/template-src.js",
+            "template[for]"     : "$root/providers/element/template-repeat-for.js",
+            "template[src]"     : "$root/providers/element/template-src.js",
         }
     ),
 

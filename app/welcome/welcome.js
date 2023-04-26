@@ -30,6 +30,11 @@ export default class Welcome extends crs.classes.ViewBase {
         ])
     }
 
+    async load() {
+        console.log(this.titleElement);
+        await super.load();
+    }
+
     async disconnectedCallback() {
         await crs.binding.translations.delete("person");
     }

@@ -1,3 +1,8 @@
+/**
+ * add remove syntax if you want to remove a element
+ * add and remove elements from the dom
+ */
+
 export class InflationManager {
     async register(id, template, ctxName = "context") {
         const fn = await crs.binding.expression.inflationFactory(template, ctxName);
