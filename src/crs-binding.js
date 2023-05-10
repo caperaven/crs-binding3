@@ -81,7 +81,9 @@ globalThis.crs.binding = {
             ".if"               : "$root/providers/attributes/attr-if.js",
             ".case"             : "$root/providers/attributes/attr-case.js",
             "style."            : "$root/providers/attributes/style-property.js",
-            "ref"               : "$root/providers/attributes/ref.js"
+            "ref"               : "$root/providers/attributes/ref.js",
+            ".emit"             : "$root/providers/attributes/emit.js",
+            ".post"               : "$root/providers/attributes/post.js"
         },
         {
             "template[for]"     : "$root/providers/element/template-repeat-for.js",

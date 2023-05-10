@@ -50,6 +50,11 @@
       "view": "crs-widget"
     },
     {
+      "title": "messaging",
+      "hash": "#messaging",
+      "view": "messaging"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",
