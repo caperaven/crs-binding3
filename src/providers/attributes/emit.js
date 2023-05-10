@@ -85,6 +85,8 @@ function createEventIntent(exp) {
     const parts = exp.split("(");
     const event = parts[0];
 
+    if (parts.length === 1) return { event, args: {} };
+
     // 2. remove the last bracket
     parts[1] = parts[1].replace(")", "");
 

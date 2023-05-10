@@ -1,4 +1,5 @@
 <h2>Messaging</h2>
 
+<button click.emit="my_event">Custom Event - plain</button>
 <button click.emit="my_event(title='hello world', $event, contacts=${contacts})">Custom Event - contacts</button>
 <button click.post="got-contacts['input-contacts', 'input-form'](title='hello world', $event, contacts=${contacts})">Post Message</button>
