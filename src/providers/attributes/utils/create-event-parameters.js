@@ -23,5 +23,4 @@ export function createEventParameters(event, exp) {
     }
 
     return { event, args };
-
 }
