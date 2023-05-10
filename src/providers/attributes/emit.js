@@ -1,5 +1,5 @@
 import "./../../events/event-emitter.js";
-import {createEventParameters} from "./utils/create-event-parameters.js";
+import {createEventPacket, createEventParameters} from "./utils/create-event-parameters.js";
 import {clear} from "./utils/clear-events.js";
 
 /**
@@ -90,33 +90,6 @@ function createEventIntent(exp) {
 }
 
 function emit(intent, event) {
-    const data = intent.args;
-    const args = {};
-
-    for (const tuple of Object.entries(data)) {
-        if (tuple[1] === "$event") {
-            args["event"] = event;
-            continue;
-        }
-
-        if (tuple[1] === "$context") {
-            const bid = event.target["__bid"];
-            const context = crs.binding.data.getContext(bid);
-            args["context"] = context;
-            continue;
-        }
-
-        const bid = event.target["__bid"];
-        let exp = tuple[1];
-        let value = exp;
-
-        if (exp.startsWith("${")) {
-            exp = exp.replace("${", "").replace("}", "");
-            value = crs.binding.data.getProperty(bid, exp);
-        }
-
-        args[tuple[0]] = value;
-    }
-
+    const args = createEventPacket(intent, event);
     crs.binding.events.emitter.emit(intent.event, args).catch(error => console.error(error));
 }

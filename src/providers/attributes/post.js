@@ -1,5 +1,5 @@
 import { clear } from "./utils/clear-events.js";
-import {createEventParameters} from "./utils/create-event-parameters.js";
+import {createEventPacket, createEventParameters} from "./utils/create-event-parameters.js";
 
 /**
  * @class PostProvider
@@ -61,5 +61,18 @@ function createPostIntent(exp) {
 }
 
 async function post(intent, event) {
-    console.log(intent, event);
+    const intentObj = Object.assign({}, intent);
+    const queries = intentObj.queries;
+    delete intentObj.queries;
+
+    const args = createEventPacket(intent, event);
+    args.key = intent.event;
+
+    for (const query of queries) {
+        document.querySelectorAll(query).forEach(element => {
+            if (element.onMessage != null) {
+                element.onMessage(args);
+            }
+        })
+    }
 }

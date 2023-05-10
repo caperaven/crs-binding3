@@ -1,4 +1,5 @@
 import "./../../src/events/event-emitter.js";
+import "./my-component.js";
 
 export default class MessagingViewModel extends crs.classes.ViewBase {
     #myMessageHandler = this.#myMessage.bind(this);
