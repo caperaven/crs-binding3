@@ -1,4 +1,6 @@
 import "./../../events/event-emitter.js";
+import {createEventParameters} from "./utils/create-event-parameters.js";
+import {clear} from "./utils/clear-events.js";
 
 /**
  * @class EmitProvider
@@ -69,14 +71,7 @@ export default class EmitProvider {
      * @param uuid {string} - The uuid of the element.
      */
     async clear(uuid) {
-        for (const event of Object.keys(this.#events)) {
-            delete this.#events[event][uuid];
-
-            if (Object.keys(this.#events[event]).length === 0) {
-                delete this.#events[event];
-                document.removeEventListener(event, this.#onEventHandler);
-            }
-        }
+        clear(uuid, this.#events, this.#onEventHandler);
     }
 }
 
@@ -91,30 +86,7 @@ function createEventIntent(exp) {
     parts[1] = parts[1].replace(")", "");
 
     // 3. get the parameters
-    const params = parts[1].split(",");
-    const args = {};
-
-    for (const param of params) {
-        const parameter = param.trim();
-
-        switch (parameter) {
-            case "$event": {
-                args["event"] = parameter;
-                break;
-            }
-            case "$context": {
-                args["context"] = parameter;
-                break;
-            }
-            default: {
-                const parts = parameter.split("=");
-                args[parts[0].trim()] = parts[1].trim();
-                break;
-            }
-        }
-    }
-
-    return { event, args };
+    return createEventParameters(event, parts[1])
 }
 
 function emit(intent, event) {

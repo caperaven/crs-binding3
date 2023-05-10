@@ -1,3 +1,5 @@
+import { clear } from "./utils/clear-events.js";
+
 /**
  * @class CallProvider
  * @description This provider will execute a function on the binding context when an event is triggered.
@@ -71,15 +73,7 @@ export default class CallProvider {
      * @param uuid {string} - The uuid of the element.
      */
     async clear(uuid) {
-        for (const event of Object.keys(this.#events)) {
-            delete this.#events[event][uuid];
-
-            // if no more items use the event, remove the event listener
-            if (Object.keys(this.#events[event]).length === 0) {
-                delete this.#events[event];
-                document.removeEventListener(event, this.#onEventHandler);
-            }
-        }
+        clear(uuid, this.#events, this.#onEventHandler);
     }
 }
 
