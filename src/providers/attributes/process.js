@@ -169,6 +169,10 @@ async function getValue(exp, event, context) {
         return crs.binding.utils.getValueOnPath(context, path);
     }
 
+    if (exp.startsWith("'") && exp.endsWith("'")) {
+        exp = exp.slice(1, -1);
+    }
+
     return exp;
 }
 
@@ -185,7 +189,7 @@ async function callSchema(intent, event, context) {
     const parameters = await parseArgsForCalling(intent.args, event, context);
 
     const args = {
-        context: context.bid,
+        context: context,
         step: {
             action: intent.process,
             args: {

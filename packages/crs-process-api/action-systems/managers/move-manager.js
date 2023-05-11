@@ -1,1 +1,67 @@
-class o{#t;#n;#h;#o;#s;#e;#i;constructor(t,s){this.#t=t,this.#s=s,this.#n=this.#u.bind(this),this.#h=this.#r.bind(this),this.#o=this.#a.bind(this),this.#t.style.position="fixed",this.#t.style.left=0,this.#t.style.top=0,this.#t.addEventListener("mousedown",this.#n),t.__moveManager=this}dispose(){this.#t.removeEventListener("mousedown",this.#n),this.#n=null,this.#h=null,this.#o=null,this.#s=null,this.#e=null,this.#i=null,delete this.#t.__moveManager,this.#t=null}#l(t){const s=t.composedPath(),e=s[0];return this.#s==null?e===this.#t:e.matches(this.#s)?!0:s.find(i=>i.matches&&i.matches(this.#s))!=null}async#u(t){this.#l(t)!==!1&&(t.preventDefault(),this.#e={x:t.clientX,y:t.clientY},this.#i=this.#t.getBoundingClientRect(),document.addEventListener("mousemove",this.#h),document.addEventListener("mouseup",this.#o))}async#r(t){let s=t.clientX-this.#e.x,e=t.clientY-this.#e.y;this.#t.style.translate=`${this.#i.x+s}px ${this.#i.y+e}px`}async#a(t){document.removeEventListener("mousemove",this.#h),document.removeEventListener("mouseup",this.#o),this.#e=null,this.#i=null}}export{o as MoveManager};
+class MoveManager {
+  #element;
+  #mouseDownHandler;
+  #mouseMoveHandler;
+  #mouseUpHandler;
+  #moveQuery;
+  #startPos;
+  #bounds;
+  constructor(element, moveQuery) {
+    this.#element = element;
+    this.#moveQuery = moveQuery;
+    this.#mouseDownHandler = this.#mouseDown.bind(this);
+    this.#mouseMoveHandler = this.#mouseMove.bind(this);
+    this.#mouseUpHandler = this.#mouseUp.bind(this);
+    this.#element.style.position = "fixed";
+    this.#element.style.left = 0;
+    this.#element.style.top = 0;
+    this.#element.addEventListener("mousedown", this.#mouseDownHandler);
+    element.__moveManager = this;
+  }
+  dispose() {
+    this.#element.removeEventListener("mousedown", this.#mouseDownHandler);
+    this.#mouseDownHandler = null;
+    this.#mouseMoveHandler = null;
+    this.#mouseUpHandler = null;
+    this.#moveQuery = null;
+    this.#startPos = null;
+    this.#bounds = null;
+    delete this.#element.__moveManager;
+    this.#element = null;
+  }
+  #matches(event) {
+    const path = event.composedPath();
+    const target = path[0];
+    if (this.#moveQuery == null) {
+      return target === this.#element;
+    }
+    if (target.matches(this.#moveQuery)) {
+      return true;
+    }
+    const match = path.find((element) => element.matches && element.matches(this.#moveQuery));
+    return match != null;
+  }
+  async #mouseDown(event) {
+    if (this.#matches(event) === false)
+      return;
+    event.preventDefault();
+    this.#startPos = { x: event.clientX, y: event.clientY };
+    this.#bounds = this.#element.getBoundingClientRect();
+    document.addEventListener("mousemove", this.#mouseMoveHandler);
+    document.addEventListener("mouseup", this.#mouseUpHandler);
+  }
+  async #mouseMove(event) {
+    let offsetX = event.clientX - this.#startPos.x;
+    let offsetY = event.clientY - this.#startPos.y;
+    this.#element.style.translate = `${this.#bounds.x + offsetX}px ${this.#bounds.y + offsetY}px`;
+  }
+  async #mouseUp(event) {
+    document.removeEventListener("mousemove", this.#mouseMoveHandler);
+    document.removeEventListener("mouseup", this.#mouseUpHandler);
+    this.#startPos = null;
+    this.#bounds = null;
+  }
+}
+export {
+  MoveManager
+};

@@ -1,1 +1,97 @@
-import{getDraggable as n}from"./dragdrop-manager/drag-utils.js";class d{#h;#m;#d;#t;#n;#l;#o;#i;#s;#e;constructor(t,i,e){this.#h=t,this.#m=t.getBoundingClientRect(),this.#d=i,this.#t=e,this.#n=this.#r.bind(this),this.#l=this.#u.bind(this),this.#o=this.#a.bind(this),this.#h.addEventListener("mousedown",this.#n),t.__resizeManager=this}dispose(){this.#h.removeEventListener("mousedown",this.#n),this.#n=null,this.#l=null,this.#o=null,this.#i=null,this.#s=null,this.#e=null,this.#d=null,this.#t=null,this.#m=null,delete this.#h.__resizeManager,this.#h=null}#r(t){const i=n(t,{drag:{query:this.#d}});i!=null&&(t.preventDefault(),this.#i=i.parentElement||t.composedPath()[2],this.#t.zIndex!=null&&(this.#i.style.zIndex=this.#t.zIndex),this.#t.dropShadow==!0&&(this.#i.style.filter="var(--drop-shadow)"),this.#s=this.#i.getBoundingClientRect(),this.#e={x:t.clientX,y:t.clientY},this.#t.min=this.#t.min||{},this.#t.min.width=this.#t.min.width||this.#s.width,this.#t.min.height=this.#t.min.height||this.#s.height,this.#t.max=this.#t.max||{},this.#t.max.width=this.#t.max.width||Number.MAX_VALUE,this.#t.max.height=this.#t.max.height||Number.MAX_VALUE,document.addEventListener("mousemove",this.#l),document.addEventListener("mouseup",this.#o))}#u(t){let i=t.clientX-this.#e.x,e=t.clientY-this.#e.y;this.#t.lock_axis=="x"&&(e=0),this.#t.lock_axis=="y"&&(i=0);let s=this.#s.width+i-4,h=this.#s.height+e-4;s=s<this.#t.min.width?this.#t.min.width:s>this.#t.max.width?this.#t.max.width:s,h=h<this.#t.min.height?this.#t.min.height:h>this.#t.max.height?this.#t.max.height:h,this.#i.style.width=`${s}px`,this.#i.style.height=`${h}px`}#a(t){this.#t.zIndex!=null&&(this.#i.style.zIndex=""),this.#t.dropShadow==!0&&(this.#i.style.filter="");let i=this.#i;document.removeEventListener("mousemove",this.#l),document.removeEventListener("mouseup",this.#o),this.#i=null,this.#s=null,this.#e=null,this.#t.callback&&this.#t.callback(i)}}export{d as ResizeElementManager};
+import { getDraggable } from "./dragdrop-manager/drag-utils.js";
+class ResizeElementManager {
+  #element;
+  #region;
+  #resizeQuery;
+  #options;
+  #mouseDownHandler;
+  #mouseMoveHandler;
+  #mouseUpHandler;
+  #targetElement;
+  #bounds;
+  #startPos;
+  constructor(element, resizeQuery, options) {
+    this.#element = element;
+    this.#region = element.getBoundingClientRect();
+    this.#resizeQuery = resizeQuery;
+    this.#options = options;
+    this.#mouseDownHandler = this.#mouseDown.bind(this);
+    this.#mouseMoveHandler = this.#mouseMove.bind(this);
+    this.#mouseUpHandler = this.#mouseUp.bind(this);
+    this.#element.addEventListener("mousedown", this.#mouseDownHandler);
+    element.__resizeManager = this;
+  }
+  dispose() {
+    this.#element.removeEventListener("mousedown", this.#mouseDownHandler);
+    this.#mouseDownHandler = null;
+    this.#mouseMoveHandler = null;
+    this.#mouseUpHandler = null;
+    this.#targetElement = null;
+    this.#bounds = null;
+    this.#startPos = null;
+    this.#resizeQuery = null;
+    this.#options = null;
+    this.#region = null;
+    delete this.#element.__resizeManager;
+    this.#element = null;
+  }
+  #mouseDown(event) {
+    const draggable = getDraggable(event, { drag: { query: this.#resizeQuery } });
+    if (draggable == null)
+      return;
+    event.preventDefault();
+    this.#targetElement = draggable.parentElement || event.composedPath()[2];
+    if (this.#options.zIndex != null) {
+      this.#targetElement.style.zIndex = this.#options.zIndex;
+    }
+    if (this.#options.dropShadow == true) {
+      this.#targetElement.style.filter = "var(--drop-shadow)";
+    }
+    this.#bounds = this.#targetElement.getBoundingClientRect();
+    this.#startPos = { x: event.clientX, y: event.clientY };
+    this.#options.min = this.#options.min || {};
+    this.#options.min.width = this.#options.min.width || this.#bounds.width;
+    this.#options.min.height = this.#options.min.height || this.#bounds.height;
+    this.#options.max = this.#options.max || {};
+    this.#options.max.width = this.#options.max.width || Number.MAX_VALUE;
+    this.#options.max.height = this.#options.max.height || Number.MAX_VALUE;
+    document.addEventListener("mousemove", this.#mouseMoveHandler);
+    document.addEventListener("mouseup", this.#mouseUpHandler);
+  }
+  #mouseMove(event) {
+    let offsetX = event.clientX - this.#startPos.x;
+    let offsetY = event.clientY - this.#startPos.y;
+    if (this.#options.lock_axis == "x") {
+      offsetY = 0;
+    }
+    if (this.#options.lock_axis == "y") {
+      offsetX = 0;
+    }
+    let width = this.#bounds.width + offsetX - 4;
+    let height = this.#bounds.height + offsetY - 4;
+    width = width < this.#options.min.width ? this.#options.min.width : width > this.#options.max.width ? this.#options.max.width : width;
+    height = height < this.#options.min.height ? this.#options.min.height : height > this.#options.max.height ? this.#options.max.height : height;
+    this.#targetElement.style.width = `${width}px`;
+    this.#targetElement.style.height = `${height}px`;
+  }
+  #mouseUp(event) {
+    if (this.#options.zIndex != null) {
+      this.#targetElement.style.zIndex = "";
+    }
+    if (this.#options.dropShadow == true) {
+      this.#targetElement.style.filter = "";
+    }
+    let targetElement = this.#targetElement;
+    document.removeEventListener("mousemove", this.#mouseMoveHandler);
+    document.removeEventListener("mouseup", this.#mouseUpHandler);
+    this.#targetElement = null;
+    this.#bounds = null;
+    this.#startPos = null;
+    if (this.#options.callback) {
+      this.#options.callback(targetElement);
+    }
+  }
+}
+export {
+  ResizeElementManager
+};

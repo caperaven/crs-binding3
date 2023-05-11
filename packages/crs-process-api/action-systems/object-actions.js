@@ -1,1 +1,183 @@
-class f{static async perform(s,r,t,a){return await this[s.action](s,r,t,a)}static async set(s,r,t,a){const e=await crs.process.getValue(s.args.properties,r,t,a),n=Object.keys(e);for(let c of n){const l=await crs.process.getValue(e[c],r,t,a);c=u(c),await crs.process.setValue(c,l,r,t,a)}}static async get(s,r,t,a){const e=await crs.process.getValue(s.args.properties,r,t,a),n=[];for(let c of e){c=u(c);const l=await crs.process.getValue(c,r,t,a);n.push(l)}return s.args.target!=null&&await crs.process.setValue(s.args.target,n,r,t,a),n}static async delete(s,r,t,a){const e=await crs.process.getValue(s.args.properties,r,t,a);for(let n of e){n=u(n);let c=r;n.indexOf("$process")!=-1&&(c=t),n.indexOf("$item")!=-1&&(c=t),await w(c,n)}}static async copy_on_path(s,r,t,a){const e=await crs.process.getValue(s.args.source,r,t,a),n=await crs.process.getValue(s.args.target,r,t,a),c=await crs.process.getValue(s.args.properties,r,t,a);for(let l of c)l=l.split("/").join("."),await y(e,n,l)}static async create(s,r,t,a){s.args.target!=null&&await crs.process.setValue(s.args.target,{},r,t,a)}static async assign(s,r,t,a){const e=await crs.process.getValue(s.args.source,r,t,a),n=await crs.process.getValue(s.args.target,r,t,a);return Object.assign(n,e)}static async clone(s,r,t,a){const e=await crs.process.getValue(s.args.source,r,t,a),n=await crs.process.getValue(s.args.properties,r,t,a);if(n==null){const l=Object.assign({},e);return s.args.target!=null&&await crs.process.setValue(s.args.target,l,r,t,a),l}const c={};for(let l of n)c[l]=e[l];return s.args.target!=null&&await crs.process.setValue(s.args.target,c,r,t,a),c}static async json_clone(s,r,t,a){const e=await crs.process.getValue(s.args.source,r,t,a),n=JSON.stringify(e),c=JSON.parse(n);return s.args.target!=null&&await crs.process.setValue(s.args.target,c,r,t,a),c}static async assert(s,r,t,a){let e=!0;const n=await crs.process.getValue(s.args.source,r,t,a);if(n==null)return!1;const c=await crs.process.getValue(s.args.properties,r,t,a);for(const l of c)if(await g(n,l)==null){e=!1;break}return s.args.target!=null&&await crs.process.setValue(s.args.target,e,r,t,a),e}}function u(i){return i.indexOf("$")==-1&&(i=`$context.${i}`),i.split("/").join(".")}async function p(i,s,r){const t=s.split(".").join("/").split("/"),a=t[t.length-1];let e=i;for(let n=0;n<t.length-1;n++){const c=t[n],l=t[n+1],o=isNaN(l)==!1;o==!0&&(t[n+1]=Number(l)),e[c]==null&&(e[c]=o?[]:{}),e=e[c]}e[a]=r}async function g(i,s){const r=s.split(".").join("/").split("/"),t=r[r.length-1];let a=i;for(let e=0;e<r.length-1;e++){if(a==null)return null;Array.isArray(a)?a=a[Number(r[e])]:a=a[r[e]]}return a==null?null:a[t]}async function w(i,s){if(i==null)return;const r=s.split("$context.").join("").split(".").join("/").split("/");let t=i;const a=[i];for(let c=0;c<r.length;c++){const l=r[c];if(t[l]==null)return;t=t[l],a.push(t)}const e=r.length-1,n=r[e];t=a[e],Array.isArray(t)?t.splice(Number(n),1):delete t[n]}async function y(i,s,r){const t=await g(i,r);if(t==null)return;const a=await crs.call("object","json_clone",{source:t});await p(s,r,a)}crs.intent.object=f;export{f as ObjectActions};
+class ObjectActions {
+  static async perform(step, context, process, item) {
+    return await this[step.action](step, context, process, item);
+  }
+  static async set(step, context, process, item) {
+    const properties = await crs.process.getValue(step.args.properties, context, process, item);
+    const keys = Object.keys(properties);
+    for (let property of keys) {
+      const value = await crs.process.getValue(properties[property], context, process, item);
+      property = formatProperty(property);
+      await crs.process.setValue(property, value, context, process, item);
+    }
+  }
+  static async get(step, context, process, item) {
+    const properties = await crs.process.getValue(step.args.properties, context, process, item);
+    const result = [];
+    for (let property of properties) {
+      property = formatProperty(property);
+      const value = await crs.process.getValue(property, context, process, item);
+      result.push(value);
+    }
+    if (step.args.target != null) {
+      await crs.process.setValue(step.args.target, result, context, process, item);
+    }
+    return result;
+  }
+  static async delete(step, context, process, item) {
+    const properties = await crs.process.getValue(step.args.properties, context, process, item);
+    for (let property of properties) {
+      property = formatProperty(property);
+      let target = context;
+      if (property.indexOf("$process") != -1) {
+        target = process;
+      }
+      if (property.indexOf("$item") != -1) {
+        target = process;
+      }
+      await deleteOnPath(target, property);
+    }
+  }
+  static async copy_on_path(step, context, process, item) {
+    const source = await crs.process.getValue(step.args.source, context, process, item);
+    const target = await crs.process.getValue(step.args.target, context, process, item);
+    const properties = await crs.process.getValue(step.args.properties, context, process, item);
+    for (let property of properties) {
+      property = property.split("/").join(".");
+      await copyPath(source, target, property);
+    }
+  }
+  static async create(step, context, process, item) {
+    if (step.args.target != null) {
+      await crs.process.setValue(step.args.target, {}, context, process, item);
+    }
+  }
+  static async assign(step, context, process, item) {
+    const source = await crs.process.getValue(step.args.source, context, process, item);
+    const target = await crs.process.getValue(step.args.target, context, process, item);
+    return Object.assign(target, source);
+  }
+  static async clone(step, context, process, item) {
+    const source = await crs.process.getValue(step.args.source, context, process, item);
+    const properties = await crs.process.getValue(step.args.properties, context, process, item);
+    if (properties == null) {
+      const result2 = Object.assign({}, source);
+      if (step.args.target != null) {
+        await crs.process.setValue(step.args.target, result2, context, process, item);
+      }
+      return result2;
+    }
+    const result = {};
+    for (let property of properties) {
+      result[property] = source[property];
+    }
+    if (step.args.target != null) {
+      await crs.process.setValue(step.args.target, result, context, process, item);
+    }
+    return result;
+  }
+  static async json_clone(step, context, process, item) {
+    const source = await crs.process.getValue(step.args.source, context, process, item);
+    const json = JSON.stringify(source);
+    const newValue = JSON.parse(json);
+    if (step.args.target != null) {
+      await crs.process.setValue(step.args.target, newValue, context, process, item);
+    }
+    return newValue;
+  }
+  static async assert(step, context, process, item) {
+    let isValid = true;
+    const source = await crs.process.getValue(step.args.source, context, process, item);
+    if (source == null)
+      return false;
+    const paths = await crs.process.getValue(step.args.properties, context, process, item);
+    for (const path of paths) {
+      const value = await getValueOnPath(source, path);
+      if (value == null) {
+        isValid = false;
+        break;
+      }
+    }
+    if (step.args.target != null) {
+      await crs.process.setValue(step.args.target, isValid, context, process, item);
+    }
+    return isValid;
+  }
+}
+function formatProperty(property) {
+  if (property.indexOf("$") == -1) {
+    property = `$context.${property}`;
+  }
+  return property.split("/").join(".");
+}
+async function setValueOnPath(obj, path, value) {
+  const parts = path.split(".").join("/").split("/");
+  const property = parts[parts.length - 1];
+  let target = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i];
+    const nextPart = parts[i + 1];
+    const isArray = isNaN(nextPart) == false;
+    if (isArray == true) {
+      parts[i + 1] = Number(nextPart);
+    }
+    if (target[part] == null) {
+      target[part] = isArray ? [] : {};
+    }
+    target = target[part];
+  }
+  target[property] = value;
+}
+async function getValueOnPath(obj, path) {
+  const parts = path.split(".").join("/").split("/");
+  const property = parts[parts.length - 1];
+  let target = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (target == null) {
+      return null;
+    }
+    if (Array.isArray(target)) {
+      target = target[Number(parts[i])];
+    } else {
+      target = target[parts[i]];
+    }
+  }
+  if (target == null)
+    return null;
+  return target[property];
+}
+async function deleteOnPath(obj, path) {
+  if (obj == null)
+    return;
+  const parts = path.split("$context.").join("").split(".").join("/").split("/");
+  let target = obj;
+  const collection = [obj];
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (target[part] == null)
+      return;
+    target = target[part];
+    collection.push(target);
+  }
+  const index = parts.length - 1;
+  const property = parts[index];
+  target = collection[index];
+  if (Array.isArray(target)) {
+    target.splice(Number(property), 1);
+  } else {
+    delete target[property];
+  }
+}
+async function copyPath(source, target, path) {
+  const value = await getValueOnPath(source, path);
+  if (value == null)
+    return;
+  const newValue = await crs.call("object", "json_clone", {
+    source: value
+  });
+  await setValueOnPath(target, path, newValue);
+}
+crs.intent.object = ObjectActions;
+export {
+  ObjectActions
+};
