@@ -57,7 +57,7 @@ async function children(path, element, preCode, code, ctxName) {
         const child = element.children[i];
 
         if (child.children.length > 0) {
-            await children(`${path}.children[${i}]`,preCode, child, code, ctxName);
+            await children(`${path}.children[${i}]`, child, preCode, code, ctxName);
         }
         else {
             const exp = await crs.binding.expression.sanitize(child.textContent.trim(), ctxName);

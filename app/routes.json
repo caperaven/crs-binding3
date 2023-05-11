@@ -55,6 +55,11 @@
       "view": "messaging"
     },
     {
+      "title": "collection",
+      "hash": "#collection",
+      "view": "collection"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",
