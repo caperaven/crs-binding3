@@ -202,7 +202,5 @@ async function callSchema(intent, event, context) {
         args.parameters = parameters;
     }
 
-    console.log("run-process", args);
-
     await crs.binding.events.emitter.emit("run-process", args);
 }
