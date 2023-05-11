@@ -64,11 +64,11 @@ function createSchemaIntent(exp) {
     const schemaParts = exp.split("[").map(item => item.trim());
     const schema = schemaParts[0].trim();
     const stepParts = schemaParts[1].split("(").map(item => item.trim());
-    const step = stepParts[0].trim();
+    const process = stepParts[0].trim();
 
     const args = createArgs(`{${stepParts[1].replace(")]", "")}}`);
 
-    return { schema, step, args }
+    return { schema, process, args }
 }
 
 function createArgs(exp) {
@@ -182,6 +182,23 @@ async function callProcess(intent, event, context) {
 }
 
 async function callSchema(intent, event, context) {
-    const args = await parseArgsForCalling(intent.args, event, context);
-    console.log("run step on schema")
+    const parameters = await parseArgsForCalling(intent.args, event, context);
+
+    const args = {
+        context: context.bid,
+        step: {
+            action: intent.process,
+            args: {
+                schema: intent.schema
+            }
+        }
+    }
+
+    if (parameters != null) {
+        args.parameters = parameters;
+    }
+
+    console.log("run-process", args);
+
+    await crs.binding.events.emitter.emit("run-process", args);
 }
