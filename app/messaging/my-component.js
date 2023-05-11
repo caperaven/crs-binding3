@@ -1,7 +1,7 @@
-class MyComponent extends HTMLElement {
+class MessageTargetElement extends HTMLElement {
     onMessage(event) {
         console.log(event);
     }
 }
 
-customElements.define("my-component", MyComponent);
+customElements.define("message-target", MessageTargetElement);

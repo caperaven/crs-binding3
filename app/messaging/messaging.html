@@ -2,6 +2,6 @@
 
 <button click.emit="my_event">Custom Event - plain</button>
 <button click.emit="my_event(title='hello world', $event, contacts=${contacts})">Custom Event - contacts</button>
-<button click.post="got-contacts['my-component'](title='hello world', $event, contacts=${contacts})">Post Message</button>
+<button click.post="got-contacts['message-target'](title='hello world', $event, contacts=${contacts})">Post Message</button>
 
-<my-component></my-component>
+<message-target></message-target>
