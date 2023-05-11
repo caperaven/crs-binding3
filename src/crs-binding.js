@@ -89,7 +89,8 @@ globalThis.crs.binding = {
             "style."            : "$root/providers/attributes/style-property.js",
             "ref"               : "$root/providers/attributes/ref.js",
             ".emit"             : "$root/providers/attributes/emit.js",
-            ".post"               : "$root/providers/attributes/post.js"
+            ".post"             : "$root/providers/attributes/post.js",
+            ".process"          : "$root/providers/attributes/process.js"
         },
         {
             "template[for]"     : "$root/providers/element/template-repeat-for.js",

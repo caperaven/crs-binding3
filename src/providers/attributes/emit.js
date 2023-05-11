@@ -1,6 +1,8 @@
 import "./../../events/event-emitter.js";
 import {createEventPacket, createEventParameters} from "./utils/create-event-parameters.js";
 import {clear} from "./utils/clear-events.js";
+import {parseEvent} from "./utils/parse-event.js";
+import {processEvent} from "./utils/process-event.js";
 
 /**
  * @class EmitProvider
@@ -35,16 +37,9 @@ export default class EmitProvider {
     get events() { return this.#events; }
 
     async #onEvent(event) {
-        const target = event.composedPath()[0] || event.target;
-        const uuid = target["__uuid"];
-        if (uuid == null) return;
-
-        const data = this.#events[event.type];
-        const elementData = data[uuid];
-
-        if (elementData != null) {
+        await processEvent(event, this.#events, async (elementData) => {
             await emit(elementData, event);
-        }
+        });
     }
 
     /**
@@ -53,17 +48,7 @@ export default class EmitProvider {
      * @param context {Object} - The binding context.
      */
     async parse(attr, context) {
-        const intent = createEventIntent(attr.value);
-        const parts = attr.name.split(".");
-        const event = parts[0];
-
-        if (this.#events[event] == null) {
-            document.addEventListener(event, this.#onEventHandler);
-            this.#events[event] = {};
-        }
-
-        this.#events[event][attr.ownerElement["__uuid"]] = intent;
-        attr.ownerElement.removeAttribute(attr.name);
+        parseEvent(attr, this.#events, this.#onEventHandler, createEventIntent);
     }
 
     /**
