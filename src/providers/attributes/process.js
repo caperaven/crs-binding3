@@ -22,12 +22,13 @@ export default class ProcessProvider {
     get events() { return this.#events; }
 
     async #onEvent(event) {
-        await processEvent(event, this.#events, async (elementData) => {
-            await callProcess(elementData, event);
+        await processEvent(event, this.#events, async (elementData, bid) => {
+            const context = await crs.binding.data.getContext(bid);
+            await callProcess(elementData, event, context);
         });
     }
 
-    async parse(attr, context) {
+    async parse(attr) {
         parseEvent(attr, this.#events, this.#onEventHandler, createProcessIntent);
     }
 
@@ -126,6 +127,61 @@ function markArrays(exp, lookStart = 0) {
     return markArrays(exp, endIndex + 1);
 }
 
-async function callProcess(intent, event) {
+async function parseArgsForCalling(args, event, context) {
+    const newArgs = {};
 
+    for (const [key, value] of Object.entries(args)) {
+        if (Array.isArray(value)) {
+            const newArray = [];
+
+            for (let i = 0; i < value.length; i++) {
+                newArray[i] = await getValue(value[i], event, context);
+            }
+
+            newArgs[key] = newArray;
+        }
+        else {
+            newArgs[key] = await getValue(value, event, context);
+        }
+    }
+
+    return newArgs;
+}
+
+async function getValue(exp, event, context) {
+    if (typeof exp !== "string") return exp;
+
+    if (exp == "$event") {
+        return event;
+    }
+
+    if (exp == "$context") {
+        return context;
+    }
+
+    if (exp.startsWith("$event.")) {
+        const path = exp.replace("$event.", "");
+        return crs.binding.utils.getValueOnPath(event, path);
+    }
+
+    if (exp.startsWith("$context.")) {
+        const path = exp.replace("$context.", "");
+        return crs.binding.utils.getValueOnPath(context, path);
+    }
+
+    return exp;
+}
+
+async function callProcess(intent, event, context) {
+    if (intent.schema != null) {
+        return await callSchema(intent, event, context);
+    }
+
+    const args = await parseArgsForCalling(intent.args, event, context);
+    await crs.call(intent.type, intent.action, args);
+}
+
+async function callSchema(intent, event, context) {
+    const args = await parseArgsForCalling(intent.args, event, context);
+    console.log("run step on schema")
 }

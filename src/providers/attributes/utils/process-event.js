@@ -15,6 +15,7 @@ export async function processEvent(event, events, callback) {
     const elementData = data[uuid];
 
     if (elementData != null) {
-        await callback(elementData);
+        const bid = target["__bid"];
+        await callback(elementData, bid);
     }
 }

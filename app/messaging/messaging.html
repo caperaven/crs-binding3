@@ -9,6 +9,7 @@
 <hr />
 
 <button click.process="{type: 'console', action: 'log', {messages: ['hello', 'world']}}">Process Log</button>
+<button click.process="{type: 'console', action: 'log', {messages: [$event.clientX, $event.clientY]}}">Process Log Event</button>
 <button click.process="{type: 'debug', action: 'start_monitor_events', {}}">Process Debug Start</button>
 <button click.process="{type: 'debug', action: 'stop_monitor_events', {}}">Process Stop</button>
 <button click.process="test_schema[main(x: $event.clientX, y: $event.clientY)]">Process Schema</button>
