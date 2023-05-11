@@ -17,6 +17,7 @@ import {markElement, unmarkElement} from "./utils/mark-element.js";
 import {disableEvents, enableEvents} from "./events/dom-events.js";
 import {TemplatesManager} from "./managers/templates-manager.js";
 import {TemplateInflationStore} from "./store/template-inflation-store.js";
+import {IdleTaskManager} from "./idle/idleTaskManager.js";
 
 globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
@@ -28,6 +29,11 @@ globalThis.crs.classes.AsyncFunction = Object.getPrototypeOf(async function(){})
  */
 globalThis.crs.binding = {
     root: import.meta.url.replace("/crs-binding.js", ""),
+
+    /**
+     * @property idleTaskManager - The idle task manager.
+     */
+    idleTaskManager: new IdleTaskManager(),
 
     /**
      * @property ignore - elements to ignore when parsing.
