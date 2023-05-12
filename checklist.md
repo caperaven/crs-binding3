@@ -4,7 +4,7 @@
 - [x] Extendable parsers
 - [x] Standard binding (two way)
 - [x] Standard binding (one way) - is this needed?
-- [ ] Standard binding (once)
+- [x] Standard binding (once)
 - [x] Translations in binding expressions
 - [x] Globals in binding expressions
 - [x] Static inflation
