@@ -4,16 +4,30 @@
 - [x] Extendable parsers
 - [x] Standard binding (two way)
 - [ ] Standard binding (one way) - is this needed?
-- [ ] Standard binding (one time)
+- [ ] Standard binding (once)
 - [x] Translations in binding expressions
 - [x] Globals in binding expressions
 - [x] Static inflation
-- [x] Set value binding
 - [x] Reference binding - set a named object on the context
+
+# Set Value
+- [x] Set value to binding context
+- [x] Set element attribute from binding context
+- [x] Set element property from binding context
+- [x] Set element attribute from another element's attribute
+- [x] Set element property from another element's property
+- [x] Set element attribute from another element's property
+- [x] Set element property from another element's attribute
 
 ## Stores
 - [x] Binding data store
 - [x] Template inflation store (Inflation manager)
+
+## Code Factories
+- [x] case expressions to function
+- [x] if expressions to function
+- [x] inflation to function based on element markup
+- [x] translation markup to JavaScript
 
 ## Managers
 - [x] Value converters manager
@@ -48,7 +62,7 @@
 - [x] Template for each binding
 
 ## Containers
-- [x] Binding element
+- [x] Bindable element
 - [x] View base
 - [x] Template src binding
 - [x] crs-widget
