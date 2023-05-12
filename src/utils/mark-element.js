@@ -6,6 +6,8 @@
  * @returns {string} - The uuid of the element.
  */
 export function markElement(element, context) {
+    if (element["__uuid"]) return element["__uuid"];
+
     const bid = context.bid;
     if (element["__uuid"] == null) {
         element["__uuid"] ||= crypto.randomUUID();

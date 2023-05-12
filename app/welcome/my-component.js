@@ -1,6 +1,11 @@
 import "./../../src/classes/bindable-element.js"
 
 export class MyComponent extends crs.classes.BindableElement {
+
+    set value(newValue) {
+        console.log("one way binding: ", newValue);
+    }
+
     get html() {
         return import.meta.url.replace(".js", ".html");
     }

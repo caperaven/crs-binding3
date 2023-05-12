@@ -13,7 +13,7 @@
 
 <label>
     <div>&{person.lastName}</div>
-    <input id="edtLastName" value.bind="person.lastName" />
+    <input id="edtLastName" value.two-way="person.lastName" />
 </label>
 
 <label>
@@ -25,7 +25,7 @@
 
 <button click.call="reset">Reset</button>
 
-<my-component></my-component>
+<my-component value.one-way="person.firstName"></my-component>
 
 <ul>
     <template for="person of people">

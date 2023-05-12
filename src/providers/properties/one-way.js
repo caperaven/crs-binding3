@@ -1,23 +1,8 @@
-import "../../expressions/code-factories/if.js";
 import {bindingUpdate} from "./utils/binding-update.js";
 import {bindingParse} from "./utils/binding-parse.js";
 
-/**
- * @class BindProvider - Binds an element to a property of a data object
- *
- * @example
- * <input value.bind="person.firstName">
- */
-export default class BindProvider {
+export default class OneWayProvider {
     #store = {};
-    #onEventHandler = this.#onEvent.bind(this);
-
-    /**
-     * @constructor - Adds a change event listener to the document
-     */
-    constructor() {
-        document.addEventListener("change", this.#onEventHandler);
-    }
 
     /**
      * @property store - The store of element uuids and their properties to update
@@ -28,28 +13,13 @@ export default class BindProvider {
     }
 
     /**
-     * @method #onEvent - The event handler for the change event
-     * @param event
-     * @returns {Promise<void>}
-     */
-    async #onEvent(event) {
-        const bid = event.target["__bid"];
-        const field = event.target.dataset.field;
-
-        if (bid == null || field == null) return;
-
-        await crs.binding.data.setProperty(bid, field, event.target.value);
-    }
-
-    /**
      * @method parse - Parses the element and adds a change event listener to it and sets the data-field attribute
      * @param attr {Attr} - The attribute to parse
      * @param context {BindingContext} - The context of the element
      * @returns {Promise<void>}
      */
     async parse(attr, context) {
-        const provider = attr.name.indexOf(".bind") === -1 ? ".two-way" : ".bind";
-        await bindingParse(attr, context, this.#store, provider);
+        await bindingParse(attr, context, this.#store, ".one-way");
     }
 
     /**
