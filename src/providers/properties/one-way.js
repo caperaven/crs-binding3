@@ -1,6 +1,12 @@
 import {bindingUpdate} from "./utils/binding-update.js";
 import {bindingParse} from "./utils/binding-parse.js";
 
+/**
+ * @class OneWayProvider - Provides one-way binding
+ *
+ * @example
+ * <component value.one-way="property"></component>
+ */
 export default class OneWayProvider {
     #store = {};
 

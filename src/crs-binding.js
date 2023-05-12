@@ -83,6 +83,7 @@ globalThis.crs.binding = {
             ".bind"             : "$root/providers/properties/bind.js",
             ".two-way"          : "$root/providers/properties/bind.js",
             ".one-way"          : "$root/providers/properties/one-way.js",
+            ".once"             : "$root/providers/properties/once.js",
             ".call"             : "$root/providers/attributes/call.js",
             ".setvalue"         : "$root/providers/attributes/set-value.js",
             ".attr"             : "$root/providers/attributes/attr.js",

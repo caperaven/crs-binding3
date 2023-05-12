@@ -3,7 +3,7 @@
 ## Standard bindings
 - [x] Extendable parsers
 - [x] Standard binding (two way)
-- [ ] Standard binding (one way) - is this needed?
+- [x] Standard binding (one way) - is this needed?
 - [ ] Standard binding (once)
 - [x] Translations in binding expressions
 - [x] Globals in binding expressions

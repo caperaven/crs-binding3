@@ -28,6 +28,8 @@ export default class WelcomeViewModel extends crs.classes.ViewBase {
                 lastName: "Smith",
             }
         ])
+
+        this.setProperty("greeting", "Welcome to one-way binding");
     }
 
     async load() {

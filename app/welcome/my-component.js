@@ -6,6 +6,10 @@ export class MyComponent extends crs.classes.BindableElement {
         console.log("one way binding: ", newValue);
     }
 
+    set greeting(newValue) {
+        console.log("once binding: ", newValue);
+    }
+
     get html() {
         return import.meta.url.replace(".js", ".html");
     }
