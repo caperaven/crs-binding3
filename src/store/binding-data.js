@@ -297,4 +297,11 @@ export class BindingData {
             await crs.binding.providers.updateProviders(uuid, ...providersCollection);
         }
     }
+
+    async updateUI(bid, property) {
+        const context = this.getContext(bid);
+        if (context == null || context.boundElements == null) return;
+
+        await this.#performUpdate(bid, property);
+    }
 }

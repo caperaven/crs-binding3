@@ -1,2 +1,15 @@
 <h2>${title} Mobile</h2>
 
+<button click.call="search">Search</button>
+
+<!-- In all cases stop propagation of event by default -->
+
+<input keyup.enter.call="search" />
+<input keyup.enter.process="test_schema[main(x: $event.clientX, y: $event.clientY, message: 'hello from the main process')]" />
+<input keyup.enter.setvalue="">
+
+<input keydown.alt_enter.call="search" />
+<input keydown.shift_n.process="test_schema[main(x: $event.clientX, y: $event.clientY, message: 'hello from the main process')]" />
+<input keydown.ctr_s.setvalue="">
+<input keydown.ctr_s.emit="">
+<input keydown.ctr_s.post="">

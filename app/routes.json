@@ -60,6 +60,11 @@
       "view": "collection"
     },
     {
+      "title": "update ui",
+      "hash": "#update-ui",
+      "view": "update-ui"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",
