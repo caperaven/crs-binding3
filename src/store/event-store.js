@@ -19,8 +19,12 @@ export class EventStore {
             const bid = target["__bid"];
             const provider = intent.provider;
             const providerInstance = crs.binding.providers.attrProviders[provider];
-            await providerInstance.onEvent(event, bid, intent);
+            await providerInstance.onEvent(event, bid, intent, target);
         }
+    }
+
+    getIntent(event, uuid) {
+        return this.#store[event]?.[uuid];
     }
 
     register(event, uuid, intent) {

@@ -9,36 +9,16 @@ import {bindingParse} from "./utils/binding-parse.js";
  * <input value.bind="person.firstName">
  */
 export default class BindProvider {
-    #store = {};
-    #onEventHandler = this.#onEvent.bind(this);
-
-    /**
-     * @constructor - Adds a change event listener to the document
-     */
-    constructor() {
-        document.addEventListener("change", this.#onEventHandler);
-    }
-
-    /**
-     * @property store - The store of element uuids and their properties to update
-     * @returns {{}}
-     */
-    get store() {
-        return this.#store;
-    }
-
     /**
      * @method #onEvent - The event handler for the change event
      * @param event
      * @returns {Promise<void>}
      */
-    async #onEvent(event) {
-        const bid = event.target["__bid"];
-        const field = event.target.dataset.field;
-
+    async onEvent(event, bid, intent, target) {
+        const field = target.dataset.field;
         if (bid == null || field == null) return;
 
-        await crs.binding.data.setProperty(bid, field, event.target.value);
+        await crs.binding.data.setProperty(bid, field, target.value);
     }
 
     /**
@@ -48,8 +28,7 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async parse(attr, context) {
-        const provider = attr.name.indexOf(".bind") === -1 ? ".two-way" : ".bind";
-        await bindingParse(attr, context, this.#store, provider);
+        await bindingParse(attr, context);
     }
 
     /**
@@ -59,7 +38,7 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async update(uuid, ...properties) {
-        await bindingUpdate(uuid, this.#store, ...properties);
+        await bindingUpdate(uuid, ...properties);
     }
 
     /**
@@ -68,6 +47,6 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async clear(uuid) {
-        delete this.#store[uuid];
+        crs.binding.eventStore.clear(uuid);
     }
 }

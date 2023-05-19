@@ -1,4 +1,4 @@
-export async function bindingParse(attr, context, store, provider) {
+export async function bindingParse(attr, context) {
     const parts = attr.name.split(".");
     const element = attr.ownerElement;
     const property = parts[0];
@@ -8,8 +8,22 @@ export async function bindingParse(attr, context, store, provider) {
     element.removeAttribute(attr.name);
     element.setAttribute("data-field", path);
 
-    const eventObj = store[element["__uuid"]] ||= {};
-    eventObj[path] = property;
+    const uuid = element["__uuid"];
 
-    crs.binding.data.setCallback(element["__uuid"], context.bid, [path], provider);
+    let intent = crs.binding.eventStore.getIntent("change", uuid);
+    if (intent == null) {
+        intent = {
+            provider: ".bind",
+            value: {}
+        };
+    }
+
+    intent.value[path] = property;
+
+    crs.binding.eventStore.register("change", uuid, intent);
+
+    crs.binding.data.setCallback(element["__uuid"], context.bid, [path], ".bind");
+
+    element.__events ||= [];
+    element.__events.push("change");
 }
