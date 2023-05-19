@@ -13,6 +13,6 @@ export default class UpdateUIViewModel extends crs.classes.ViewBase {
         person.lastName = "Smith";
         person.age = 30;
 
-        crs.binding.data.updateUI(this.bid, "person");
+        await crs.binding.data.updateUI(this.bid, "person");
     }
 }
