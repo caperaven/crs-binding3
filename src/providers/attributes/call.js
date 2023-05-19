@@ -27,22 +27,13 @@ import {parseEvent} from "./utils/parse-event.js";
  * <button click.call="doSomething('hello')">Click Me</button>
  */
 export default class CallProvider {
-    #events = {};
-    #onEventHandler = this.#onEvent.bind(this);
-
-    get events() {
-        return this.#events;
-    }
-
     /**
      * Handle the event and execute the function.
      * @param event {Event} - The event that was triggered.
      * @returns {Promise<void>}
      */
-    async #onEvent(event) {
-        await processEvent(event, this.#events, async (elementData, bid) => {
-            await execute(bid, elementData, event);
-        });
+    async onEvent(event, bid, intent) {
+        await execute(bid, intent.value, event);
     }
 
     /**
@@ -51,7 +42,7 @@ export default class CallProvider {
      * @param context {Object} - The binding context.
      */
     async parse(attr, context) {
-        parseEvent(attr, this.#events, this.#onEventHandler, () => attr.value);
+        parseEvent(attr, getIntent);
     }
 
     /**
@@ -59,8 +50,12 @@ export default class CallProvider {
      * @param uuid {string} - The uuid of the element.
      */
     async clear(uuid) {
-        clear(uuid, this.#events, this.#onEventHandler);
+        crs.binding.eventStore.clear(uuid);
     }
+}
+
+function getIntent(attrValue) {
+    return { provider: ".call", value: attrValue }
 }
 
 /**

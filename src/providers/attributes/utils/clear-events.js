@@ -1,9 +1,9 @@
-export function clear(uuid, events, handler) {
-    for (const event of Object.keys(events)) {
-        delete events[event][uuid];
+export function clear(uuid, handler) {
+    for (const event of Object.keys(crs.binding.eventStore)) {
+        delete crs.binding.eventStore[event][uuid];
 
-        if (Object.keys(events[event]).length === 0) {
-            delete events[event];
+        if (Object.keys(crs.binding.eventStore[event]).length === 0) {
+            delete crs.binding.eventStore[event];
             document.removeEventListener(event, handler);
         }
     }

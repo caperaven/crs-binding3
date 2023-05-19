@@ -17,23 +17,17 @@ import {processEvent} from "./utils/process-event.js";
  * Note that you can include values from the context and event in the args.
  */
 export default class ProcessProvider {
-    #events = {};
-    #onEventHandler = this.#onEvent.bind(this);
-    get events() { return this.#events; }
-
-    async #onEvent(event) {
-        await processEvent(event, this.#events, async (elementData, bid) => {
-            const context = await crs.binding.data.getContext(bid);
-            await callProcess(elementData, event, context);
-        });
+    async onEvent(event, bid, intent) {
+        const context = await crs.binding.data.getContext(bid);
+        await callProcess(intent.value, event, context);
     }
 
     async parse(attr) {
-        parseEvent(attr, this.#events, this.#onEventHandler, createProcessIntent);
+        parseEvent(attr, createProcessIntent);
     }
 
     async clear(uuid) {
-        clear(uuid, this.#events, this.#onEventHandler);
+        crs.binding.eventStore.clear(uuid);
     }
 }
 
@@ -56,7 +50,8 @@ function createStepIntent(exp) {
     const argsExp = parts.slice(2).join(",");
     const args = createArgs(argsExp.slice(0, -1));
 
-    return { type, action, args }
+    const value = { type, action, args }
+    return { provider: ".process", value }
 }
 
 function createSchemaIntent(exp) {
@@ -68,7 +63,8 @@ function createSchemaIntent(exp) {
 
     const args = createArgs(`{${stepParts[1].replace(")]", "")}}`);
 
-    return { schema, process, args }
+    const value = { schema, process, args }
+    return { provider: ".process", value }
 }
 
 function createArgs(exp) {

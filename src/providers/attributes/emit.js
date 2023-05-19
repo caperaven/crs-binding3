@@ -32,14 +32,8 @@ import {processEvent} from "./utils/process-event.js";
  * this property will be set to the value of the "contacts" property in the binding context
  */
 export default class EmitProvider {
-    #events = {};
-    #onEventHandler = this.#onEvent.bind(this);
-    get events() { return this.#events; }
-
-    async #onEvent(event) {
-        await processEvent(event, this.#events, async (elementData) => {
-            await emit(elementData, event);
-        });
+    async onEvent(event, bid, intent) {
+        await emit(intent.value, event);
     }
 
     /**
@@ -48,7 +42,7 @@ export default class EmitProvider {
      * @param context {Object} - The binding context.
      */
     async parse(attr, context) {
-        parseEvent(attr, this.#events, this.#onEventHandler, createEventIntent);
+        parseEvent(attr, createEventIntent);
     }
 
     /**
@@ -56,7 +50,7 @@ export default class EmitProvider {
      * @param uuid {string} - The uuid of the element.
      */
     async clear(uuid) {
-        clear(uuid, this.#events, this.#onEventHandler);
+        crs.binding.eventStore.clear(uuid);
     }
 }
 
@@ -65,13 +59,15 @@ function createEventIntent(exp) {
     const parts = exp.split("(");
     const event = parts[0];
 
-    if (parts.length === 1) return { event, args: {} };
+    if (parts.length === 1) return { provider: ".emit", value: { event, args: {} } };
 
     // 2. remove the last bracket
     parts[1] = parts[1].replace(")", "");
 
     // 3. get the parameters
-    return createEventParameters(event, parts[1])
+    const value =  createEventParameters(event, parts[1])
+
+    return { provider: ".emit", value }
 }
 
 function emit(intent, event) {

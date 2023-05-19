@@ -6,12 +6,12 @@
  * @param callback - The callback to execute if the event is found
  * @returns {Promise<void>}
  */
-export async function processEvent(event, events, callback) {
+export async function processEvent(event, callback) {
     const target = event.composedPath()[0] || event.target;
     const uuid = target["__uuid"];
     if (uuid == null) return;
 
-    const data = events[event.type];
+    const data = crs.binding.eventStore[event.type];
     const elementData = data[uuid];
 
     if (elementData != null) {

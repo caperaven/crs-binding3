@@ -15,22 +15,16 @@ import {processEvent} from "./utils/process-event.js";
  * All the items between the () are the arguments to pass to the post method.
  */
 export default class PostProvider {
-    #events = {};
-    #onEventHandler = this.#onEvent.bind(this);
-    get events() { return this.#events; }
-
-    async #onEvent(event) {
-        await processEvent(event, this.#events, async (elementData) => {
-            await post(elementData, event);
-        });
+    async onEvent(event, bid, intent) {
+        await post(intent.value, event);
     }
 
-    async parse(attr, context) {
-        parseEvent(attr, this.#events, this.#onEventHandler, createPostIntent);
+    async parse(attr) {
+        parseEvent(attr, createPostIntent);
     }
 
     async clear(uuid) {
-        clear(uuid, this.#events, this.#onEventHandler);
+        crs.binding.eventStore.clear(uuid);
     }
 }
 
@@ -40,9 +34,10 @@ function createPostIntent(exp) {
     const event = queryParts[0].trim();
     const queries = queryParts[1].replace("]", "").split(",").map(q => q.trim().replaceAll("'", ""));
 
-    const intent = createEventParameters(event, parts[1].replace(")", ""));
-    intent.queries = queries;
-    return intent;
+    const value = createEventParameters(event, parts[1].replace(")", ""));
+    value.queries = queries;
+
+    return { provider: ".post", value };
 }
 
 async function post(intent, event) {

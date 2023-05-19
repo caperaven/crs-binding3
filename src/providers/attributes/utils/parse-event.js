@@ -5,16 +5,18 @@
  * @param eventHandler {Function} - The event handler to add to the document.
  * @param callback {Function} - The callback to create the intent.
  */
-export function parseEvent(attr, events, eventHandler, callback) {
+export function parseEvent(attr, callback) {
     const intent = callback(attr.value);
     const parts = attr.name.split(".");
     const event = parts[0];
 
-    if (events[event] == null) {
-        document.addEventListener(event, eventHandler);
-        events[event] = {};
-    }
+    const element = attr.ownerElement;
+    const uuid = element["__uuid"];
+    crs.binding.eventStore.register(event, uuid, intent);
+    element.removeAttribute(attr.name);
 
-    events[event][attr.ownerElement["__uuid"]] = intent;
-    attr.ownerElement.removeAttribute(attr.name);
+    // place this on the element so that we can speed up the clean process.
+    // see event-store.js for more info.
+    element.__events ||= [];
+    element.__events.push(event);
 }

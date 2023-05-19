@@ -28,6 +28,8 @@ export function createEventParameters(event, exp) {
 export function createEventPacket(intent, event) {
     const data = intent.args;
     const args = {};
+    const target = event.composedPath()[0];
+    const bid = target["__bid"];
 
     for (const tuple of Object.entries(data)) {
         if (tuple[1] === "$event") {
@@ -36,13 +38,11 @@ export function createEventPacket(intent, event) {
         }
 
         if (tuple[1] === "$context") {
-            const bid = event.target["__bid"];
             const context = crs.binding.data.getContext(bid);
             args["context"] = context;
             continue;
         }
 
-        const bid = event.target["__bid"];
         let exp = tuple[1];
         let value = exp;
 

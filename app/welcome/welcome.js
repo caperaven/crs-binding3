@@ -39,6 +39,7 @@ export default class WelcomeViewModel extends crs.classes.ViewBase {
 
     async disconnectedCallback() {
         await crs.binding.translations.delete("person");
+        await super.disconnectedCallback();
     }
 
     async reset() {

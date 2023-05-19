@@ -18,6 +18,7 @@ import {disableEvents, enableEvents} from "./events/dom-events.js";
 import {TemplatesManager} from "./managers/templates-manager.js";
 import {TemplateInflationStore} from "./store/template-inflation-store.js";
 import {IdleTaskManager} from "./idle/idleTaskManager.js";
+import {EventStore} from "./store/event-store.js";
 
 globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
@@ -34,6 +35,11 @@ globalThis.crs.binding = {
      * @property idleTaskManager - The idle task manager.
      */
     idleTaskManager: new IdleTaskManager(),
+
+    /**
+     * @property enableStore - Enable the event store
+     */
+    eventStore: new EventStore(),
 
     /**
      * @property ignore - elements to ignore when parsing.

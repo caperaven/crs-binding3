@@ -17,6 +17,10 @@ export class Providers {
     #attrPartialKeys = [];
     #elementQueries = [];
 
+    get attrProviders() {
+        return this.#attrProviders;
+    }
+
     /**
      * @property textProviders - A list of text providers.
      * @returns {*[]}
