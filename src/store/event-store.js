@@ -38,7 +38,7 @@ export class EventStore {
 
     clear(uuid) {
         const element = crs.binding.elements[uuid];
-        if (element.__events == null) return;
+        if (element?.__events == null) return;
 
         const events = element.__events;
 

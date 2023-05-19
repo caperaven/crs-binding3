@@ -172,6 +172,18 @@ export class Providers {
      * @returns {Promise<void>}
      */
     async update(uuid, ...properties) {
+        /* Most providers maintain an internal store of the uuids they are responsible for.
+         * When working events however, the crs.binding.eventStore deals with that.
+         * If the element has a change event, call the binding to update that.
+         * Continue with the updates for the other providers.
+         * If the uuid is not present in the store the provider will be ignored.
+         */
+
+        const element = crs.binding.elements[uuid];
+        if (element.__events != null && element.__events.indexOf("change") != -1) {
+            this.#attrProviders[".bind"].update(uuid);
+        }
+
         for (const textProvider of this.#textProviders) {
             if (textProvider.store[uuid] != null) {
                 textProvider.update(uuid);

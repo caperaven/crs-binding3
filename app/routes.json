@@ -1,13 +1,18 @@
 {
-  "default": "welcome",
+  "default": "clear",
   "root": "app",
   "auto-nav": true,
   "auto-hide": true,
   "routes": [
     {
-      "title": "Welcome",
-      "hash": "#welcome",
-      "view": "welcome"
+      "title": "Clear",
+      "hash": "#clear",
+      "view": "clear"
+    },
+    {
+      "title": "Binding",
+      "hash": "#binding",
+      "view": "binding"
     },
     {
       "title": "Globals",

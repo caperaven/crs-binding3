@@ -1,6 +1,6 @@
 import "./my-component.js";
 
-export default class WelcomeViewModel extends crs.classes.ViewBase {
+export default class BindingViewModel extends crs.classes.ViewBase {
     get mobi() {
         return import.meta.url.replace(".js", ".mobi.html");
     }
