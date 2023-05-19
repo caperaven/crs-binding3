@@ -1,4 +1,6 @@
 import { clear } from "./utils/clear-events.js";
+import { processEvent } from "./utils/process-event.js";
+import {parseEvent} from "./utils/parse-event.js";
 
 /**
  * @class CallProvider
@@ -38,16 +40,9 @@ export default class CallProvider {
      * @returns {Promise<void>}
      */
     async #onEvent(event) {
-        const target = event.composedPath()[0] || event.target;
-        const uuid = target["__uuid"];
-        if (uuid == null) return;
-
-        const data = this.#events[event.type];
-        const elementData = data[uuid];
-
-        if (elementData != null) {
-            await execute(target["__bid"], elementData, event);
-        }
+        await processEvent(event, this.#events, async (elementData, bid) => {
+            await execute(bid, elementData, event);
+        });
     }
 
     /**
@@ -56,16 +51,7 @@ export default class CallProvider {
      * @param context {Object} - The binding context.
      */
     async parse(attr, context) {
-        const parts = attr.name.split(".");
-        const event = parts[0];
-
-        if (this.#events[event] == null) {
-            document.addEventListener(event, this.#onEventHandler);
-            this.#events[event] = {}
-        }
-
-        this.#events[event][attr.ownerElement["__uuid"]] = attr.value;
-        attr.ownerElement.removeAttribute(attr.name);
+        parseEvent(attr, this.#events, this.#onEventHandler, () => attr.value);
     }
 
     /**
