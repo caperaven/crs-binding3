@@ -32,11 +32,6 @@ export default class BindingViewModel extends crs.classes.ViewBase {
         this.setProperty("greeting", "Welcome to one-way binding");
     }
 
-    async load() {
-        console.log(this.titleElement);
-        await super.load();
-    }
-
     async disconnectedCallback() {
         await crs.binding.translations.delete("person");
         await super.disconnectedCallback();
