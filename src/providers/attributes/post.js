@@ -1,7 +1,5 @@
-import { clear } from "./utils/clear-events.js";
 import {createEventPacket, createEventParameters} from "./utils/create-event-parameters.js";
 import {parseEvent} from "./utils/parse-event.js";
-import {processEvent} from "./utils/process-event.js";
 
 /**
  * @class PostProvider
@@ -20,24 +18,24 @@ export default class PostProvider {
     }
 
     async parse(attr) {
-        parseEvent(attr, createPostIntent);
+        parseEvent(attr, this.getIntent);
+    }
+
+    async getIntent(attrValue) {
+        const parts = attrValue.split("(");
+        const queryParts = parts[0].split("[");
+        const event = queryParts[0].trim();
+        const queries = queryParts[1].replace("]", "").split(",").map(q => q.trim().replaceAll("'", ""));
+
+        const value = createEventParameters(event, parts[1].replace(")", ""));
+        value.queries = queries;
+
+        return { provider: ".post", value };
     }
 
     async clear(uuid) {
         crs.binding.eventStore.clear(uuid);
     }
-}
-
-function createPostIntent(exp) {
-    const parts = exp.split("(");
-    const queryParts = parts[0].split("[");
-    const event = queryParts[0].trim();
-    const queries = queryParts[1].replace("]", "").split(",").map(q => q.trim().replaceAll("'", ""));
-
-    const value = createEventParameters(event, parts[1].replace(")", ""));
-    value.queries = queries;
-
-    return { provider: ".post", value };
 }
 
 async function post(intent, event) {

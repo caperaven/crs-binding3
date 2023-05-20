@@ -17,7 +17,7 @@ export class EventStore {
 
         if (intent != null) {
             const bid = target["__bid"];
-            const provider = intent.provider;
+            const provider = intent.provider.replaceAll("\\", "");
             const providerInstance = crs.binding.providers.attrProviders[provider];
             await providerInstance.onEvent(event, bid, intent, target);
         }

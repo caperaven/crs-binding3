@@ -1,6 +1,4 @@
 import {parseEvent} from "./utils/parse-event.js";
-import {clear} from "./utils/clear-events.js";
-import {processEvent} from "./utils/process-event.js";
 
 /**
  * @class ProcessProvider
@@ -23,20 +21,20 @@ export default class ProcessProvider {
     }
 
     async parse(attr) {
-        parseEvent(attr, createProcessIntent);
+        parseEvent(attr, this.getIntent);
+    }
+
+    async getIntent(attrValue) {
+        if (attrValue.startsWith("{")) {
+            return createStepIntent(attrValue);
+        }
+
+        return createSchemaIntent(attrValue);
     }
 
     async clear(uuid) {
         crs.binding.eventStore.clear(uuid);
     }
-}
-
-function createProcessIntent(exp) {
-    if (exp.startsWith("{")) {
-        return createStepIntent(exp);
-    }
-
-    return createSchemaIntent(exp);
 }
 
 function createStepIntent(exp) {

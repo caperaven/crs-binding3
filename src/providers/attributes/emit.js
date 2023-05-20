@@ -1,8 +1,6 @@
 import "./../../events/event-emitter.js";
 import {createEventPacket, createEventParameters} from "./utils/create-event-parameters.js";
-import {clear} from "./utils/clear-events.js";
 import {parseEvent} from "./utils/parse-event.js";
-import {processEvent} from "./utils/process-event.js";
 
 /**
  * @class EmitProvider
@@ -42,7 +40,22 @@ export default class EmitProvider {
      * @param context {Object} - The binding context.
      */
     async parse(attr, context) {
-        parseEvent(attr, createEventIntent);
+        parseEvent(attr, this.getIntent);
+    }
+
+    async getIntent(attrValue) {
+        const parts = attrValue.split("(");
+        const event = parts[0];
+
+        if (parts.length === 1) return { provider: ".emit", value: { event, args: {} } };
+
+        // 2. remove the last bracket
+        parts[1] = parts[1].replace(")", "");
+
+        // 3. get the parameters
+        const value =  createEventParameters(event, parts[1])
+
+        return { provider: ".emit", value }
     }
 
     /**
@@ -52,22 +65,6 @@ export default class EmitProvider {
     async clear(uuid) {
         crs.binding.eventStore.clear(uuid);
     }
-}
-
-function createEventIntent(exp) {
-    // 1. get the events
-    const parts = exp.split("(");
-    const event = parts[0];
-
-    if (parts.length === 1) return { provider: ".emit", value: { event, args: {} } };
-
-    // 2. remove the last bracket
-    parts[1] = parts[1].replace(")", "");
-
-    // 3. get the parameters
-    const value =  createEventParameters(event, parts[1])
-
-    return { provider: ".emit", value }
 }
 
 function emit(intent, event) {

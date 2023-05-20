@@ -1,5 +1,3 @@
-import { clear } from "./utils/clear-events.js";
-import { processEvent } from "./utils/process-event.js";
 import {parseEvent} from "./utils/parse-event.js";
 
 /**
@@ -42,7 +40,16 @@ export default class CallProvider {
      * @param context {Object} - The binding context.
      */
     async parse(attr, context) {
-        parseEvent(attr, getIntent);
+        parseEvent(attr, this.getIntent);
+    }
+
+    /**
+     * Get the intent for the attribute value.
+     * @param attrValue {string} - The attribute value.
+     * @returns {Promise<{provider: string, value}>}
+     */
+    async getIntent(attrValue) {
+        return { provider: ".call", value: attrValue }
     }
 
     /**
@@ -52,10 +59,6 @@ export default class CallProvider {
     async clear(uuid) {
         crs.binding.eventStore.clear(uuid);
     }
-}
-
-function getIntent(attrValue) {
-    return { provider: ".call", value: attrValue }
 }
 
 /**

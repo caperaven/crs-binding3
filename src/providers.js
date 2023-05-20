@@ -63,11 +63,11 @@ export class Providers {
     }
 
     /**
-     * @function #getAttrModule - Get the attribute provider.
+     * @function getAttrModule - Get the attribute provider.
      * @param key {string} - The attribute name.
      * @returns {Promise<*>} - The attribute provider.
      */
-    async #getAttrModule(key) {
+    async getAttrModule(key) {
         const module = this.#attrProviders[key];
         if (typeof module !== "string") return module;
 
@@ -112,10 +112,10 @@ export class Providers {
      * @returns {Promise<*>}
      */
     async getAttrProvider(attrName) {
-        if (attrName === "ref") return await this.#getAttrModule("ref");
+        if (attrName === "ref") return await this.getAttrModule("ref");
 
         if (attrName.indexOf(".") == -1) return null;
-        if (this.#attrProviders[attrName] != null) return await this.#getAttrModule(attrName);
+        if (this.#attrProviders[attrName] != null) return await this.getAttrModule(attrName);
 
         for (const key of this.#attrPartialKeys) {
             // key is a regex so test it as a regex
@@ -128,13 +128,13 @@ export class Providers {
                 }
 
                 if (regex.test(attrName)) {
-                    return await this.#getAttrModule(key);
+                    return await this.getAttrModule(key);
                 }
             }
 
             // key is a partial string so use index
             if (attrName.indexOf(key) != -1) {
-                return await this.#getAttrModule(key);
+                return await this.getAttrModule(key);
             }
         }
     }
