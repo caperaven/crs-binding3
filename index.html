@@ -49,6 +49,10 @@
         hr {
             margin: 1rem 0;
         }
+
+        [hidden] {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -56,13 +60,13 @@
         <h1>crs binding</h1>
     </header>
 
-    <aside>
+    <aside hidden.if="$globals.menuVisible == false">
         <template for="item of menu">
             <a href="${item.hash}">${item.title}</a> <br/>
         </template>
     </aside>
 
-    <main autofocus tabindex="0" keyup.ctrl_m.process="{type: 'console', action: 'log', {messages: ['hello', 'world']}}">
+    <main autofocus tabindex="0" keyup.ctrl_m.setvalue="$globals.menuVisible = !$globals.menuVisible">
         <crs-router routes="app/routes.json"></crs-router>
     </main>
 
@@ -75,6 +79,8 @@
         import "./src/events/event-emitter.js";
         import "./packages/crs-process-api/crs-process-api.js";
         import "./packages/crs-process-api/action-systems/binding-actions.js";
+
+        crs.binding.data.setProperty(0, "menuVisible", true);
     </script>
 </body>
 </html>

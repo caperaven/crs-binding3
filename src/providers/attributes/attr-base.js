@@ -41,6 +41,17 @@ export class AttrBase {
         for (const [attrName, fnKey] of Object.entries(this.#store[uuid])) {
             const expo = crs.binding.functions.get(fnKey);
             const result = await expo.function(data);
+            const useValue = fnKey.indexOf("?") !== -1;
+
+            if (useValue === false) {
+                if (result === false) {
+                    element.removeAttribute(attrName);
+                    continue;
+                }
+
+                element.setAttribute(attrName, attrName);
+                continue;
+            }
 
             if (result != null) {
                 element.setAttribute(attrName, result);

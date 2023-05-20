@@ -2,7 +2,8 @@ const providersMap = {
     "call"      : ".call",
     "emit"      : ".emit",
     "post"      : ".post",
-    "process"   : ".process"
+    "process"   : ".process",
+    "setvalue"  : ".setvalue"
 }
 
 export default class KeyboardEventProvider {
