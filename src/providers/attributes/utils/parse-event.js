@@ -6,11 +6,11 @@
  * @param callback {Function} - The callback to create the intent.
  */
 export function parseEvent(attr, callback) {
-    const intent = callback(attr.value);
+    const element = attr.ownerElement;
+    const intent = callback(attr.value, element["__bid"]);
     const parts = attr.name.split(".");
     const event = parts[0];
 
-    const element = attr.ownerElement;
     const uuid = element["__uuid"];
     crs.binding.eventStore.register(event, uuid, intent);
     element.removeAttribute(attr.name);

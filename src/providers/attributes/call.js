@@ -39,7 +39,7 @@ export default class CallProvider {
      * @param attr {Attr} - The attribute to parse.
      * @param context {Object} - The binding context.
      */
-    async parse(attr, context) {
+    async parse(attr) {
         parseEvent(attr, this.getIntent);
     }
 

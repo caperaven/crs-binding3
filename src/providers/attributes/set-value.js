@@ -6,43 +6,26 @@
  * "$setvalue(state = attr('#input', 'value', true) == '1' ? 'state1' : 'state2')"
  * "$setvalue(state = prop('#input', 'value', true) == '1' ? 'state1' : 'state2')"
  */
+import {parseEvent} from "./utils/parse-event.js";
 
 export default class SetValueProvider {
-    #events = {};
-    #onEventHandler = this.#onEvent.bind(this);
-
-    async #onEvent(event) {
-        const target = event.composedPath()[0] || event.target;
-        const uuid = target["__uuid"];
-        if (uuid == null) return;
-
-        const data = this.#events[event.type];
-        const fn = data[uuid];
-        await fn?.(event, target);
+    async onEvent(event, bid, intent, target) {
+        await intent.value(event, target);
     }
 
-    async parse(attr, context) {
-        const parts = attr.name.split(".");
-        const event = parts[0];
+    async parse(attr) {
+        parseEvent(attr, this.getIntent);
+    }
 
-        if (this.#events[event] == null) {
-            document.addEventListener(event, this.#onEventHandler);
-            this.#events[event] = {}
-        }
+    getIntent(attrValue, bid) {
+        const src = createSourceFrom.call(this, attrValue, bid);
+        const value = new globalThis.crs.classes.AsyncFunction("event", "element", src);
 
-        const uuid = attr.ownerElement["__uuid"];
-        const src = createSourceFrom.call(this, attr.value, context.bid);
-        this.#events[event][uuid] = new globalThis.crs.classes.AsyncFunction("event", "element", src);
-
-        attr.ownerElement.removeAttribute(attr.name);
+        return { provider: ".setvalue", value }
     }
 
     async clear(uuid) {
-        for (const event of Object.keys(this.#events)) {
-            if (this.#events[event][uuid] != null) {
-                delete this.#events[event][uuid];
-            }
-        }
+        crs.binding.eventStore.clear(uuid);
     }
 }
 
