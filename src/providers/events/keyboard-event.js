@@ -9,21 +9,25 @@ export default class KeyboardEventProvider {
     async onEvent(event, bid, intent) {
         const keyParts = intent.keys.split("_");
 
-        for (const key of keyParts) {
-           switch (key.toLowerCase()) {
-                case "ctrl": {
-                    if (!event.ctrlKey) return;
-                }
-                case "alt": {
-                    if (!event.altKey) return;
-                }
-                case "shift": {
-                    if (!event.shiftKey) return;
-                }
-                default: {
-                    if (event.key.toLowerCase() != key.toLowerCase()) return;
-                }
-           }
+        for (let key of keyParts) {
+            key = key.toLowerCase();
+
+            if (key == "ctrl") {
+                if (!event.ctrlKey) return;
+                continue;
+            }
+
+            if (key == "alt") {
+                if (!event.altKey) return;
+                continue;
+            }
+
+            if (key == "shift") {
+                if (!event.shiftKey) return;
+                continue;
+            }
+
+            if (event.key.toLowerCase() != key) return;
         }
 
         const executeIntent = intent.value;
