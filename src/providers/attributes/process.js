@@ -24,7 +24,7 @@ export default class ProcessProvider {
         parseEvent(attr, this.getIntent);
     }
 
-    async getIntent(attrValue) {
+    getIntent(attrValue) {
         if (attrValue.startsWith("{")) {
             return createStepIntent(attrValue);
         }

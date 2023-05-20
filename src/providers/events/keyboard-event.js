@@ -33,6 +33,9 @@ export default class KeyboardEventProvider {
         const executeIntent = intent.value;
         const module = await crs.binding.providers.getAttrModule(executeIntent.provider);
         await module.onEvent(event, bid, executeIntent);
+
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     async parse(attr) {

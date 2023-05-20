@@ -62,7 +62,7 @@
         </template>
     </aside>
 
-    <main autofocus tabindex="0">
+    <main autofocus tabindex="0" keyup.ctrl_m.process="{type: 'console', action: 'log', {messages: ['hello', 'world']}}">
         <crs-router routes="app/routes.json"></crs-router>
     </main>
 

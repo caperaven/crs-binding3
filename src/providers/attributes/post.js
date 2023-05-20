@@ -21,7 +21,7 @@ export default class PostProvider {
         parseEvent(attr, this.getIntent);
     }
 
-    async getIntent(attrValue) {
+    getIntent(attrValue) {
         const parts = attrValue.split("(");
         const queryParts = parts[0].split("[");
         const event = queryParts[0].trim();

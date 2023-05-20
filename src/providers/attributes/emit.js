@@ -43,7 +43,7 @@ export default class EmitProvider {
         parseEvent(attr, this.getIntent);
     }
 
-    async getIntent(attrValue) {
+    getIntent(attrValue) {
         const parts = attrValue.split("(");
         const event = parts[0];
 

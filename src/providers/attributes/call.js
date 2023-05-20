@@ -48,7 +48,7 @@ export default class CallProvider {
      * @param attrValue {string} - The attribute value.
      * @returns {Promise<{provider: string, value}>}
      */
-    async getIntent(attrValue) {
+    getIntent(attrValue) {
         return { provider: ".call", value: attrValue }
     }
 
