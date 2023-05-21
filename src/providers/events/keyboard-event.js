@@ -8,28 +8,16 @@ const providersMap = {
 
 export default class KeyboardEventProvider {
     async onEvent(event, bid, intent) {
-        const keyParts = intent.keys.split("_");
+        const keys = [];
+        if (event.ctrlKey) keys.push("ctrl");
+        if (event.altKey) keys.push("alt");
+        if (event.shiftKey) keys.push("shift");
+        keys.push(event.key.toLowerCase());
+        const key = keys.join("_");
 
-        for (let key of keyParts) {
-            key = key.toLowerCase();
+        intent = intent.find(i => i.keys == key);
 
-            if (key == "ctrl") {
-                if (!event.ctrlKey) return;
-                continue;
-            }
-
-            if (key == "alt") {
-                if (!event.altKey) return;
-                continue;
-            }
-
-            if (key == "shift") {
-                if (!event.shiftKey) return;
-                continue;
-            }
-
-            if (event.key.toLowerCase() != key) return;
-        }
+        if (!intent) return;
 
         const executeIntent = intent.value;
         const module = await crs.binding.providers.getAttrModule(executeIntent.provider);
@@ -58,7 +46,7 @@ export default class KeyboardEventProvider {
 
         const uuid = attr.ownerElement["__uuid"];
 
-        crs.binding.eventStore.register(event, uuid, intentObj)
+        crs.binding.eventStore.register(event, uuid, intentObj, true)
     }
 
     async clear(uuid) {

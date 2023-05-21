@@ -17,7 +17,9 @@ export class EventStore {
 
         if (intent != null) {
             const bid = target["__bid"];
-            const provider = intent.provider.replaceAll("\\", "");
+
+            let provider = Array.isArray(intent) ? intent[0].provider : intent.provider;
+            provider = provider.replaceAll("\\", "");
             const providerInstance = crs.binding.providers.attrProviders[provider];
             await providerInstance.onEvent(event, bid, intent, target);
         }
@@ -27,10 +29,16 @@ export class EventStore {
         return this.#store[event]?.[uuid];
     }
 
-    register(event, uuid, intent) {
+    register(event, uuid, intent, isCollection = false) {
         if (this.#store[event] == null) {
             document.addEventListener(event, this.#eventHandler);
             this.#store[event] = {};
+        }
+
+        if (isCollection) {
+            this.#store[event][uuid] ||= [];
+            this.#store[event][uuid].push(intent);
+            return;
         }
 
         this.#store[event][uuid] = intent;
