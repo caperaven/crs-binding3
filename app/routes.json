@@ -50,6 +50,11 @@
       "view": "inflation-manager"
     },
     {
+      "title": "static inflation",
+      "hash": "#static-inflation",
+      "view": "static-inflation"
+    },
+    {
       "title": "crs-widget",
       "hash": "#crs-widget",
       "view": "crs-widget"

@@ -1,0 +1,18 @@
+<style>
+    .green {
+        color: green;
+    }
+</style>
+
+<h2>${title}</h2>
+
+<template>
+    <div classlist.if="person.age > 20 ? 'green'">First Name</div>
+    <div>${person.firstName}</div>
+    <div>Last Name</div>
+    <div>${person.lastName}</div>
+    <div>Age</div>
+    <div style.color.case="person.age <= 30:'green', person.age <= 50: 'red'">${person.age}</div>
+</template>
+<button click.call="build">Build and Inflate</button>
+<div ref="container"></div>
