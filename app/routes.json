@@ -75,6 +75,11 @@
       "view": "keyboard"
     },
     {
+      "title": "custom-template",
+      "hash": "#custom-template",
+      "view": "custom-template"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

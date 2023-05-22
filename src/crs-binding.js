@@ -21,6 +21,7 @@ import {IdleTaskManager} from "./idle/idleTaskManager.js";
 import {EventStore} from "./store/event-store.js";
 import {getConverterParts} from "./utils/converter-parts.js";
 import {relativePathFrom} from "./utils/relative-path.js";
+import {TemplateProviderStore} from "./providers/element/template-provider-store.js";
 
 globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
@@ -42,6 +43,11 @@ globalThis.crs.binding = {
      * @property enableStore - Enable the event store
      */
     eventStore: new EventStore(),
+
+    /**
+     * @property templateInflationStore - Register custom template element for the parser to handle
+     */
+    templateProviders: new TemplateProviderStore(),
 
     /**
      * @property ignore - elements to ignore when parsing.
@@ -107,6 +113,7 @@ globalThis.crs.binding = {
         {
             "template[for]"     : "$root/providers/element/template-repeat-for.js",
             "template[src]"     : "$root/providers/element/template-src.js",
+            "template"          : "$root/providers/element/template.js",
         }
     ),
 
