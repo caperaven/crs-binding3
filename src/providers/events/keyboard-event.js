@@ -46,7 +46,8 @@ export default class KeyboardEventProvider {
 
         const uuid = attr.ownerElement["__uuid"];
 
-        crs.binding.eventStore.register(event, uuid, intentObj, true)
+        crs.binding.eventStore.register(event, uuid, intentObj, true);
+        attr.ownerElement.removeAttribute(attr.name);
     }
 
     async clear(uuid) {

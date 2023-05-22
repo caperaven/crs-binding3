@@ -1,6 +1,7 @@
 {
 	"scripts": {
 		"test": "deno test --allow-read --coverage=_coverage",
-		"coverage": "deno coverage _coverage --lcov --output=cov_profile.lcov"
+		"coverage": "deno coverage _coverage --lcov --output=cov_profile.lcov",
+		"build-bundle": "deno run --allow-read --allow-write --allow-env --allow-run ./build/package.js"
 	}
 }
