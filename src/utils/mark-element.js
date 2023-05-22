@@ -43,6 +43,8 @@ export function unmarkElement(element) {
     if (crs.binding.elements[uuid]) {
         delete crs.binding.elements[uuid];
     }
+
+    crs.binding.utils.disposeProperties(element);
 }
 
 /**

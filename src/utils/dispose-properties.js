@@ -12,6 +12,9 @@ export function disposeProperties(obj) {
     if (obj == null || obj.autoDispose == false) return;
     if (typeof obj != "object") return;
     if (Object.isFrozen(obj)) return;
+    if (Array.isArray(obj)) {
+        return obj.length = 0;
+    }
 
     const properties = Object.getOwnPropertyNames(obj).filter(name => ignoreDispose.indexOf(name) == -1);
 
