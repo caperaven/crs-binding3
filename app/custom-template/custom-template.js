@@ -1,12 +1,12 @@
 export default class CustomTemplateViewModel extends crs.classes.ViewBase {
-    #customTemplateFun(element) {
+    #customTemplate(element) {
         const newElement = document.createElement("div");
-        newElement.innerHTML = "This is a custom template";
+        newElement.innerText = "This is a custom template";
         element.parentElement.replaceChild(newElement, element);
     }
 
     preLoad() {
-        crs.binding.templateProviders.add("test", this.#customTemplateFun);
+        crs.binding.templateProviders.add("test", this.#customTemplate);
     }
 
     disconnectedCallback() {

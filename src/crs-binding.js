@@ -21,7 +21,7 @@ import {IdleTaskManager} from "./idle/idleTaskManager.js";
 import {EventStore} from "./store/event-store.js";
 import {getConverterParts} from "./utils/converter-parts.js";
 import {relativePathFrom} from "./utils/relative-path.js";
-import {TemplateProviderStore} from "./providers/element/template-provider-store.js";
+import {TemplateProviderStore} from "./store/template-provider-store.js";
 
 globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
