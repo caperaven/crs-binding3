@@ -16,7 +16,7 @@ export function disposeProperties(obj) {
     const properties = Object.getOwnPropertyNames(obj).filter(name => ignoreDispose.indexOf(name) == -1);
 
     for (let property of properties) {
-        const pObj = obj[property];
+        let pObj = obj[property];
 
         if (typeof pObj == "object") {
             if (Array.isArray(pObj) && pObj.length > 0) {
@@ -28,6 +28,9 @@ export function disposeProperties(obj) {
 
                 pObj.length = 0;
             }
+            else if (pObj.constructor.name === "Set" || pObj.constructor.name === "Map") {
+                pObj.clear();
+            }
             else {
                 if (pObj.dispose != null) {
                     pObj.dispose();
@@ -37,6 +40,7 @@ export function disposeProperties(obj) {
             }
         }
 
+        pObj = null;
         delete obj[property];
     }
 }

@@ -85,6 +85,11 @@
       "view": "custom-template"
     },
     {
+      "title": "observe-change",
+      "hash": "#observe-change",
+      "view": "observe-change"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

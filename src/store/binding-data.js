@@ -78,7 +78,12 @@ export class BindingData {
         // item found on full path
         if (uuids != null) {
             for (const uuid of uuids.values()) {
-                await crs.binding.providers.update(uuid, property);
+                if (typeof uuid === "function") {
+                    await uuid();
+                }
+                else {
+                    await crs.binding.providers.update(uuid, property);
+                }
             }
 
             return;
@@ -208,9 +213,11 @@ export class BindingData {
 
         crs.binding.utils.disposeProperties(this.#data[id]);
         crs.binding.utils.disposeProperties(this.#context[id]);
+        crs.binding.utils.disposeProperties(this.#callbacks[id]);
 
         delete this.#data[id];
         delete this.#context[id];
+        delete this.#callbacks[id];
     }
 
     /**
@@ -303,5 +310,36 @@ export class BindingData {
         if (context == null || context.boundElements == null) return;
 
         await this.#performUpdate(bid, property);
+    }
+
+    /**
+     * @method addCallback - add a function to call when the property on the context changes
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property to add the callback for
+     * @param callback {function} - The callback to add
+     * @returns {Promise<void>}
+     */
+    async addCallback(bid, property, callback) {
+        const obj = this.#callbacks[bid];
+
+        if (obj[property] == null) {
+            obj[property] = new Set();
+        }
+
+        obj[property].add(callback);
+    }
+
+    /**
+     * @method removeCallback - remove a function to call when the property on the context changes
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property to remove the callback for
+     * @param callback {function} - The callback to remove
+     * @returns {Promise<void>}
+     */
+    async removeCallback(bid, property, callback) {
+        const obj = this.#callbacks[bid];
+        if (obj[property] == null) return;
+
+        obj[property].delete(callback);
     }
 }
