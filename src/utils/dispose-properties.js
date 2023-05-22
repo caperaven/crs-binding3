@@ -10,29 +10,37 @@ const ignoreDispose = ["_element"];
  */
 export function disposeProperties(obj) {
     if (obj == null || obj.autoDispose == false) return;
+
+    // ignore primitives
+    // this will include things like strings, numbers, ...
     if (typeof obj != "object") return;
+
+    // ignore frozen objects as they can not be changed
     if (Object.isFrozen(obj)) return;
+
+    // dispose of array items
     if (Array.isArray(obj)) {
-        return obj.length = 0;
+        return disposeArray(obj);
     }
 
+    // dispose of set and map items
+    if (obj.constructor.name === "Set" || obj.constructor.name === "Map") {
+        return disposeMapSet(obj);
+    }
+
+    // get all properties of the object that we must dispose of.
+    // ignore properties that are in the ignoreDispose array.
     const properties = Object.getOwnPropertyNames(obj).filter(name => ignoreDispose.indexOf(name) == -1);
 
     for (let property of properties) {
         let pObj = obj[property];
 
         if (typeof pObj == "object") {
-            if (Array.isArray(pObj) && pObj.length > 0) {
-                if (typeof pObj[0] == "object") {
-                    for (const item of pObj) {
-                        disposeProperties(item);
-                    }
-                }
-
-                pObj.length = 0;
+            if (Array.isArray(pObj)) {
+                disposeArray(pObj);
             }
             else if (pObj.constructor.name === "Set" || pObj.constructor.name === "Map") {
-                pObj.clear();
+                disposeMapSet(pObj);
             }
             else {
                 if (pObj.dispose != null) {
@@ -46,4 +54,20 @@ export function disposeProperties(obj) {
         pObj = null;
         delete obj[property];
     }
+}
+
+function disposeArray(array) {
+    if (array.length === 0) return;
+
+    for (const item of array) {
+        disposeProperties(item);
+    }
+
+    array = null;
+}
+
+function disposeMapSet(obj) {
+    obj.forEach(item => disposeProperties(item));
+    obj.clear();
+    obj = null;
 }
