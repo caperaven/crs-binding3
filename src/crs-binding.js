@@ -19,6 +19,8 @@ import {TemplatesManager} from "./managers/templates-manager.js";
 import {TemplateInflationStore} from "./store/template-inflation-store.js";
 import {IdleTaskManager} from "./idle/idleTaskManager.js";
 import {EventStore} from "./store/event-store.js";
+import {getConverterParts} from "./utils/converter-parts.js";
+import {relativePathFrom} from "./utils/relative-path.js";
 
 globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
@@ -138,7 +140,9 @@ globalThis.crs.binding = {
         setValueOnPath,
         getPathOfFile,
         markElement,
-        unmarkElement
+        unmarkElement,
+        getConverterParts,
+        relativePathFrom
     },
 
     /**
