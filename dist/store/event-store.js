@@ -1,1 +1,46 @@
-class d{#t={};#r=this.#e.bind(this);async#e(t){const r=t.composedPath()[0]||t.target,e=r.__uuid;if(e==null)return;const s=this.#t[t.type][e];if(s!=null){const o=r.__bid;let i=Array.isArray(s)?s[0].provider:s.provider;i=i.replaceAll("\\",""),await crs.binding.providers.attrProviders[i].onEvent(t,o,s,r)}}getIntent(t,r){return this.#t[t]?.[r]}register(t,r,e,n=!1){if(this.#t[t]==null&&(document.addEventListener(t,this.#r),this.#t[t]={}),n){this.#t[t][r]||=[],this.#t[t][r].push(e);return}this.#t[t][r]=e}clear(t){const r=crs.binding.elements[t];if(r?.__events==null)return;const e=r.__events;for(const n of e)delete this.#t[n][t]}}export{d as EventStore};
+class EventStore {
+  #store = {};
+  #eventHandler = this.#onEvent.bind(this);
+  async #onEvent(event) {
+    const target = event.composedPath()[0] || event.target;
+    const uuid = target["__uuid"];
+    if (uuid == null)
+      return;
+    const data = this.#store[event.type];
+    const intent = data[uuid];
+    if (intent != null) {
+      const bid = target["__bid"];
+      let provider = Array.isArray(intent) ? intent[0].provider : intent.provider;
+      provider = provider.replaceAll("\\", "");
+      const providerInstance = crs.binding.providers.attrProviders[provider];
+      await providerInstance.onEvent(event, bid, intent, target);
+    }
+  }
+  getIntent(event, uuid) {
+    return this.#store[event]?.[uuid];
+  }
+  register(event, uuid, intent, isCollection = false) {
+    if (this.#store[event] == null) {
+      document.addEventListener(event, this.#eventHandler);
+      this.#store[event] = {};
+    }
+    if (isCollection) {
+      this.#store[event][uuid] ||= [];
+      this.#store[event][uuid].push(intent);
+      return;
+    }
+    this.#store[event][uuid] = intent;
+  }
+  clear(uuid) {
+    const element = crs.binding.elements[uuid];
+    if (element?.__events == null)
+      return;
+    const events = element.__events;
+    for (const event of events) {
+      delete this.#store[event][uuid];
+    }
+  }
+}
+export {
+  EventStore
+};

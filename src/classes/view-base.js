@@ -51,7 +51,8 @@ export class ViewBase {
     /**
      * @constructor
      */
-    constructor() {
+    constructor(element) {
+        this.#element = element;
         this.#bid = crs.binding.data.addObject(this.constructor.name);
         crs.binding.data.addContext(this.#bid, this);
     }
