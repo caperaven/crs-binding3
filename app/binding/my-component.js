@@ -1,7 +1,9 @@
 import "./../../src/classes/bindable-element.js"
 
 export class MyComponent extends crs.classes.BindableElement {
-
+    get shadowDom() {
+        return true;
+    }
     set value(newValue) {
         console.log("one way binding: ", newValue);
     }

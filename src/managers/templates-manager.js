@@ -41,7 +41,7 @@ export class TemplatesManager {
                 const template = document.createElement("template");
                 template.innerHTML = html;
 
-                this.#store[name].template = template;
+                this.#store[name].template = { template, html }
 
                 for (const callback of this.#store[name].queue) {
                     callback();
@@ -49,16 +49,16 @@ export class TemplatesManager {
 
                 delete this.#store[name].loading;
                 delete this.#store[name].queue;
-                resolve(getTemplateText(this.#store[name].template));
+                resolve(html);
             }
 
             if (this.#store[name].template == null) {
                 this.#store[name].queue.push(() => {
-                    resolve(getTemplateText(this.#store[name].template));
+                    resolve(this.#store[name].template.html);
                 })
             }
             else {
-                resolve(getTemplateText(this.#store[name].template));
+                resolve(this.#store[name].template.html);
             }
         })
     }
@@ -119,18 +119,10 @@ export class TemplatesManager {
 
         if (this.#store[name].count === 0) {
             this.#store[name].count = null;
+            this.#store[name].template.template = null;
+            this.#store[name].template.html = null;
             this.#store[name].template = null;
             delete this.#store[name];
         }
     }
-}
-
-/**
- * @function - getTemplateText Get the innerHTML or textContent of a template.
- * @param template {HTMLTemplateElement} - The template to get the text from.
- * @returns {string}
- */
-function getTemplateText(template) {
-    const copy = template.content.cloneNode(true);
-    return copy.innerHTML || copy.textContent;
 }
