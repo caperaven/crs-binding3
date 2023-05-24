@@ -8,9 +8,10 @@ export class EventStore {
     #eventHandler = this.#onEvent.bind(this);
 
     async #onEvent(event) {
-        const target = event.composedPath()[0] || event.target;
+        const target = getTarget(event);
+        if (target == null) return;
+
         const uuid = target["__uuid"];
-        if (uuid == null) return;
 
         const data = this.#store[event.type];
         const intent = data[uuid];
@@ -53,5 +54,12 @@ export class EventStore {
         for (const event of events) {
             delete this.#store[event][uuid];
         }
+    }
+}
+
+function getTarget(event) {
+    const elements = event.composedPath();
+    for (const element of elements) {
+        if (element.__uuid != null) return element;
     }
 }

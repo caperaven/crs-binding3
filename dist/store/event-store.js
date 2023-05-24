@@ -2,10 +2,10 @@ class EventStore {
   #store = {};
   #eventHandler = this.#onEvent.bind(this);
   async #onEvent(event) {
-    const target = event.composedPath()[0] || event.target;
-    const uuid = target["__uuid"];
-    if (uuid == null)
+    const target = getTarget(event);
+    if (target == null)
       return;
+    const uuid = target["__uuid"];
     const data = this.#store[event.type];
     const intent = data[uuid];
     if (intent != null) {
@@ -39,6 +39,13 @@ class EventStore {
     for (const event of events) {
       delete this.#store[event][uuid];
     }
+  }
+}
+function getTarget(event) {
+  const elements = event.composedPath();
+  for (const element of elements) {
+    if (element.__uuid != null)
+      return element;
   }
 }
 export {
