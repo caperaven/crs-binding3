@@ -46,6 +46,8 @@ async function attributes(path, element, preCode, code, ctxName) {
       await classListIf(attr, path, preCode, code, ctxName);
     } else if (attr.nodeName.indexOf(".if") != -1) {
       await ifAttribute(attr, path, preCode, code, ctxName);
+    } else if (attr.nodeName.indexOf(".attr") != -1 || attr.nodeName.indexOf(".one-way") != -1) {
+      await attrAttribute(attr, path, preCode, code, ctxName);
     }
   }
 }
@@ -79,6 +81,11 @@ async function ifAttribute(attr, path, preCode, code, ctxName) {
   preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
   const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
   code.push([`${path}.setAttribute("${attr.nodeName.replace(".if", "")}",`, exp.expression, ");"].join(""));
+}
+async function attrAttribute(attr, path, preCode, code, ctxName) {
+  preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
+  const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+  code.push([`${path}.setAttribute("${attr.nodeName.replace(".attr", "")}",`, exp.expression, ");"].join(""));
 }
 async function styles(attr, path, preCode, code, ctxName) {
   const parts = attr.nodeName.split(".");

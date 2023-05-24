@@ -2,18 +2,20 @@ class EventStore {
   #store = {};
   #eventHandler = this.#onEvent.bind(this);
   async #onEvent(event) {
-    const target = getTarget(event);
-    if (target == null)
+    const targets = getTargets(event);
+    if (targets.length === 0)
       return;
-    const uuid = target["__uuid"];
-    const data = this.#store[event.type];
-    const intent = data[uuid];
-    if (intent != null) {
-      const bid = target["__bid"];
-      let provider = Array.isArray(intent) ? intent[0].provider : intent.provider;
-      provider = provider.replaceAll("\\", "");
-      const providerInstance = crs.binding.providers.attrProviders[provider];
-      await providerInstance.onEvent(event, bid, intent, target);
+    for (const target of targets) {
+      const uuid = target["__uuid"];
+      const data = this.#store[event.type];
+      const intent = data[uuid];
+      if (intent != null) {
+        const bid = target["__bid"];
+        let provider = Array.isArray(intent) ? intent[0].provider : intent.provider;
+        provider = provider.replaceAll("\\", "");
+        const providerInstance = crs.binding.providers.attrProviders[provider];
+        await providerInstance.onEvent(event, bid, intent, target);
+      }
     }
   }
   getIntent(event, uuid) {
@@ -41,12 +43,8 @@ class EventStore {
     }
   }
 }
-function getTarget(event) {
-  const elements = event.composedPath();
-  for (const element of elements) {
-    if (element.__uuid != null)
-      return element;
-  }
+function getTargets(event) {
+  return event.composedPath().filter((element) => element["__uuid"] != null);
 }
 export {
   EventStore
