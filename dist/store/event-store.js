@@ -1,6 +1,9 @@
 class EventStore {
   #store = {};
   #eventHandler = this.#onEvent.bind(this);
+  get store() {
+    return this.#store;
+  }
   async #onEvent(event) {
     const targets = getTargets(event);
     if (targets.length === 0)

@@ -1,3 +1,5 @@
+import "./../expressions/code-factories/inflation.js";
+
 /**
  * add remove syntax if you want to remove a element
  * add and remove elements from the dom

@@ -1,4 +1,4 @@
-const ignoreElements = ["STYLE", "CRS-ROUTER"];
+const ignoreElements = ["STYLE", "CRS-ROUTER", "SCRIPT"];
 async function parseElement(element, context, options) {
   if (element["__inflated"] === true || ignoreElements.indexOf(element.nodeName) != -1)
     return;

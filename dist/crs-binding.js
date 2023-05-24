@@ -256,7 +256,7 @@ var Providers = class {
 };
 
 // src/parsers/element.js
-var ignoreElements = ["STYLE", "CRS-ROUTER"];
+var ignoreElements = ["STYLE", "CRS-ROUTER", "SCRIPT"];
 async function parseElement(element, context, options) {
   if (element["__inflated"] === true || ignoreElements.indexOf(element.nodeName) != -1)
     return;
@@ -418,6 +418,8 @@ var BindingData = class {
   remove(id) {
     id = this.#getContextId(id);
     const context = this.#context[id];
+    if (context == null)
+      return;
     if (context.boundElements != null) {
       for (const uuid of context.boundElements) {
         delete this.#elementProviders[uuid];
@@ -724,6 +726,8 @@ async function sanitize(exp, ctxName = "context") {
         expression.push(token.value.replace("$parent", "parent"));
       } else if (ctxName !== "context" && token.value.indexOf(`${ctxName}.`) != -1) {
         expression.push(token.value);
+      } else if (token.value === "new") {
+        expression.push(token.value);
       } else {
         expression.push(`${ctxName}.${token.value}`);
       }
@@ -854,8 +858,11 @@ function disposeProperties(obj) {
         disposeProperties(pObj);
       }
     }
-    pObj = null;
-    delete obj[property];
+    try {
+      pObj = null;
+      delete obj[property];
+    } catch {
+    }
   }
 }
 function disposeArray(array) {
@@ -1062,20 +1069,20 @@ var TemplatesManager = class {
         const html = await fetch(path).then((result) => result.text());
         const template = document.createElement("template");
         template.innerHTML = html;
-        this.#store[name].template = template;
+        this.#store[name].template = { template, html };
         for (const callback of this.#store[name].queue) {
           callback();
         }
         delete this.#store[name].loading;
         delete this.#store[name].queue;
-        resolve(getTemplateText(this.#store[name].template));
+        resolve(html);
       }
       if (this.#store[name].template == null) {
         this.#store[name].queue.push(() => {
-          resolve(getTemplateText(this.#store[name].template));
+          resolve(this.#store[name].template.html);
         });
       } else {
-        resolve(getTemplateText(this.#store[name].template));
+        resolve(this.#store[name].template.html);
       }
     });
   }
@@ -1106,15 +1113,13 @@ var TemplatesManager = class {
     this.#store[name].count -= 1;
     if (this.#store[name].count === 0) {
       this.#store[name].count = null;
+      this.#store[name].template.template = null;
+      this.#store[name].template.html = null;
       this.#store[name].template = null;
       delete this.#store[name];
     }
   }
 };
-function getTemplateText(template) {
-  const copy = template.content.cloneNode(true);
-  return copy.innerHTML || copy.textContent;
-}
 
 // src/store/template-inflation-store.js
 var TemplateInflationStore = class {
@@ -1194,6 +1199,9 @@ var IdleTaskManager = class {
 var EventStore = class {
   #store = {};
   #eventHandler = this.#onEvent.bind(this);
+  get store() {
+    return this.#store;
+  }
   async #onEvent(event) {
     const targets = getTargets(event);
     if (targets.length === 0)

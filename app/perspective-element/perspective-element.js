@@ -8,4 +8,15 @@ export default class PerspectiveElementViewModel extends crs.classes.ViewBase {
     async preLoad() {
         this.setProperty("view", "view1");
     }
+
+    async load() {
+        requestAnimationFrame(() => {
+            console.log(this.perspectiveContainer);
+            super.load();
+        });
+    }
+
+    async viewLoaded(event) {
+        console.log("view loaded", event);
+    }
 }

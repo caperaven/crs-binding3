@@ -26,7 +26,7 @@ describe("parse element tests", async () => {
 
     it ("element parser", async () => {
         const element = new ElementMock("test");
-        element.matches = () => true;
+        element.setAttribute("click.call", "fn");
 
         await crs.binding.parsers.parseElement(element, { bid: 0 }, { ctxName: "context" });
         assert(element["__uuid"] != null);

@@ -204,6 +204,8 @@ export class BindingData {
         id = this.#getContextId(id);
 
         const context = this.#context[id];
+        if (context == null) return;
+
         if (context.boundElements != null) {
             for (const uuid of context.boundElements) {
                 delete this.#elementProviders[uuid];
@@ -226,6 +228,10 @@ export class BindingData {
      * @param property {string} - The property to get the value for
      */
     getProperty(id, property) {
+        if (property === "bid") {
+            return id;
+        }
+
         if (property.indexOf(GLOBALS) !== -1) {
             id = 0;
             property = property.replace(GLOBALS, "");

@@ -38,6 +38,8 @@ async function sanitize(exp, ctxName = "context") {
         expression.push(token.value.replace("$parent", "parent"));
       } else if (ctxName !== "context" && token.value.indexOf(`${ctxName}.`) != -1) {
         expression.push(token.value);
+      } else if (token.value === "new") {
+        expression.push(token.value);
       } else {
         expression.push(`${ctxName}.${token.value}`);
       }

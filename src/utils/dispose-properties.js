@@ -51,8 +51,13 @@ export function disposeProperties(obj) {
             }
         }
 
-        pObj = null;
-        delete obj[property];
+        try {
+            pObj = null;
+            delete obj[property];
+        }
+        catch {
+            // ignore
+        }
     }
 }
 

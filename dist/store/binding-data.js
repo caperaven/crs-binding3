@@ -93,6 +93,8 @@ class BindingData {
   remove(id) {
     id = this.#getContextId(id);
     const context = this.#context[id];
+    if (context == null)
+      return;
     if (context.boundElements != null) {
       for (const uuid of context.boundElements) {
         delete this.#elementProviders[uuid];

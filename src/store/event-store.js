@@ -7,6 +7,10 @@ export class EventStore {
     #store = {};
     #eventHandler = this.#onEvent.bind(this);
 
+    get store() {
+        return this.#store;
+    }
+
     async #onEvent(event) {
         const targets = getTargets(event);
         if (targets.length === 0) return;
@@ -34,7 +38,7 @@ export class EventStore {
 
     register(event, uuid, intent, isCollection = false) {
         if (this.#store[event] == null) {
-            document.addEventListener(event, this.#eventHandler);
+            document.addEventListener(event, this.#eventHandler, true);
             this.#store[event] = {};
         }
 

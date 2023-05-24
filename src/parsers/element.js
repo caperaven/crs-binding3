@@ -1,4 +1,4 @@
-const ignoreElements = ["STYLE", "CRS-ROUTER"];
+const ignoreElements = ["STYLE", "CRS-ROUTER", "SCRIPT"];
 
 /**
  * @function parseElement - Parses an element and its children.

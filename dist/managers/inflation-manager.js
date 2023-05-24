@@ -1,3 +1,4 @@
+import "./../expressions/code-factories/inflation.js";
 class InflationManager {
   async register(id, template, ctxName = "context") {
     const fn = await crs.binding.expression.inflationFactory(template, ctxName);

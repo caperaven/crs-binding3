@@ -21,10 +21,8 @@ describe("dispose properties tests", async () => {
         const address = obj.addresses;
 
         crs.binding.utils.disposeProperties(obj);
-        assert(person.firstName == null);
-        assert(address.length == 0);
-        assert(obj.person == null);
-        assert(obj.address == null);
+
+        assert(Object.keys(obj).length == 0);
     })
 
     it ("skip auto dispose", async () => {

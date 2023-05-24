@@ -14,14 +14,14 @@
 
 <div class="padded">current view = ${view}</div>
 
-<perspective-element view.bind="view">
+<perspective-element view.bind="view" ctx.once="bid" view-loaded.call="viewLoaded" ref="perspectiveContainer">
     <template id="view1">
-        <h2>View 1</h2>
+        <h2>View 1 Content</h2>
     </template>
     <template id="view2">
-        <h2>View 2</h2>
+        <h2>View 2 Content</h2>
     </template>
     <template id="view3">
-        <h2>View 3</h2>
+        <h2>View 3 Content</h2>
     </template>
 </perspective-element>

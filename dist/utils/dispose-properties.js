@@ -27,8 +27,11 @@ function disposeProperties(obj) {
         disposeProperties(pObj);
       }
     }
-    pObj = null;
-    delete obj[property];
+    try {
+      pObj = null;
+      delete obj[property];
+    } catch {
+    }
   }
 }
 function disposeArray(array) {

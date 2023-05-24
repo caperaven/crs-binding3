@@ -358,3 +358,13 @@ Deno.test("sanitize - composite string", async () => {
     const result = await sanitize("Selected Animal Value: ${selectedAnimal}");
     assertEquals(result.expression, "Selected Animal Value: ${context.selectedAnimal}");
 })
+
+Deno.test("sanitize - new keyword", async () => {
+    const result = await sanitize("${new Date().toLocaleDateString() === date.toLocaleDateString() ? '0': tabindex == null ? '-1': tabindex}");
+    assertEquals(result.expression, "${new Date().toLocaleDateString() === context.date.toLocaleDateString() ? '0': context.tabindex == null ? '-1': context.tabindex}");
+})
+
+Deno.test("sanitize - case complex", async () => {
+    const result = await sanitize("current == false: 'non-current-day', new Date().toLocaleDateString() === date.toLocaleDateString(): 'today'");
+    assertEquals(result.expression, "context.current == false: 'non-current-day', new Date().toLocaleDateString() === context.date.toLocaleDateString(): 'today'");
+})

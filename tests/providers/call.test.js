@@ -37,13 +37,13 @@ describe("call provider tests", async () => {
     })
 
     it("init", async () => {
-        assert(provider.events.click != null);
+        assert(crs.binding.eventStore.store.click != null);
     })
 
     it("click", async () => {
-        assert(provider.events.click != null);
+        assert(crs.binding.eventStore.store.click != null);
 
-        await document.performEvent("click", element.children[0], {type: "click"});
+        await document.performEvent("click", element.children[0], {type: "click", composedPath: () => [element.children[0]]});
         assertEquals(message, "log");
     })
 })

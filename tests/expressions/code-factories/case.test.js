@@ -44,4 +44,13 @@ describe("case factory tests", async () => {
         crs.binding.expression.release(exp);
         assertEquals(crs.binding.functions.get(exp.key), undefined);
     })
+
+    it ("complex statement", async () => {
+        let exp = await crs.binding.expression.caseFactory("current == false: 'non-current-day', new Date().toLocaleDateString() === date.toLocaleDateString(): 'today'");
+        assertEquals(crs.binding.functions.get(exp.key).count, 1);
+
+        const key = exp.key;
+        crs.binding.expression.release(exp);
+        assertEquals(crs.binding.functions.get(key), undefined);
+    })
 })
