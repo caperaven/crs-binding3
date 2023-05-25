@@ -248,6 +248,8 @@ export class BindingData {
      * @param value {any} - The value to set
      */
     async setProperty(id, property, value) {
+        const oldValue = this.getProperty(id, property);
+
         let setProperty = property;
 
         if (setProperty.indexOf(GLOBALS) !== -1) {
@@ -265,6 +267,10 @@ export class BindingData {
 
         crs.binding.utils.setValueOnPath(this.getData(id)?.data, setProperty, value);
         await this.#performUpdate(id, setProperty);
+
+        const context = this.#context[id];
+        context["propertyChanged"]?.(property, value, oldValue);
+        context[`${property}Changed`]?.(value, oldValue);
     }
 
     /**
