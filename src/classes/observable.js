@@ -10,7 +10,7 @@
  */
 export class Observable {
     #events = [];
-    #eventEmitter;
+    #eventEmitter = new EventTarget();
 
     /**
      * @property events - The events that are currently being listened to.
@@ -18,13 +18,6 @@ export class Observable {
      */
     get events() {
         return Object.freeze(this.#events);
-    }
-
-    /**
-     * @constructor
-     */
-    constructor() {
-        this.#eventEmitter = new EventTarget();
     }
 
     /**

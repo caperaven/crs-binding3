@@ -4,7 +4,6 @@
  */
 export default class TemplateSrcProvider {
     async parse(element, context) {
-        console.log("TemplateSrcProvider.parse", element, context);
         crs.binding.utils.unmarkElement(element);
 
         const path = await getPath(element, context);

@@ -28,9 +28,10 @@ export default class KeyboardEventProvider {
         const name = attr.name;
         const value = attr.value;
         const nameParts = name.split(".");
+
         const event = nameParts[0];
-        const keys = nameParts[1];
-        const provider = nameParts[2];
+        const keys = nameParts.length == 3 ? nameParts[1] : [];
+        const provider = nameParts.length == 3 ? nameParts[2] : nameParts[1];
 
         const module = await crs.binding.providers.getAttrModule(providersMap[provider]);
         const intentValue = await module.getIntent(value);
