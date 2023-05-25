@@ -268,9 +268,11 @@ export class BindingData {
         crs.binding.utils.setValueOnPath(this.getData(id)?.data, setProperty, value);
         await this.#performUpdate(id, setProperty);
 
-        const context = this.#context[id];
-        context["propertyChanged"]?.(property, value, oldValue);
-        context[`${property}Changed`]?.(value, oldValue);
+        if (id !== 0) {
+            const context = this.#context[id];
+            context["propertyChanged"]?.(property, value, oldValue);
+            context[`${property}Changed`]?.(value, oldValue);
+        }
     }
 
     /**

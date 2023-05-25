@@ -9,19 +9,22 @@ const providersMap = {
 export default class KeyboardEventProvider {
     async onEvent(event, bid, intent) {
         const keys = [];
+
         if (event.ctrlKey) keys.push("ctrl");
         if (event.altKey) keys.push("alt");
         if (event.shiftKey) keys.push("shift");
         keys.push(event.key.toLowerCase());
+
         const key = keys.join("_");
+        intent = intent.filter(i => i.keys == key || i.keys == "");
 
-        intent = intent.find(i => i.keys == key);
+        if (intent.length == 0) return;
 
-        if (!intent) return;
-
-        const executeIntent = intent.value;
-        const module = await crs.binding.providers.getAttrModule(executeIntent.provider);
-        await module.onEvent(event, bid, executeIntent);
+        for (const i of intent) {
+            const executeIntent = i.value;
+            const module = await crs.binding.providers.getAttrModule(executeIntent.provider);
+            await module.onEvent(event, bid, executeIntent);
+        }
     }
 
     async parse(attr) {
@@ -30,7 +33,7 @@ export default class KeyboardEventProvider {
         const nameParts = name.split(".");
 
         const event = nameParts[0];
-        const keys = nameParts.length == 3 ? nameParts[1] : [];
+        const keys = nameParts.length == 3 ? nameParts[1] : "";
         const provider = nameParts.length == 3 ? nameParts[2] : nameParts[1];
 
         const module = await crs.binding.providers.getAttrModule(providersMap[provider]);
