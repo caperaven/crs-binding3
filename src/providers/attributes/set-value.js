@@ -83,7 +83,9 @@ function getRight(exp, context, left, preArray) {
         exp = exp.replace(left, `crs.binding.data.getProperty(${context}, "${left}")`);
     }
 
-    exp = exp.replace("$event", "event");
+    exp = exp
+        .replace("$event", "event")
+        .replace("$target", "event.composedPath()[0]");
 
     return exp;
 }

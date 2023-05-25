@@ -116,7 +116,7 @@ export class PerspectiveElement extends HTMLElement {
         await this.#initialize();
 
         this.dataset.ready = "true";
-        this.dispatchEvent(new CustomEvent("ready", {bubbles:false}));
+        this.dispatchEvent(new CustomEvent("ready", { bubbles: true, composed: true }));
     }
 
     async #initialize() {
@@ -157,11 +157,12 @@ export class PerspectiveElement extends HTMLElement {
 
         const template = await crs.binding.templates.getStoreTemplate(this.#store, this.#view);
         this.appendChild(template);
-        await crs.binding.parsers.parseElements(this.children, this._dataId, {folder: this.dataset.folder});
+        const context = crs.binding.data.getContext(this._dataId);
+        await crs.binding.parsers.parseElements(this.children, context, {folder: this.dataset.folder});
 
         requestAnimationFrame(() => {
             this.dataset.view = this.#view;
-            this.dispatchEvent(new CustomEvent("view-loaded"));
+            this.dispatchEvent(new CustomEvent("view-loaded", { bubbles: true, composed: true }));
         })
     }
 }

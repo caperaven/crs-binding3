@@ -68,7 +68,7 @@ export class BindableElement extends HTMLElement {
         await setName(this);
 
         this.dataset.ready = "true";
-        this.dispatchEvent(new CustomEvent("ready", {bubbles:false}));
+        this.dispatchEvent(new CustomEvent("ready", { bubbles: true, composed: true }));
     }
 
     /**

@@ -109,6 +109,9 @@ class BindingData {
     delete this.#callbacks[id];
   }
   getProperty(id, property) {
+    if (property === "bid") {
+      return id;
+    }
     if (property.indexOf(GLOBALS) !== -1) {
       id = 0;
       property = property.replace(GLOBALS, "");

@@ -434,6 +434,9 @@ var BindingData = class {
     delete this.#callbacks[id];
   }
   getProperty(id, property) {
+    if (property === "bid") {
+      return id;
+    }
     if (property.indexOf(GLOBALS) !== -1) {
       id = 0;
       property = property.replace(GLOBALS, "");
@@ -1224,7 +1227,10 @@ var EventStore = class {
   }
   register(event, uuid, intent, isCollection = false) {
     if (this.#store[event] == null) {
-      document.addEventListener(event, this.#eventHandler);
+      document.addEventListener(event, this.#eventHandler, {
+        capture: true,
+        passive: true
+      });
       this.#store[event] = {};
     }
     if (isCollection) {
