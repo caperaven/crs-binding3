@@ -289,7 +289,7 @@ export class BindingData {
      * @param property {string} - The property to set the value for
      * @param value {any} - The value to set
      */
-    async setProperty(id, property, value) {
+    async setProperty(id, property, value, dataDef = null) {
         const oldValue = this.getProperty(id, property);
 
         let setProperty = property;
@@ -312,14 +312,25 @@ export class BindingData {
 
         if (id !== 0) {
             const context = this.#context[id];
-            context["propertyChanged"]?.(property, value, oldValue);
-            context[`${property}Changed`]?.(value, oldValue);
+
+            if (context != null) {
+                context["propertyChanged"]?.(property, value, oldValue);
+                context[`${property}Changed`]?.(value, oldValue);
+            }
         }
 
         if (this.#contextCallbacks[id] != null) {
             for (const callback of this.#contextCallbacks[id]) {
                 callback?.(property, value, oldValue);
             }
+        }
+
+        if (dataDef != null && crs.binding.dataDef != null) {
+            const parts = property.split(".");
+            parts.pop();
+            const path = parts.join(".");
+            const model = await crs.binding.data.getProperty(id, path);
+            await crs.binding.dataDef.automateValues(id, model, dataDef, property)
         }
     }
 
