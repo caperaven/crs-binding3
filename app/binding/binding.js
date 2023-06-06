@@ -1,6 +1,8 @@
 import "./my-component.js";
 
 export default class BindingViewModel extends crs.classes.ViewBase {
+    #callbackHandler = (property, newValue, oldValue) => console.log(property, newValue, oldValue);
+
     get mobi() {
         return import.meta.url.replace(".js", ".mobi.html");
     }
@@ -30,10 +32,12 @@ export default class BindingViewModel extends crs.classes.ViewBase {
         ])
 
         this.setProperty("greeting", "Welcome to one-way binding");
+        crs.binding.data.addContextCallback(this.bid, this.#callbackHandler);
     }
 
     async disconnectedCallback() {
         await crs.binding.translations.delete("person");
+        this.#callbackHandler = null;
         await super.disconnectedCallback();
     }
 

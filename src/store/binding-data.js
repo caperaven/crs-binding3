@@ -31,7 +31,19 @@ export class BindingData {
             data: {}
         }
     };
+
+    /**
+     * @field #callbacks - The callbacks are stored here for the binding context, when a property changes this determines what gets updated.
+     * @type {{}}
+     */
     #callbacks = {};
+
+    /**
+     * @field #contextCallbacks - These callbacks are called when any property changes happens on the context.
+     * @type {{}}
+     */
+    #contextCallbacks = {};
+
     #elementProviders = {};
 
     /**
@@ -122,6 +134,35 @@ export class BindingData {
 
             this.#elementProviders[uuid] ||= new Set();
             this.#elementProviders[uuid].add(provider);
+        }
+    }
+
+    /**
+     * @method setContextCallback - Add a callback when any property changes on the context
+     * @param bid {number} - The binding id to use
+     * @param callback {function} - The callback to call
+     */
+    addContextCallback(bid, callback) {
+        if (this.#contextCallbacks[bid] == null) {
+            this.#contextCallbacks[bid] = new Set();
+        }
+
+        this.#contextCallbacks[bid].add(callback);
+    }
+
+    /**
+     * @method removeCallback - Remove a callback from context level callbacks
+     * @param bid {number} - The binding id to use
+     * @param callback {function} - The callback to remove
+     */
+    removeContextCallback(bid, callback) {
+        if (this.#contextCallbacks[bid] == null) {
+            return;
+        }
+
+        this.#contextCallbacks[bid].delete(callback);
+        if (this.#contextCallbacks[bid].size == 0) {
+            delete this.#contextCallbacks[bid];
         }
     }
 
@@ -220,6 +261,7 @@ export class BindingData {
         delete this.#data[id];
         delete this.#context[id];
         delete this.#callbacks[id];
+        delete this.#contextCallbacks[id];
     }
 
     /**
@@ -272,6 +314,12 @@ export class BindingData {
             const context = this.#context[id];
             context["propertyChanged"]?.(property, value, oldValue);
             context[`${property}Changed`]?.(value, oldValue);
+        }
+
+        if (this.#contextCallbacks[id] != null) {
+            for (const callback of this.#contextCallbacks[id]) {
+                callback?.(property, value, oldValue);
+            }
         }
     }
 
