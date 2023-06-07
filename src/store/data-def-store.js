@@ -69,11 +69,14 @@ export class DataDefStore {
      * @param def {object} - The definition
      */
     async register(bid, def) {
+        // make a copy of the definition so we can modify it
+        def = JSON.parse(JSON.stringify(def));
+
         const nameParts = def.name.split(".");
 
         let store = this.#store[bid] ||= {};
         let valueAutomation = this.#valueAutomation[bid] ||= {};
-        let automationMap = this.#automationMap[bid] ||= {};
+        this.#automationMap[bid] ||= {};
 
         for (let i = 0; i < nameParts.length; i++) {
             if (i < nameParts.length - 1) {
