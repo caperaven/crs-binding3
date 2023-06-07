@@ -1,0 +1,42 @@
+<style>
+    h3 {
+        margin: 1em 0;
+    }
+
+    label {
+        display: block;
+        margin: 0.5rem 0;
+    }
+</style>
+<h2>${title}</h2>
+
+<h3>Context</h3>
+<label>
+    <input type="checkbox" checked.bind="isActive" />
+    <span> isActive</span>
+</label>
+
+
+<h3>Model</h3>
+<div>Status: ${model.status}</div>
+
+<h3>Person</h3>
+<label>
+    <input type="checkbox" checked.bind="isActive" />
+    <span> isActive</span>
+</label>
+
+<label>
+    <div>First Name</div>
+    <input type="text" value.bind="person.firstName"/>
+</label>
+
+<label>
+    <div>Last Name</div>
+    <input type="text" value.bind="person.lastName" />
+</label>
+
+<label>
+    <div>Age</div>
+    <input type="text" value.bind="person.age" />
+</label>

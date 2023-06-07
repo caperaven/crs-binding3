@@ -95,8 +95,8 @@ export class ViewBase {
      * @param convert {boolean} - Whether to convert the value if there is a value converter.
      * @returns {*}
      */
-    getProperty(property, convert = true) {
-        return crs.binding.data.getProperty(this, property, convert);
+    getProperty(property) {
+        return crs.binding.data.getProperty(this, property);
     }
 
     /**
@@ -105,8 +105,8 @@ export class ViewBase {
      * @param value {*} - The value to set.
      * @param convert {boolean} - Whether to convert the value if there is a value converter.
      */
-    setProperty(property, value, convert = true) {
-        crs.binding.data.setProperty(this, property, value, convert);
+    setProperty(property, value) {
+        crs.binding.data.setProperty(this, property, value);
     }
 
     /**

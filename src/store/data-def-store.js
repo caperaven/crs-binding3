@@ -9,12 +9,14 @@ export class DataDefStore {
 
     /**
      * @field #valueAutomation - The store of value automation based on conditions
-     * @type {{}}
+     * if the condition is true then the value is set to the value defined
+     * @type {{condition, value}}
      */
     #valueAutomation = {};
 
     /**
      * @field #automationMap - The map defines what automation to run when a particular field is changed
+     * "if this field is changed, then update those fields that use it in a condition"
      * @type {{}}
      */
     #automationMap = {};
@@ -23,27 +25,37 @@ export class DataDefStore {
         return this.#store;
     }
 
-    async #parseDefinition(name, def, ctxName) {
+    #addAutomationMap(bid, path, field, property) {
+        let obj = this.#automationMap[bid];
+
+        property = property.replace("$context.", "context.");
+
+        obj[property] ||= new Set();
+        obj[property].add(`${path}.${field}`);
+    }
+
+    async #parseDefinition(bid, def) {
+        const path = def.name;
+
         for (const field of Object.keys(def.fields)) {
             const fieldDef = def.fields[field];
-            const fieldPath = `${ctxName}.${field}`;
 
             if (fieldDef.conditionalDefaults != null) {
                 for (const conditionalDefault of fieldDef.conditionalDefaults) {
                     // 1. sanitize the expression so we know what fields are affected
-                    const expo = await crs.binding.expression.sanitize(conditionalDefault.conditionExpr, ctxName);
+                    const expo = await crs.binding.expression.sanitize(conditionalDefault.conditionExpr);
 
-                    // 2. populate the automation map
-                    for (const prop of expo.properties) {
-                        const property = `${ctxName}.${prop}`;
-                        this.#automationMap[name][property] ||= [];
-                        this.#automationMap[name][property].push(fieldPath);
+                    for (let property of expo.properties) {
+                        this.#addAutomationMap(bid, path, field, property);
                     }
 
-                    const fn = new crs.classes.AsyncFunction(ctxName, `return ${expo.expression}`);
+                    const code = `
+                    const context = crs.binding.data.getData(bid).data;
+                    return ${expo.expression}
+                    `;
 
-                    // 3. add the automation
-                    this.addAutomation(name, fieldPath, fn, conditionalDefault.value);
+                    const fn = new crs.classes.AsyncFunction("bid", code);
+                    this.addAutomation(bid, path, field, fn, conditionalDefault.value, conditionalDefault.true_value, conditionalDefault.false_value);
                 }
             }
 
@@ -56,52 +68,96 @@ export class DataDefStore {
      * @param name {string} - The name of the data definition
      * @param def {object} - The definition
      */
-    async register(name, def, ctxName = "context") {
-        this.#store[name] = def;
-        this.#valueAutomation[name] = {};
-        this.#automationMap[name] = {};
-        await this.#parseDefinition(name, def, ctxName);
+    async register(bid, def) {
+        const nameParts = def.name.split(".");
+
+        let store = this.#store[bid] ||= {};
+        let valueAutomation = this.#valueAutomation[bid] ||= {};
+        let automationMap = this.#automationMap[bid] ||= {};
+
+        for (let i = 0; i < nameParts.length; i++) {
+            if (i < nameParts.length - 1) {
+                store = store[nameParts[i]] ||= {};
+            }
+
+            valueAutomation = valueAutomation[nameParts[i]] ||= {};
+        }
+
+        const name = nameParts[nameParts.length - 1];
+        store[name] = def;
+
+        await this.#parseDefinition(bid, def);
+        delete def.name;
     }
 
     /**
      * @function unRegister - Unregister a data definition
      * @param name
      */
-    async unRegister(name) {
+    async unRegister(bid) {
         delete this.#store[name];
         delete this.#valueAutomation[name];
         delete this.#automationMap[name];
     }
 
-    /**
-     * @function get - Get a data definition
-     * @param name
-     * @returns {*}
-     */
-    get(name) {
-        return this.#store[name];
-    }
+    addAutomation(bid, path, field, fn, value, trueValue, falseValue) {
+        let obj = this.#valueAutomation[bid];
 
-    addAutomation(name, field, condition, value) {
-        const collection = this.#valueAutomation[name][field] ||= [];
-        collection.push({ condition: condition, value: value });
+        for (const prop of path.split(".")) {
+            obj = obj[prop];
+        }
+
+        const collection = obj[field] ||= [];
+        const newItem = { condition: fn }
+
+        if (value != null) {
+            newItem.value = value;
+        }
+
+        if (trueValue != null) {
+            newItem.trueValue = trueValue;
+        }
+
+        if (falseValue != null) {
+            newItem.falseValue = falseValue;
+        }
+
+        collection.push(newItem);
     }
 
     removeAutomation(name, field) {
         delete this.#valueAutomation[name][field];
     }
 
-    async automateValues(bid, model, name, field) {
-        const automationFields = this.#automationMap[name][field];
-        if (automationFields == null) return;
+    async automateValues(bid, fieldPath) {
+        if (this.#automationMap[bid] == null) return;
 
-        for (const automationField of automationFields) {
-            const automations = this.#valueAutomation[name][automationField];
+        if (fieldPath.indexOf(".") == -1) {
+            fieldPath = `context.${fieldPath}`;
+        }
 
-            for (const automation of automations || []) {
-                if (automation.condition(model) === true) {
-                    const value = automation.value;
-                    await crs.binding.data.setProperty(bid, automationField, value, name);
+        const contextMap = this.#automationMap[bid][fieldPath];
+        if (contextMap == null) return;
+
+        // loop through all the fields that need to be updated
+        for (const path of contextMap) {
+            let definition = this.#valueAutomation[bid]
+            const pathParts = path.split(".");
+
+            for (const pathPart of pathParts) {
+                definition = definition[pathPart];
+            }
+
+            // loop through conditions and set the value if the condition is true
+            for (const item of definition) {
+                const result = await item.condition(bid);
+                const trueValue = item.value || item.trueValue;
+
+                if (result == true) {
+                    await crs.binding.data.setProperty(bid, path, trueValue);
+                }
+                else if (item.falseValue != null) {
+                    await crs.binding.data.setProperty(bid, path, item.falseValue);
                 }
             }
         }
@@ -114,9 +170,13 @@ export class DataDefStore {
      * @param property {string} - The property name
      * @param name {string} - The name of the data definition
      */
-    async create(bid, property, name) {
-        const def = this.get(name);
-        if (def == null) return;
+    async create(bid, property) {
+        let def = this.#store[bid];
+        const pathParts = property.split(".");
+
+        for (const pathPart of pathParts) {
+            def = def[pathPart];
+        }
 
         const model = {};
         for (const fieldName of Object.keys(def.fields)) {
@@ -136,26 +196,5 @@ export class DataDefStore {
 
     }
 }
-
-// async function compileConditionalExp(definition) {
-//     for (const field of definition.fields) {
-//         if (field.conditionalDefaults != null) {
-//             const conditionalDefaultsMap = definition["conditionalDefaultsMap"] ||= {};
-//
-//             for (const rule of field.conditionalDefaults) {
-//                 const expr = await crs.binding.expression.sanitize(rule.conditionExpr, "model");
-//                 const properties = expr.properties;
-//
-//                 for (const property of properties) {
-//                     const fieldName = field["field"] || field["name"];
-//                     conditionalDefaultsMap[property] ||= [];
-//                     conditionalDefaultsMap[property].push(fieldName);
-//                 }
-//
-//                 rule.conditionExpr = new Function("model", `return ${expr.expression}`);
-//             }
-//         }
-//     }
-// }
 
 crs.binding.dataDef = new DataDefStore();

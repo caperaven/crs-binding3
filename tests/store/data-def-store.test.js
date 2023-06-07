@@ -54,7 +54,7 @@ describe("data def store tests", () => {
                 }
             }
         };
-        await crs.binding.dataDef.register("test", def, "model");
+        await crs.binding.dataDef.register("test", def);
         await crs.binding.dataDef.create(bid, "model", "test");
 
         const model = crs.binding.data.getProperty(bid, "model");
@@ -97,8 +97,14 @@ describe("data def store tests", () => {
             }
         };
 
-        await crs.binding.dataDef.register("test", def, "model");
+        await crs.binding.dataDef.register("test", def);
         await crs.binding.data.setProperty(bid, "model.firstName", "Jane", "test");
+
+        const model = crs.binding.data.getProperty(bid, "model");
+        assertEquals(model.firstName, "Jane");
+        assertEquals(model.lastName, "Smith");
+        assertEquals(model.age, 25);
+
         await crs.binding.dataDef.unRegister("test");
     });
 });

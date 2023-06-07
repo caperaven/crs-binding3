@@ -90,6 +90,11 @@
       "view": "observe-change"
     },
     {
+      "title": "data-definition",
+      "hash": "#data-definition",
+      "view": "data-definition"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

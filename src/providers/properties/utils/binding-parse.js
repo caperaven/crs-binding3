@@ -2,7 +2,7 @@ export async function bindingParse(attr, context) {
     const parts = attr.name.split(".");
     const element = attr.ownerElement;
     const property = parts[0];
-    const path = attr.value;
+    let path = attr.value;
 
     crs.binding.utils.markElement(element, context);
     element.removeAttribute(attr.name);
@@ -14,7 +14,8 @@ export async function bindingParse(attr, context) {
     if (intent == null) {
         intent = {
             provider: ".bind",
-            value: {}
+            value: {},
+            dataDef: null
         };
     }
 

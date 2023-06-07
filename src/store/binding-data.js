@@ -289,7 +289,7 @@ export class BindingData {
      * @param property {string} - The property to set the value for
      * @param value {any} - The value to set
      */
-    async setProperty(id, property, value, dataDef = null) {
+    async setProperty(id, property, value) {
         const oldValue = this.getProperty(id, property);
 
         let setProperty = property;
@@ -325,12 +325,8 @@ export class BindingData {
             }
         }
 
-        if (dataDef != null && crs.binding.dataDef != null) {
-            const parts = property.split(".");
-            parts.pop();
-            const path = parts.join(".");
-            const model = await crs.binding.data.getProperty(id, path);
-            await crs.binding.dataDef.automateValues(id, model, dataDef, property)
+        if (crs.binding.dataDef != null) {
+            await crs.binding.dataDef.automateValues(id, property);
         }
     }
 

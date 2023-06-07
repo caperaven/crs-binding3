@@ -368,3 +368,8 @@ Deno.test("sanitize - case complex", async () => {
     const result = await sanitize("current == false: 'non-current-day', new Date().toLocaleDateString() === date.toLocaleDateString(): 'today'");
     assertEquals(result.expression, "context.current == false: 'non-current-day', new Date().toLocaleDateString() === context.date.toLocaleDateString(): 'today'");
 })
+
+Deno.test("sanitize - model and context mix", async () =>{
+    const result = await sanitize("model.firstName == 'Jane' && $context.isActive == true");
+    assertEquals(result.expression, "context.model.firstName == 'Jane' && context.isActive == true");
+})
