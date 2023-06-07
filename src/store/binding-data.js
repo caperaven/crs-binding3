@@ -262,6 +262,10 @@ export class BindingData {
         delete this.#context[id];
         delete this.#callbacks[id];
         delete this.#contextCallbacks[id];
+
+        if (crs.binding.dataDef != null) {
+            crs.binding.dataDef.remove(id);
+        }
     }
 
     /**

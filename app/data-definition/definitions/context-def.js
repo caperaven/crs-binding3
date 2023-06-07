@@ -1,13 +1,13 @@
 export const context_def = {
     name: "context",
     fields: {
-        isActive: {
+        isActive2: {
             dataType: "boolean",
             default: true,
 
             conditionalDefaults: [
                 {
-                    conditionExpr: "person.firstName == 'Jane'",
+                    conditionExpr: "person.firstName == 'Joe'",
                     value: false
                 }
             ]

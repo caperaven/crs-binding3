@@ -129,6 +129,12 @@ export class DataDefStore {
         delete this.#valueAutomation[name][field];
     }
 
+    remove(bid) {
+        delete this.#store[bid];
+        delete this.#valueAutomation[bid];
+        delete this.#automationMap[bid];
+    }
+
     async automateValues(bid, fieldPath) {
         if (this.#automationMap[bid] == null) return;
 
