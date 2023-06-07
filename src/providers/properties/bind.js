@@ -18,7 +18,18 @@ export default class BindProvider {
         const field = target.dataset.field;
         if (bid == null || field == null) return;
 
-        await crs.binding.data.setProperty(bid, field, target.value);
+        let value = target.value;
+        if (target.nodeName === "INPUT") {
+            if (target.type === "checkbox") {
+                value = target.checked;
+            }
+
+            if (target.type === "number") {
+                value = Number(value);
+            }
+        }
+
+        await crs.binding.data.setProperty(bid, field, value);
     }
 
     /**
