@@ -21,18 +21,25 @@ export class DataDefStore {
     #validationAutomation = {};
 
     /**
-     * @field #automationMap - The map defines what automation to run when a particular field is changed
+     * @field #defaultAutomationMap - The map defines what automation to run when a particular field is changed
      * "if this field is changed, then update those fields that use it in a condition"
      * @type {{}}
      */
-    #automationMap = {};
+    #defaultAutomationMap = {};
+
+    /**
+     * @field #validationAutomationMap - The map defines what validation to run when a particular field is changed
+     * These validations update the UI accordingly
+     * @type {{}}
+     */
+    #validationAutomationMap = {};
 
     get store() {
         return this.#store;
     }
 
-    #addAutomationMap(bid, path, field, property) {
-        let obj = this.#automationMap[bid];
+    #addAutomationMap(map, bid, path, field, property) {
+        let obj = map[bid];
 
         property = property.replace("$context.", "context.");
 
@@ -47,6 +54,7 @@ export class DataDefStore {
             const fieldDef = def.fields[field];
 
             await this.#parseConditionalDefaults(fieldDef, bid, path, field);
+            await this.#parseConditionalValidations(fieldDef, bid, path, field);
         }
     }
 
@@ -57,7 +65,7 @@ export class DataDefStore {
                 const expo = await crs.binding.expression.sanitize(conditionalDefault.conditionExpr);
 
                 for (let property of expo.properties) {
-                    this.#addAutomationMap(bid, path, field, property);
+                    this.#addAutomationMap(this.#defaultAutomationMap, bid, path, field, property);
                 }
 
                 const code = `
@@ -66,24 +74,54 @@ export class DataDefStore {
                     `;
 
                 const fn = new crs.classes.AsyncFunction("bid", code);
-                this.addAutomation(bid, path, field, fn, conditionalDefault.value, conditionalDefault.true_value, conditionalDefault.false_value);
+                this.addDefaultsAutomation(bid, path, field, fn, conditionalDefault.value, conditionalDefault.true_value, conditionalDefault.false_value);
             }
         }
 
         delete fieldDef.conditionalDefaults;
     }
 
-    async #parseValueAutomation(fieldDef, bid, path, field) {
-        if (fieldDef.customDefaultValidations != null) {
-            for (const key of Object.keys(fieldDef.customDefaultValidations)) {
+    async #parseDefaultValidations(fieldDef, bid, path, field) {
+        if (fieldDef.defaultValidations != null) {
+            for (const key of Object.keys(fieldDef.defaultValidations)) {
                 const rule = key;
-                const def = fieldDef.customDefaultValidations[key];
+                const def = fieldDef.defaultValidations[key];
                 const fieldPath = `${path}.${field}`.replace("context.", "");
                 crs.binding.ui.apply(bid, fieldPath, rule, def);
             }
         }
 
-        delete fieldDef.customDefaultValidations;
+        delete fieldDef.defaultValidations;
+    }
+
+    async #parseConditionalValidations(fieldDef, bid, path, field) {
+        if (fieldDef.conditionalValidations != null) {
+            for (const conditionalValidation of fieldDef.conditionalValidations) {
+                // 1. sanitize the expression so we know what fields are affected
+                const expo = await crs.binding.expression.sanitize(conditionalValidation.conditionExpr);
+
+                for (let property of expo.properties) {
+                    this.#addAutomationMap(this.#validationAutomationMap, bid, path, field, property);
+                }
+
+                const code = `
+                    const context = crs.binding.data.getData(bid).data;
+                    return ${expo.expression}
+                    `;
+
+                const fn = new crs.classes.AsyncFunction("bid", code);
+                const def = [];
+                for (const rule of Object.keys(conditionalValidation.rules)) {
+                    const value = rule.value;
+                    const required = rule.required || true;
+                    def.push({ rule, value, required });
+                }
+
+                this.addValidationAutomation(bid, path, field, fn, def);
+            }
+        }
+
+        delete fieldDef.conditionalValidations;
     }
 
     /**
@@ -99,7 +137,9 @@ export class DataDefStore {
 
         let store = this.#store[bid] ||= {};
         let valueAutomation = this.#valueAutomation[bid] ||= {};
-        this.#automationMap[bid] ||= {};
+        this.#defaultAutomationMap[bid] ||= {};
+        this.#validationAutomationMap[bid] ||= {};
+        this.#validationAutomation[bid] ||= {};
 
         for (let i = 0; i < nameParts.length; i++) {
             if (i < nameParts.length - 1) {
@@ -120,12 +160,14 @@ export class DataDefStore {
      * @param name
      */
     async unRegister(bid) {
-        delete this.#store[name];
-        delete this.#valueAutomation[name];
-        delete this.#automationMap[name];
+        delete this.#store[bid];
+        delete this.#valueAutomation[bid];
+        delete this.#defaultAutomationMap[bid];
+        delete this.#validationAutomationMap[bid];
+        delete this.#validationAutomation[bid];
     }
 
-    addAutomation(bid, path, field, fn, value, trueValue, falseValue) {
+    addDefaultsAutomation(bid, path, field, fn, value, trueValue, falseValue) {
         let obj = this.#valueAutomation[bid];
 
         for (const prop of path.split(".")) {
@@ -150,6 +192,13 @@ export class DataDefStore {
         collection.push(newItem);
     }
 
+    addValidationAutomation(bid, path, field, fn, def) {
+        const propertyPath = `${path}.${field}`.replace("context.", "");
+        let obj = this.#validationAutomation[bid];
+        let collection = obj[propertyPath] ||= [];
+        collection.push({ condition: fn, def });
+    }
+
     removeAutomation(name, field) {
         delete this.#valueAutomation[name][field];
     }
@@ -157,17 +206,17 @@ export class DataDefStore {
     remove(bid) {
         delete this.#store[bid];
         delete this.#valueAutomation[bid];
-        delete this.#automationMap[bid];
+        delete this.#defaultAutomationMap[bid];
     }
 
     async automateValues(bid, fieldPath) {
-        if (this.#automationMap[bid] == null) return;
+        if (this.#defaultAutomationMap[bid] == null) return;
 
         if (fieldPath.indexOf(".") == -1) {
             fieldPath = `context.${fieldPath}`;
         }
 
-        const contextMap = this.#automationMap[bid][fieldPath];
+        const contextMap = this.#defaultAutomationMap[bid][fieldPath];
         if (contextMap == null) return;
 
         // loop through all the fields that need to be updated
@@ -237,7 +286,7 @@ export class DataDefStore {
             for (const field of Object.keys(def.fields)) {
                 const fieldDef = def.fields[field];
 
-                await this.#parseValueAutomation(fieldDef, bid, path, field);
+                await this.#parseDefaultValidations(fieldDef, bid, path, field);
             }
         }
     }

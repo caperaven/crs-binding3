@@ -5,7 +5,7 @@ export const person_def = {
             dataType: "string",
             default: "John",
 
-            customDefaultValidations: {
+            defaultValidations: {
                 required: {
                     value: true
                 },
@@ -28,6 +28,15 @@ export const person_def = {
                 {
                     conditionExpr: "person.firstName == 'Jane' && $context.isActive == true",
                     value: "Jones"
+                }
+            ],
+
+            conditionalValidations: [
+                {
+                    conditionExpr: "person.firstName == 'Jane'",
+                    rules: {
+                        required: { value: true }
+                    }
                 }
             ]
         },
