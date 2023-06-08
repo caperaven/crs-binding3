@@ -1,4 +1,4 @@
-import {ifFactory} from "../expressions/code-factories/if.js";
+import "./../validation/validation-ui.js";
 
 export class DataDefStore {
     /**
@@ -73,6 +73,19 @@ export class DataDefStore {
         delete fieldDef.conditionalDefaults;
     }
 
+    async #parseValueAutomation(fieldDef, bid, path, field) {
+        if (fieldDef.customDefaultValidations != null) {
+            for (const key of Object.keys(fieldDef.customDefaultValidations)) {
+                const rule = key;
+                const def = fieldDef.customDefaultValidations[key];
+                const fieldPath = `${path}.${field}`.replace("context.", "");
+                crs.binding.ui.apply(bid, fieldPath, rule, def);
+            }
+        }
+
+        delete fieldDef.customDefaultValidations;
+    }
+
     /**
      * @function register - Register a new data definition
      * @param name {string} - The name of the data definition
@@ -100,7 +113,6 @@ export class DataDefStore {
         store[name] = def;
 
         await this.#parseDefinition(bid, def);
-        delete def.name;
     }
 
     /**
@@ -213,6 +225,21 @@ export class DataDefStore {
      */
     validate(bid, property, name) {
 
+    }
+
+    async applyValidations(bid) {
+        const definitions = this.#store[bid];
+
+        for (const defKey of Object.keys(definitions)) {
+            const def = definitions[defKey];
+            const path = def.name;
+
+            for (const field of Object.keys(def.fields)) {
+                const fieldDef = def.fields[field];
+
+                await this.#parseValueAutomation(fieldDef, bid, path, field);
+            }
+        }
     }
 }
 

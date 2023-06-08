@@ -3,7 +3,18 @@ export const person_def = {
     fields: {
         firstName: {
             dataType: "string",
-            default: "John"
+            default: "John",
+
+            customDefaultValidations: {
+                required: {
+                    value: true
+                },
+
+                maxLength: {
+                    error: "Too long",
+                    value: 12
+                }
+            }
         },
         lastName: {
             dataType: "string",

@@ -12,4 +12,9 @@ export default class DataDefinitionViewMode extends crs.classes.ViewBase {
         await crs.binding.dataDef.create(this.bid, "person");
         await crs.binding.dataDef.create(this.bid, "model");
     }
+
+    async load() {
+        crs.binding.dataDef.applyValidations(this.bid);
+        await super.load();
+    }
 }
