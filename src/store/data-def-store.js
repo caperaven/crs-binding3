@@ -15,6 +15,12 @@ export class DataDefStore {
     #valueAutomation = {};
 
     /**
+     * @field #validationAutomation - The store of validation automation based on conditions
+     * @type {{}}
+     */
+    #validationAutomation = {};
+
+    /**
      * @field #automationMap - The map defines what automation to run when a particular field is changed
      * "if this field is changed, then update those fields that use it in a condition"
      * @type {{}}
@@ -40,27 +46,31 @@ export class DataDefStore {
         for (const field of Object.keys(def.fields)) {
             const fieldDef = def.fields[field];
 
-            if (fieldDef.conditionalDefaults != null) {
-                for (const conditionalDefault of fieldDef.conditionalDefaults) {
-                    // 1. sanitize the expression so we know what fields are affected
-                    const expo = await crs.binding.expression.sanitize(conditionalDefault.conditionExpr);
+            await this.#parseConditionalDefaults(fieldDef, bid, path, field);
+        }
+    }
 
-                    for (let property of expo.properties) {
-                        this.#addAutomationMap(bid, path, field, property);
-                    }
+    async #parseConditionalDefaults(fieldDef, bid, path, field) {
+        if (fieldDef.conditionalDefaults != null) {
+            for (const conditionalDefault of fieldDef.conditionalDefaults) {
+                // 1. sanitize the expression so we know what fields are affected
+                const expo = await crs.binding.expression.sanitize(conditionalDefault.conditionExpr);
 
-                    const code = `
+                for (let property of expo.properties) {
+                    this.#addAutomationMap(bid, path, field, property);
+                }
+
+                const code = `
                     const context = crs.binding.data.getData(bid).data;
                     return ${expo.expression}
                     `;
 
-                    const fn = new crs.classes.AsyncFunction("bid", code);
-                    this.addAutomation(bid, path, field, fn, conditionalDefault.value, conditionalDefault.true_value, conditionalDefault.false_value);
-                }
+                const fn = new crs.classes.AsyncFunction("bid", code);
+                this.addAutomation(bid, path, field, fn, conditionalDefault.value, conditionalDefault.true_value, conditionalDefault.false_value);
             }
-
-            delete fieldDef.conditionalDefaults;
         }
+
+        delete fieldDef.conditionalDefaults;
     }
 
     /**
