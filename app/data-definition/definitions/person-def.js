@@ -7,7 +7,7 @@ export const person_def = {
 
             defaultValidations: {
                 required: {
-                    value: true
+                    required: true
                 },
 
                 maxLength: {

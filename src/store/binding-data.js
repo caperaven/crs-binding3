@@ -331,6 +331,7 @@ export class BindingData {
 
         if (crs.binding.dataDef != null) {
             await crs.binding.dataDef.automateValues(id, property);
+            await crs.binding.dataDef.automateValidations(id, property);
         }
     }
 

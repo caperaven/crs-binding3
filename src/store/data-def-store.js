@@ -112,8 +112,9 @@ export class DataDefStore {
                 const fn = new crs.classes.AsyncFunction("bid", code);
                 const def = [];
                 for (const rule of Object.keys(conditionalValidation.rules)) {
-                    const value = rule.value;
-                    const required = rule.required || true;
+                    const validationRule = conditionalValidation.rules[rule];
+                    const value = validationRule.value;
+                    const required = validationRule.required || true;
                     def.push({ rule, value, required });
                 }
 
@@ -238,6 +239,26 @@ export class DataDefStore {
                 }
                 else if (item.falseValue != null) {
                     await crs.binding.data.setProperty(bid, path, item.falseValue);
+                }
+            }
+        }
+    }
+
+    async automateValidations(bid, fieldPath) {
+        if (this.#validationAutomationMap[bid] == null) return;
+        const automationFields = this.#validationAutomationMap[bid][fieldPath];
+
+        if (automationFields == null) return;
+
+        for (const field of automationFields) {
+            const definitions = this.#validationAutomation[bid][field];
+
+            for (const def of definitions) {
+                const addRules = await def.condition(bid);
+
+                for (const ruleDef of def.def) {
+                    ruleDef.required = addRules;
+                    await crs.binding.ui.apply(bid, field, ruleDef.rule, ruleDef);
                 }
             }
         }

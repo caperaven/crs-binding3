@@ -30,7 +30,7 @@ class UIValidation {
      * @param element {HTMLElement} - the element to apply/remove the required validation to/from
      * @param required {boolean} - whether to apply or remove the required validation
      */
-    static required(element, required) {
+    static required(element, value,  required) {
         if (required) {
             element.setAttribute('required', 'required');
         } else {
