@@ -135,6 +135,8 @@ function setAttribute(attr, value) {
     let attrObj = this.attributes.find(item => item.name == attr);
     let oldValue = "";
 
+    value = value.toString();
+
     if (attrObj == null) {
         attrObj = {
             name: attr,
