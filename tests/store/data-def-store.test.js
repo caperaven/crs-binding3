@@ -26,19 +26,22 @@ describe("data def store tests", () => {
 
     it ("add data def", async () => {
         const def = {
+            testId: "testId",
+            name: "person",
             fields: {}
         };
-        await crs.binding.dataDef.register("test", def);
+        await crs.binding.dataDef.register(bid, def);
 
-        assertEquals(crs.binding.dataDef.store["test"], def);
-        assertEquals(crs.binding.dataDef.get("test"), def);
+        assertExists(crs.binding.dataDef.store[bid]);
+        assertEquals(crs.binding.dataDef.store[bid]["person"].testId, "testId");
 
-        await crs.binding.dataDef.unRegister("test");
-        assert(crs.binding.dataDef.store["test"] == null);
+        await crs.binding.dataDef.unRegister(bid);
+        assert(crs.binding.dataDef.store[bid] == null);
     })
 
     it ("create new model", async () => {
         const def = {
+            name: "person",
             fields: {
                 firstName: {
                     dataType: "string",
@@ -54,19 +57,20 @@ describe("data def store tests", () => {
                 }
             }
         };
-        await crs.binding.dataDef.register("test", def);
-        await crs.binding.dataDef.create(bid, "model", "test");
+        await crs.binding.dataDef.register(bid, def);
+        await crs.binding.dataDef.create(bid, "person");
 
-        const model = crs.binding.data.getProperty(bid, "model");
+        const model = crs.binding.data.getProperty(bid, "person");
         assertEquals(model.firstName, "John");
         assertEquals(model.lastName, "Doe");
         assertEquals(model.age, 20);
 
-        await crs.binding.dataDef.unRegister("test");
+        await crs.binding.dataDef.unRegister(bid);
     })
 
     it ("create new model with conditional defaults", async () => {
         const def = {
+            name: "person",
             fields: {
                 firstName: {
                     dataType: "string",
@@ -78,7 +82,7 @@ describe("data def store tests", () => {
 
                     conditionalDefaults: [
                         {
-                            conditionExpr: "model.firstName == 'Jane'",
+                            conditionExpr: "person.firstName == 'Jane'",
                             value: "Smith"
                         }
                     ]
@@ -89,7 +93,7 @@ describe("data def store tests", () => {
 
                     conditionalDefaults: [
                         {
-                            conditionExpr: "model.firstName == 'Jane' && model.lastName == 'Smith'",
+                            conditionExpr: "person.firstName == 'Jane' && person.lastName == 'Smith'",
                             value: 25
                         }
                     ]
@@ -97,14 +101,14 @@ describe("data def store tests", () => {
             }
         };
 
-        await crs.binding.dataDef.register("test", def);
-        await crs.binding.data.setProperty(bid, "model.firstName", "Jane", "test");
+        await crs.binding.dataDef.register(bid, def);
+        await crs.binding.data.setProperty(bid, "person.firstName", "Jane");
 
-        const model = crs.binding.data.getProperty(bid, "model");
+        const model = crs.binding.data.getProperty(bid, "person");
         assertEquals(model.firstName, "Jane");
         assertEquals(model.lastName, "Smith");
         assertEquals(model.age, 25);
 
-        await crs.binding.dataDef.unRegister("test");
+        await crs.binding.dataDef.unRegister(bid);
     });
 });
