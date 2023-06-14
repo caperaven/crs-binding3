@@ -155,13 +155,16 @@ async function load(component) {
 async function loadHtml(component) {
     if (component.html == null) return;
 
-    const html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
+    const htmlPath = getHtmlPath(component)
+    const css = `<link rel="stylesheet" href="${htmlPath.replace(".html", ".css")}">`;
+    const html = await crs.binding.templates.get(component.constructor.name, htmlPath);
+    const content = `${css}${html}`;
 
     if (component.shadowRoot != null) {
-        component.shadowRoot.innerHTML = html;
+        component.shadowRoot.innerHTML = content;
     }
     else {
-        component.innerHTML = html;
+        component.innerHTML = content;
     }
 
     await crs.binding.parsers.parseElements(component.shadowRoot ? component.shadowRoot.children : component.children, component);

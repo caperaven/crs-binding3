@@ -3,57 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 16px;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        body {
-            display: grid;
-            grid-template-columns: 30rem 1fr;
-            grid-template-rows: 3rem 1fr;
-            grid-template-areas: "header header" "aside main"
-        }
-
-        header {
-            grid-area: header;
-            padding: 0.5rem;
-        }
-
-        aside {
-            grid-area: aside;
-            display: flex;
-            flex-direction: column;
-        }
-
-        main {
-            grid-area: main;
-        }
-
-        crs-router {
-            display: block;
-            padding: 0.5rem;
-        }
-
-        hr {
-            margin: 1rem 0;
-        }
-
-        [hidden] {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
     <header>
@@ -96,18 +46,6 @@
         <crs-router routes="app/routes.json"></crs-router>
     </main>
 
-    <script type="module">
-        import "./src/crs-binding.js";
-        import "./src/classes/view-base.js";
-        import "./packages/crs-router/crs-router.js";
-        import "./index.js";
-
-        import "./src/events/event-emitter.js";
-        import "./packages/crs-process-api/crs-process-api.js";
-        import "./packages/crs-process-api/action-systems/binding-actions.js";
-        import "./packages/crs-process-api/action-systems/console-actions.js";
-
-        crs.binding.data.setProperty(0, "menuVisible", true);
-    </script>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

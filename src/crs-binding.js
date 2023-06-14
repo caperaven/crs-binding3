@@ -28,6 +28,12 @@ globalThis.crs ||= {};
 globalThis.crs.classes ||= {};
 globalThis.crs.classes.AsyncFunction = Object.getPrototypeOf(async function(){}).constructor
 
+globalThis.crs.loadComponentContent = async (url) => {
+    const css = `<link rel='stylesheet' href='${url.replace(".js", ".css")}'>`
+    const html = await fetch(url.replace(".js", ".html")).then(result => result.text());
+    return `${css}${html}`;
+}
+
 /**
  * @namespace crs.binding - The binding engine namespace.
  */
