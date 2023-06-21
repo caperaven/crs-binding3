@@ -7,6 +7,14 @@ export class BindableElement extends HTMLElement {
     #bid;
 
     /**
+     * @property {boolean} hasStyle - If true the element will have a style tag.
+     * @returns {boolean}
+     */
+    get hasStyle() {
+        return true;
+    }
+
+    /**
      * @property {boolean} shadowDom - If true the element will use shadow dom.
      * @returns {boolean}
      */
@@ -155,7 +163,13 @@ async function load(component) {
 async function loadHtml(component) {
     if (component.html == null) return;
 
-    const html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
+    let styleLink = "";
+    if (component.hasStyle == true) {
+        styleLink = `<link rel="stylesheet" href="${component.html.replace(".html", ".css")}">`;
+    }
+
+    let html = await crs.binding.templates.get(component.constructor.name, getHtmlPath(component));
+    html = `${styleLink}${html}`;
 
     if (component.shadowRoot != null) {
         component.shadowRoot.innerHTML = html;
