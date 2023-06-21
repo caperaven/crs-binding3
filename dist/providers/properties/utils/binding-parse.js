@@ -10,7 +10,7 @@ async function bindingParse(attr, context, provider) {
   let intent = crs.binding.eventStore.getIntent("change", uuid);
   if (intent == null) {
     intent = {
-      provider: ".bind",
+      provider,
       value: {},
       dataDef: null
     };
