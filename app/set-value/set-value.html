@@ -20,6 +20,7 @@
 <section>
     <h2>Context Property</h2>
     <button click.setvalue="state = state == 'on' ? 'off' : 'on'">Change State</button>
+    <button click.setvalue="state = prop(this, 'dataset.value')" data-value="off">Change State</button>
     <span>state value: ${state}</span>
 </section>
 

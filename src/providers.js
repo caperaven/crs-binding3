@@ -181,7 +181,16 @@ export class Providers {
 
         const element = crs.binding.elements[uuid];
         if (element.__events != null && element.__events.indexOf("change") != -1) {
-            this.#attrProviders[".bind"].update(uuid);
+            const bindProvider = this.#attrProviders[".bind"];
+            const onewayProvider = this.#attrProviders[".one-way"];
+
+            if (typeof bindProvider === "object") {
+                bindProvider.update(uuid);
+            }
+
+            if (typeof onewayProvider === "object") {
+                onewayProvider.update(uuid);
+            }
         }
 
         for (const textProvider of this.#textProviders) {
