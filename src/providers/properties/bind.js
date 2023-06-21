@@ -39,7 +39,7 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async parse(attr, context) {
-        await bindingParse(attr, context);
+        await bindingParse(attr, context, ".bind");
     }
 
     /**

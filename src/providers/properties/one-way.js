@@ -25,7 +25,7 @@ export default class OneWayProvider {
      * @returns {Promise<void>}
      */
     async parse(attr, context) {
-        await bindingParse(attr, context, this.#store, ".one-way");
+        await bindingParse(attr, context, ".one-way");
     }
 
     /**
