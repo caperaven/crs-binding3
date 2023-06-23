@@ -7,7 +7,13 @@ export default class TemplateSrcProvider {
         crs.binding.utils.unmarkElement(element);
 
         const path = await getPath(element, context);
-        const content = await fetch(path).then(result => result.text());
+        let content = await fetch(path).then(result => result.text());
+
+        if (element.dataset.css === "true") {
+            const cssMarkup = `<link rel="stylesheet" href="${path.replace(".html", ".css")}">`;
+            content = `${cssMarkup}\n${content}`;
+        }
+
         const template = document.createElement("template");
         template.innerHTML = content;
 
