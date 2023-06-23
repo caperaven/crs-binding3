@@ -106,8 +106,12 @@ export class BindableElement extends HTMLElement {
      * @param property {string} - The property name to set.
      * @param value {*} - The value to set.
      */
-    setProperty(property, value) {
-        crs.binding.data.setProperty(this, property, value);
+    async setProperty(property, value) {
+        await crs.binding.data.setProperty(this, property, value);
+    }
+
+    async updateProperty(property, callback) {
+        await crs.binding.data.updateProperty(this, property, callback);
     }
 }
 

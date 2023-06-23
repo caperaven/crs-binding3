@@ -335,6 +335,12 @@ export class BindingData {
         }
     }
 
+    async updateProperty(id, property, callback) {
+        let value = this.getProperty(id, property);
+        value = await callback(value);
+        await this.setProperty(id, property, value);
+    }
+
     /**
      * @method setName - Set the name for the binding context to help with debugging
      * @param id {number} - The id to use for the context. This is the same as the binding id

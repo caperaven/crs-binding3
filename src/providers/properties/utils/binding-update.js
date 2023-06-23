@@ -13,6 +13,6 @@ export async function bindingUpdate(uuid, ...properties) {
         const targetProperty = intent.value[property];
         if (targetProperty == null) continue;
 
-        element[targetProperty] = await crs.binding.data.getProperty(bid, property) || "";
+        element[targetProperty] = await crs.binding.data.getProperty(bid, property) ?? "";
     }
 }
