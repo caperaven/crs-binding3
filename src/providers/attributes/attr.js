@@ -24,6 +24,13 @@ export default class AttrProvider {
 
         crs.binding.utils.markElement(element, context);
         const expo = await crs.binding.expression.compile(attr.value);
+
+        if (expo.parameters.properties.length == 0) {
+            const value = await expo.function();
+            element.setAttribute(attrName, value);
+            return;
+        }
+
         const obj = this.#store[element["__uuid"]] ||= {};
 
         for (const property of expo.parameters.properties) {
