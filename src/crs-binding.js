@@ -95,6 +95,7 @@ globalThis.crs.binding = {
             "^(keydown|keyup)\..+\..*$" : "$root/providers/events/keyboard-event.js",
             "classlist.if"      : "$root/providers/attributes/classlist-if.js",
             "classlist.case"    : "$root/providers/attributes/classlist-case.js",
+            "classlist.toggle"  : "$root/providers/attributes/classlist-toggle.js",
             ".bind"             : "$root/providers/properties/bind.js",
             ".two-way"          : "$root/providers/properties/bind.js",
             ".one-way"          : "$root/providers/properties/one-way.js",
@@ -108,7 +109,7 @@ globalThis.crs.binding = {
             ".call"             : "$root/providers/attributes/call.js",
             ".emit"             : "$root/providers/attributes/emit.js",
             ".post"             : "$root/providers/attributes/post.js",
-            ".process"          : "$root/providers/attributes/process.js"
+            ".process"          : "$root/providers/attributes/process.js",
         },
         {
             "template[for]"     : "$root/providers/element/template-repeat-for.js",
