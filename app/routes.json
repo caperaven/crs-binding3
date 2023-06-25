@@ -95,6 +95,11 @@
       "view": "data-definition"
     },
     {
+      "title": "custom-events",
+      "hash": "#custom-events",
+      "view": "custom-events"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

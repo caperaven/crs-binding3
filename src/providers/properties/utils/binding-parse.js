@@ -21,7 +21,9 @@ export async function bindingParse(attr, context, provider) {
 
     intent.value[path] = property;
 
-    crs.binding.eventStore.register("change", uuid, intent);
+    const event = "change"; // element instanceof HTMLElement ? "component-change" : "change";
+
+    crs.binding.eventStore.register(event, uuid, intent);
 
     crs.binding.data.setCallback(element["__uuid"], context.bid, [path], provider);
 

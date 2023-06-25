@@ -39,7 +39,8 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async parse(attr, context) {
-        await bindingParse(attr, context, ".bind");
+        const provider = attr.name.indexOf("two-way") != -1 ? ".two-way" : ".bind";
+        await bindingParse(attr, context, provider);
     }
 
     /**

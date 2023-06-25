@@ -2,7 +2,8 @@ export async function bindingUpdate(uuid, ...properties) {
     const element = crs.binding.elements[uuid];
     if (element == null) return;
 
-    const intent = crs.binding.eventStore.getIntent("change", uuid);
+    let intent = crs.binding.eventStore.getIntent("change", uuid);
+    intent ||= crs.binding.eventStore.getIntent("component-change", uuid);
 
     if (Array.isArray(intent)) {
         for (const i of intent) {
