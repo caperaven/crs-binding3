@@ -24,19 +24,31 @@ export class EventStore {
             if (intent != null) {
                 const bid = target["__bid"];
 
-                let provider = Array.isArray(intent) ? intent[0].provider : intent.provider;
-                provider = provider.replaceAll("\\", "");
-                const providerInstance = crs.binding.providers.attrProviders[provider];
-                await providerInstance.onEvent?.(event, bid, intent, target);
+                if (Array.isArray(intent)) {
+                    for (const i of intent) {
+                        await this.#onEventExecute(i, bid, target);
+                    }
+
+                    continue;
+                }
+
+                await this.#onEventExecute(intent, bid, target);
             }
         }
+    }
+
+    async #onEventExecute(intent, bid, target) {
+        let provider = intent.provider;
+        provider = provider.replaceAll("\\", "");
+        const providerInstance = crs.binding.providers.attrProviders[provider];
+        await providerInstance.onEvent?.(event, bid, intent, target);
     }
 
     getIntent(event, uuid) {
         return this.#store[event]?.[uuid];
     }
 
-    register(event, uuid, intent, isCollection = false) {
+    register(event, uuid, intent, isCollection = true) {
         if (this.#store[event] == null) {
             document.addEventListener(event, this.#eventHandler, {
                 capture: true,
