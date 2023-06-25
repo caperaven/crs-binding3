@@ -223,7 +223,7 @@ export class Providers {
                     this.#elementProviders[providerKey];
             }
 
-            provider.update(uuid);
+            provider.update?.(uuid);
         }
     }
 
