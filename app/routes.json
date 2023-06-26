@@ -100,6 +100,11 @@
       "view": "custom-events"
     },
     {
+      "title": "shadow-dom",
+      "hash": "#shadow-dom",
+      "view": "shadow-dom"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

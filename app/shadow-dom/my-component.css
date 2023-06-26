@@ -1,0 +1,10 @@
+:host {
+    display: block;
+    border: 1px solid silver;
+    padding: 1rem !important;
+    margin: 0.5rem !important;
+}
+
+h2 {
+    color: #ff0090;
+}

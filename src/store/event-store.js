@@ -44,6 +44,21 @@ export class EventStore {
         await providerInstance.onEvent?.(event, bid, intent, target);
     }
 
+    async callEvent(event) {
+        const target = event.composedPath()[0];
+        const uuid = target["__uuid"];
+
+        const data = this.#store[event.type];
+        const element = crs.binding.elements[uuid];
+
+        let intent = data[uuid];
+        if (!Array.isArray(intent)) intent = [intent];
+
+        for (const i of intent) {
+            await this.#onEventExecute(i, element.__bid, element);
+        }
+    }
+
     getIntent(event, uuid) {
         return this.#store[event]?.[uuid];
     }

@@ -38,9 +38,11 @@ export function disableEvents(element) {
  * @param eventOptions {Object} - The event options to register.
  */
 function registerEvent(element, event, callback, eventOptions = null) {
-    element.addEventListener(event, callback, eventOptions);
+    const target = element.shadowRoot || element;
+    target.addEventListener(event, callback, eventOptions);
+
     this._domEvents.push({
-        element: element,
+        element: target,
         event: event,
         callback: callback
     })
@@ -58,7 +60,8 @@ function unregisterEvent(element, event, callback) {
     const item = this._domEvents.find(item => item.element == element && item.event == event && item.callback == callback);
     if (item == null) return;
 
-    element.removeEventListener(item.event, item.callback);
+    const target = element.shadowRoot || element;
+    target.removeEventListener(item.event, item.callback);
 
     this._domEvents.splice(this._domEvents.indexOf(item), 1);
     delete item.element;
