@@ -12,9 +12,7 @@ export class MyComponent extends crs.classes.BindableElement {
     async preLoad() {
         this.setProperty("title", "My Component");
 
-        this.registerEvent(this, "change", (event) => {
-            crs.binding.eventStore.callEvent(event);
-        })
+        //this.registerEvent(this, "change", crs.binding.eventStore.callEvent.bind(crs.binding.eventStore));
     }
 }
 

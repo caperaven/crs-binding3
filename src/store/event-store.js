@@ -7,6 +7,8 @@ export class EventStore {
     #store = {};
     #eventHandler = this.#onEvent.bind(this);
 
+    #callEventHandler = this.callEvent.bind(this);
+
     get store() {
         return this.#store;
     }
@@ -64,6 +66,16 @@ export class EventStore {
     }
 
     register(event, uuid, intent, isCollection = true) {
+        const element = crs.binding.elements[uuid];
+        const root = element.getRootNode();
+
+        // This checks if the element is behind a shadow root as standard events will not pass through shadow roots.
+        // In that case we will add a custom event to the host element that will call the events object as if a event fired.
+        // Basically the component will catch the event but call into the events store.
+        if (root instanceof ShadowRoot && root.host.registerEvent != null) {
+            root.host.registerEvent(element, event, this.#callEventHandler);
+        }
+
         if (this.#store[event] == null) {
             document.addEventListener(event, this.#eventHandler, {
                 capture: true,
