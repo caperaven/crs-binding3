@@ -15,6 +15,7 @@ export default class ClassListToggleProvider {
 
         const valueParts = attr.value.replace(")", "").split("(");
         const query = valueParts[0];
+        const className = valueParts[1];
 
         const intent = {
             provider: "classlist.toggle",
