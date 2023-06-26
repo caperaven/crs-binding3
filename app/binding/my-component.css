@@ -1,8 +1,8 @@
 :host {
     display: block;
     border: 1px solid silver;
-    padding: 0.5rem;
-    margin: 0.5rem;
+    padding: 1rem !important;
+    margin: 0.5rem !important;
 }
 
 h2 {
