@@ -15,7 +15,6 @@ export default class ClassListToggleProvider {
 
         const valueParts = attr.value.replace(")", "").split("(");
         const query = valueParts[0];
-        const className = valueParts[1];
 
         const intent = {
             provider: "classlist.toggle",
@@ -26,6 +25,8 @@ export default class ClassListToggleProvider {
         crs.binding.eventStore.register(event, uuid, intent);
         element.__events ||= [];
         element.__events.push(event);
+
+        element.removeAttribute(attr.name);
     }
 
     async clear(uuid) {
