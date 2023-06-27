@@ -14,6 +14,8 @@ export class EventStore {
     }
 
     async #onEvent(event) {
+        event.stopPropagation();
+
         const targets = getTargets(event);
         if (targets.length === 0) return;
 
@@ -48,6 +50,8 @@ export class EventStore {
 
     async callEvent(event) {
         const target = event.composedPath()[0];
+        if ((target instanceof HTMLInputElement) == false) return;
+
         const uuid = target["__uuid"];
 
         const data = this.#store[event.type];
@@ -75,7 +79,7 @@ export class EventStore {
         // This checks if the element is behind a shadow root as standard events will not pass through shadow roots.
         // In that case we will add a custom event to the host element that will call the events object as if a event fired.
         // Basically the component will catch the event but call into the events store.
-        if (root instanceof ShadowRoot && root.host.registerEvent != null) {
+        if (event === "change" && element instanceof HTMLInputElement && root instanceof ShadowRoot && root.host.registerEvent != null) {
             root.host.registerEvent(root, event, this.#callEventHandler);
         }
 
