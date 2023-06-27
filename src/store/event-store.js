@@ -54,6 +54,9 @@ export class EventStore {
         const element = crs.binding.elements[uuid];
 
         let intent = data[uuid];
+
+        if (intent == null) return;
+
         if (!Array.isArray(intent)) intent = [intent];
 
         for (const i of intent) {
