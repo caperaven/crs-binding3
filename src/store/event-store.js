@@ -73,7 +73,7 @@ export class EventStore {
         // In that case we will add a custom event to the host element that will call the events object as if a event fired.
         // Basically the component will catch the event but call into the events store.
         if (root instanceof ShadowRoot && root.host.registerEvent != null) {
-            root.host.registerEvent(element, event, this.#callEventHandler);
+            root.host.registerEvent(root, event, this.#callEventHandler);
         }
 
         if (this.#store[event] == null) {

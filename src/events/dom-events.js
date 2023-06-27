@@ -38,6 +38,9 @@ export function disableEvents(element) {
  * @param eventOptions {Object} - The event options to register.
  */
 function registerEvent(element, event, callback, eventOptions = null) {
+    const itemInStore = this._domEvents.find(item => item.element == element && item.event == event && item.callback == callback);
+    if (itemInStore != null) return;
+
     const target = element.shadowRoot || element;
     target.addEventListener(event, callback, eventOptions);
 
