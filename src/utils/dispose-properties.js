@@ -35,6 +35,8 @@ export function disposeProperties(obj) {
     for (let property of properties) {
         let pObj = obj[property];
 
+        if (pObj == null) continue;
+
         if (typeof pObj == "object") {
             if (Array.isArray(pObj)) {
                 disposeArray(pObj);

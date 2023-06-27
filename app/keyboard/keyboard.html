@@ -1,4 +1,11 @@
 <h2>${title}</h2>
 
-<input keyup.ctrl_enter.call="submit" />
-<input keyup.call="filter" />
+<label>
+    <div>Ctrl + Enter</div>
+    <input keyup.ctrl_enter.call="submit" />
+</label>
+
+<label>
+    <div>Just type</div>
+    <input keyup.call="filter" />
+</label>

@@ -16,11 +16,12 @@ export default class KeyboardEventProvider {
         keys.push(event.key.toLowerCase());
 
         const key = keys.join("_");
-        if (intent.keys != key || intent.keys != "") return;
 
-        const executeIntent = intent.value;
-        const module = await crs.binding.providers.getAttrModule(executeIntent.provider);
-        await module.onEvent(event, bid, executeIntent);
+        if (intent.keys == "" || intent.keys == key) {
+            const executeIntent = intent.value;
+            const module = await crs.binding.providers.getAttrModule(executeIntent.provider);
+            await module.onEvent(event, bid, executeIntent);
+        }
     }
 
     async parse(attr) {
