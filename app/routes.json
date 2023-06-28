@@ -105,6 +105,11 @@
       "view": "shadow-dom"
     },
     {
+      "title": "array-binding",
+      "hash": "#array-binding",
+      "view": "array-binding"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",
