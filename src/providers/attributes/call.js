@@ -1,4 +1,5 @@
 import {parseEvent} from "./utils/parse-event.js";
+import {getQueries} from "./utils/get-queries.js";
 
 /**
  * @class CallProvider
@@ -50,15 +51,7 @@ export default class CallProvider {
      */
     getIntent(attrValue) {
         const result = { provider: ".call", value: attrValue }
-
-        if (attrValue.indexOf("[") != -1) {
-            const lastBracket = attrValue.lastIndexOf("]");
-            const subStr = attrValue.substring(1, lastBracket);
-
-            result.queries = subStr.split(",");
-            result.value = attrValue.replace(`[${subStr}].`, "");
-        }
-
+        getQueries(attrValue, result);
         return result;
     }
 
