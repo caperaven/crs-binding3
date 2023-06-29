@@ -19,6 +19,11 @@ export class MyComponent extends crs.classes.BindableElement {
     async preLoad() {
         this.setProperty("title", "My Component");
     }
+
+    async greet(message) {
+        this.setProperty("title", message);
+        console.log("greet", message);
+    }
 }
 
 customElements.define("my-component", MyComponent);

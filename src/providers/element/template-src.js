@@ -1,6 +1,9 @@
 /**
  * @class TemplateSrcProvider - This provider loads html from file as defined by the src attribute.
  * The template position is replaced with the content of that file.
+ *
+ * @example <caption>Example usage of TemplateSrcProvider</caption>
+ * <template src="path/to/file.html"></template>
  */
 export default class TemplateSrcProvider {
     async parse(element, context) {

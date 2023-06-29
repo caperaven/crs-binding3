@@ -31,7 +31,7 @@ export default class CallProvider {
      * @returns {Promise<void>}
      */
     async onEvent(event, bid, intent) {
-        await execute(bid, intent.value, event);
+        await execute(bid, intent, event);
     }
 
     /**
@@ -49,7 +49,17 @@ export default class CallProvider {
      * @returns {Promise<{provider: string, value}>}
      */
     getIntent(attrValue) {
-        return { provider: ".call", value: attrValue }
+        const result = { provider: ".call", value: attrValue }
+
+        if (attrValue.indexOf("[") != -1) {
+            const lastBracket = attrValue.lastIndexOf("]");
+            const subStr = attrValue.substring(1, lastBracket);
+
+            result.queries = subStr.split(",");
+            result.value = attrValue.replace(`[${subStr}].`, "");
+        }
+
+        return result;
     }
 
     /**
@@ -69,14 +79,33 @@ export default class CallProvider {
  * @param event {Event} - The event that was triggered.
  * @returns {Promise<void>}
  */
-async function execute(bid, expr, event) {
+async function execute(bid, intent, event) {
     const context = crs.binding.data.getContext(bid);
     if (context == null) return;
 
-    const parts = expr.replace(")", "").split("(");
+    const parts = intent.value.replace(")", "").split("(");
     const fn = parts[0];
-
     const args = parts.length == 1 ? [event] : processArgs(parts[1], event);
+
+    if (intent.queries != null) {
+        let parent;
+        if (context instanceof crs.classes.BindableElement) {
+            parent = context.shadowRoot || context;
+        }
+        else if (context.element != null) {
+            parent = context.element.shadowRoot || context.element;
+        }
+        else {
+            parent = document;
+        }
+
+        for (let query of intent.queries) {
+            const element = parent.querySelector(query);
+            await element[fn].call(element, ...args);
+        }
+        return;
+    }
+
     await context[fn].call(context, ...args);
 }
 
@@ -99,6 +128,9 @@ function processArgs(expr, event) {
         }
         else if (Number.isNaN(part) == true) {
             args.push(Number(part));
+        }
+        else if (part.indexOf("'") == 0) {
+            args.push(part.replaceAll("'", ""));
         }
         else {
             args.push(part);
