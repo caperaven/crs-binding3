@@ -14,8 +14,6 @@ export class EventStore {
     }
 
     async #onEvent(event) {
-        event.stopPropagation();
-
         const targets = getTargets(event);
         if (targets.length === 0) return;
 
