@@ -5,7 +5,7 @@ export function getQueries(string, result) {
 
         result.queries = subStr.split(",");
 
-        if (result.value == null) {
+        if (result.value != null) {
             result.value = string.replace(`[${subStr}].`, "");
         }
     }
