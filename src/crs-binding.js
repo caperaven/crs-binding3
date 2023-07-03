@@ -101,6 +101,7 @@ globalThis.crs.binding = {
             ".one-way"          : "$root/providers/properties/one-way.js",
             ".once"             : "$root/providers/properties/once.js",
             ".setvalue"         : "$root/providers/attributes/set-value.js",
+            ".attr.toggle"      : "$root/providers/attributes/attr-toggle.js",
             ".attr"             : "$root/providers/attributes/attr.js",
             ".if"               : "$root/providers/attributes/attr-if.js",
             ".case"             : "$root/providers/attributes/attr-case.js",

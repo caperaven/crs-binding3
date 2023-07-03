@@ -25,6 +25,9 @@
 
 <button click.call="reset">Reset</button>
 <button click.call="[my-component].greet('hello kieran')">Call Greet</button>
+<button click.attr.toggle="[this](aria-expanded='true')">Toggle Expanded</button>
+<button click.attr.toggle="[this](data-hidden)">Toggle Hidden</button>
+
 <my-component value.one-way="person.firstName" greeting.once="greeting"></my-component>
 
 <ul>
