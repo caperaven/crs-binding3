@@ -12,6 +12,16 @@ export class Observable {
     #events = [];
     #eventEmitter = new EventTarget();
 
+    #allowNotifications = true;
+
+    get allowNotifications() {
+        return this.#allowNotifications;
+    }
+
+    set allowNotifications(newValue) {
+        this.#allowNotifications = newValue;
+    }
+
     /**
      * @property events - The events that are currently being listened to.
      * @returns {*[]}
@@ -57,7 +67,9 @@ export class Observable {
      * @param detail {*} - The detail to pass to the event.
      */
     notify(event, detail) {
-        this.#eventEmitter.dispatchEvent(new CustomEvent(event, { detail }));
+        if (this.allowNotifications === true) {
+            this.#eventEmitter.dispatchEvent(new CustomEvent(event, { detail }));
+        }
     }
 }
 
