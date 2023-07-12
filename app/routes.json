@@ -110,6 +110,11 @@
       "view": "array-binding"
     },
     {
+      "title": "binding-timing-example",
+      "hash": "#binding-timing-example",
+      "view": "binding-timing-example"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",
