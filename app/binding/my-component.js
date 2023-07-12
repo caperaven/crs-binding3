@@ -12,14 +12,6 @@ export class MyComponent extends crs.classes.BindableElement {
         console.log("once binding: ", newValue);
     }
 
-    get something() {
-        return this.#something;
-    }
-
-    set something(newValue) {
-        this.#something = newValue;
-    }
-
     get html() {
         return import.meta.url.replace(".js", ".html");
     }
