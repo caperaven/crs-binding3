@@ -266,6 +266,11 @@ export class BindingData {
         if (crs.binding.dataDef != null) {
             crs.binding.dataDef.remove(id);
         }
+
+        const triggersProvider = crs.binding.providers.attrProviders[".changed."];
+        if (typeof triggersProvider !== "string") {
+            triggersProvider.clear(id);
+        }
     }
 
     /**
@@ -332,6 +337,11 @@ export class BindingData {
         if (crs.binding.dataDef != null) {
             await crs.binding.dataDef.automateValues(id, property);
             await crs.binding.dataDef.automateValidations(id, property);
+        }
+
+        const triggersProvider = crs.binding.providers.attrProviders[".changed."];
+        if (typeof triggersProvider !== "string") {
+            await triggersProvider.update(id, property);
         }
     }
 

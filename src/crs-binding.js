@@ -100,6 +100,7 @@ globalThis.crs.binding = {
             ".two-way"          : "$root/providers/properties/bind.js",
             ".one-way"          : "$root/providers/properties/one-way.js",
             ".once"             : "$root/providers/properties/once.js",
+            ".changed."         : "$root/providers/properties/changed.js",
             ".setvalue"         : "$root/providers/attributes/set-value.js",
             ".attr.toggle"      : "$root/providers/attributes/attr-toggle.js",
             ".attr"             : "$root/providers/attributes/attr.js",
@@ -110,7 +111,7 @@ globalThis.crs.binding = {
             ".call"             : "$root/providers/attributes/call.js",
             ".emit"             : "$root/providers/attributes/emit.js",
             ".post"             : "$root/providers/attributes/post.js",
-            ".process"          : "$root/providers/attributes/process.js",
+            ".process"          : "$root/providers/attributes/process.js"
         },
         {
             "template[for]"     : "$root/providers/element/template-repeat-for.js",

@@ -1,5 +1,29 @@
-<h2>${title}</h2>
+<context-triggers
+    title-changed.post="message-key[test-component (value = title)]">
+    title-changed.post.if="title == 'test' ? message-key[test-component (value = title)] : ...">
+</context-triggers>
 
-<button click.call="addComponent">Add Component</button>
 
-<timing-component></timing-component>
+<!-- 1. when the binding context title changres do event emit where value is context property title -->
+<component title.changed.emit="message-key(value = title)"></component> <!-- my title context property -->
+<component title.changed.call="[test-component].refresh(title)"></component> <!-- my title context property -->
+<component title.changed.call="[test-component].refresh($context.title)"></component> <!-- my title context property -->
+
+<!--
+    click.call="[my-component, ...].greet('hello kieran')"
+
+    key to look for is "-changed."
+
+    store {
+      [0]: {
+        "title": intent
+      }
+    }
+
+
+    1. emit
+    2. post
+    3. setvalue
+    4. call
+    5. process
+-->

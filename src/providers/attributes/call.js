@@ -78,7 +78,7 @@ async function execute(bid, intent, event) {
 
     const parts = intent.value.replace(")", "").split("(");
     const fn = parts[0];
-    const args = parts.length == 1 ? [event] : processArgs(parts[1], event);
+    const args = parts.length == 1 ? [event] : processArgs(parts[1], event, bid);
 
     if (intent.queries != null) {
         let parent;
@@ -109,21 +109,30 @@ async function execute(bid, intent, event) {
  * @param event {Event} - The event that was triggered.
  * @returns {*[]}
  */
-function processArgs(expr, event) {
+function processArgs(expr, event, bid) {
     const args = [];
     const parts = expr.split(",");
 
     for (let part of parts) {
         part = part.trim();
 
+        if (part.indexOf("$context." != -1)) {
+            const path = part.replace("$context.", "");
+            const value = crs.binding.data.getProperty(bid, path);
+            args.push(value);
+            continue;
+        }
         if (part === "$event") {
             args.push(event);
+            continue;
         }
         else if (Number.isNaN(part) == true) {
             args.push(Number(part));
+            continue;
         }
         else if (part.indexOf("'") == 0) {
             args.push(part.replaceAll("'", ""));
+            continue;
         }
         else {
             args.push(part);

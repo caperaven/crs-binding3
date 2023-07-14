@@ -115,6 +115,11 @@
       "view": "binding-timing-example"
     },
     {
+      "title": "property-changed",
+      "hash": "#property-changed",
+      "view": "property-changed"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",

@@ -1,5 +1,14 @@
 import "./../validation/validation-ui.js";
 
+/**
+ * This class allows you to define data definitions that manage things like:
+ * 1. Default values
+ * 2. Conditional default values
+ * 3. Conditional validations
+ *
+ * See the data-definition app page for an example of how to use this class
+ */
+
 export class DataDefStore {
     /**
      * @field #store - The store of data definitions
