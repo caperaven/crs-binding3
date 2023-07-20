@@ -23,6 +23,7 @@
 
 <div>${person.firstName} ${person.lastName} is ${person.age} old</div>
 
+<button click.call="onEvent($event)">Event</button>
 <button click.call="reset">Reset</button>
 <button click.call="[my-component].greet('hello kieran')">Call Greet</button>
 <button click.attr.toggle="[this](aria-expanded='true')">Toggle Expanded</button>

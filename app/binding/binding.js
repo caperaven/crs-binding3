@@ -82,4 +82,8 @@ export default class BindingViewModel extends crs.classes.ViewBase {
         const array = this.getProperty("people");
         array.shift();
     }
+
+    async onEvent(event) {
+        console.log(event);
+    }
 }

@@ -28,7 +28,7 @@ export default class ChangedProvider {
 
         for (const intent of collection) {
             const provider = await crs.binding.providers.getAttrProvider(intent.provider);
-            await provider.onEvent?.(event, bid, intent);
+            await provider.onEvent?.(null, bid, intent);
         }
     }
 

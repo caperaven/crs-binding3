@@ -116,7 +116,7 @@ function processArgs(expr, event, bid) {
     for (let part of parts) {
         part = part.trim();
 
-        if (part.indexOf("$context." != -1)) {
+        if (part.indexOf("$context.") != -1) {
             const path = part.replace("$context.", "");
             const value = crs.binding.data.getProperty(bid, path);
             args.push(value);
