@@ -253,6 +253,12 @@ export class BindingData {
         return data.data;
     }
 
+    /**
+     * This is used for elements that are bound to context and being removed while the context is still alive.
+     * This is often used when doing partial bindings where the UI is different from the main context UI but bound to the main context UI.
+     * Often this is used on things like dialogs that bind to the main context but are displayed as a special UI.
+     * @param uuid {string} - The uuid of the element
+     */
     removeElement(uuid) {
         const element = crs.binding.elements[uuid];
         if (element == null) return;
