@@ -399,7 +399,15 @@ export class BindingData {
         const context = this.getContext(bid);
         if (context == null || context.boundElements == null) return;
 
-        await this.#performUpdate(bid, property);
+        if (property != null) {
+            await this.#performUpdate(bid, property);
+        }
+        else {
+            const properties = Object.keys(this.#callbacks[bid]);
+            for (const property of properties) {
+                await this.#performUpdate(bid, property);
+            }
+        }
     }
 
     /**
