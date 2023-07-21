@@ -45,6 +45,20 @@ class BindingData {
       }
     }
   }
+  #removeElementFromContext(bid, uuid) {
+    const context = this.#context[bid];
+    if (context == null)
+      return;
+    if (context.boundElements != null) {
+      context.boundElements.delete(uuid);
+    }
+  }
+  #removeElementFromCallbacks(bid, uuid) {
+    const callbacks = this.#callbacks[bid];
+    for (const key of Object.keys(callbacks)) {
+      callbacks[key].delete(uuid);
+    }
+  }
   setCallback(uuid, bid, properties, provider) {
     const obj = this.#callbacks[bid] ||= {};
     for (const property of properties) {
@@ -105,6 +119,16 @@ class BindingData {
       return;
     const data = crs.binding.data.getData(bid);
     return data.data;
+  }
+  removeElement(uuid) {
+    const element = crs.binding.elements[uuid];
+    if (element == null)
+      return;
+    const bid = element?.["__bid"];
+    if (bid == null)
+      return;
+    this.#removeElementFromContext(bid, uuid);
+    this.#removeElementFromCallbacks(bid, uuid);
   }
   remove(id) {
     id = this.#getContextId(id);

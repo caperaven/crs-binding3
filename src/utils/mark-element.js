@@ -28,11 +28,11 @@ export function markElement(element, context) {
  * It will also remove the element from the binding engine and the element becomes irrelevant to the binding engine.
  * @param element {HTMLElement} - The element to unmark.
  */
-export function unmarkElement(element) {
+export function unmarkElement(element, removeElementFromContext = false) {
     if (element.nodeName === "STYLE") return;
 
     if (element.children.length > 0) {
-        unmarkElements(element.children);
+        unmarkElements(element.children, removeElementFromContext);
     }
 
     const uuid = element["__uuid"];
@@ -41,6 +41,10 @@ export function unmarkElement(element) {
     crs.binding.providers.clear(uuid).catch(error => console.error(error));
 
     if (crs.binding.elements[uuid]) {
+        if (removeElementFromContext === true) {
+            crs.binding.data.removeElement(uuid);
+        }
+
         delete crs.binding.elements[uuid];
     }
 
@@ -51,8 +55,8 @@ export function unmarkElement(element) {
  * @function unmarkElements - This is a batch operation that un-marks multiple elements.
  * @param elements {NodeListOf<HTMLElement>} - The elements to unmark.
  */
-export function unmarkElements(elements) {
+export function unmarkElements(elements, removeElementFromContext) {
     for (const element of elements) {
-        unmarkElement(element);
+        unmarkElement(element, removeElementFromContext);
     }
 }

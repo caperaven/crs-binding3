@@ -109,6 +109,22 @@ export class BindingData {
         }
     }
 
+    #removeElementFromContext(bid, uuid) {
+        const context = this.#context[bid];
+        if (context == null) return;
+
+        if (context.boundElements != null) {
+            context.boundElements.delete(uuid);
+        }
+    }
+
+    #removeElementFromCallbacks(bid, uuid) {
+        const callbacks = this.#callbacks[bid];
+        for (const key of Object.keys(callbacks)) {
+            callbacks[key].delete(uuid);
+        }
+    }
+
     /**
      * @method setCallback - Set the callback for the given property.
      * This is used to determine what to update when a property changes.
@@ -235,6 +251,17 @@ export class BindingData {
 
         const data = crs.binding.data.getData(bid);
         return data.data;
+    }
+
+    removeElement(uuid) {
+        const element = crs.binding.elements[uuid];
+        if (element == null) return;
+
+        const bid = element?.["__bid"];
+        if (bid == null) return;
+
+        this.#removeElementFromContext(bid, uuid);
+        this.#removeElementFromCallbacks(bid, uuid);
     }
 
     /**
