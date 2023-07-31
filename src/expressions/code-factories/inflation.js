@@ -64,10 +64,10 @@ async function children(path, element, preCode, code, ctxName) {
         }
         else {
             const text = child.textContent.trim();
-            if (text.indexOf("${") == -1 && text.indexOf("&{") == -1) continue;
-
-            const exp = await crs.binding.expression.sanitize(text, ctxName);
-            code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
+            if (text.indexOf("${") != -1 || text.indexOf("&{") != -1) {
+                const exp = await crs.binding.expression.sanitize(text, ctxName);
+                code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
+            }
         }
 
         await attributes(`${path}.children[${i}]`, element.children[i], preCode, code, ctxName);
@@ -90,18 +90,23 @@ async function attributes(path, element, preCode, code, ctxName) {
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
         else if (attr.nodeName.indexOf("style.") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
             await styles(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf("classlist.case") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
             await classListCase(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf("classlist.if") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
             await classListIf(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf(".if") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
             await ifAttribute(attr, path, preCode, code, ctxName);
         }
         else if (attr.nodeName.indexOf(".attr") != -1 || attr.nodeName.indexOf(".one-way") != -1) {
+            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
             await attrAttribute(attr, path, preCode, code, ctxName);
         }
     }
@@ -135,11 +140,33 @@ async function classListCase(attr, path, preCode, code, ctxName) {
 }
 
 async function classListIf(attr, path, preCode, code, ctxName) {
-    const parts = attr.nodeValue.split("?")[1].split(":");
-    preCode.push(`${path}.classList.remove(${parts.join(",")});`);
+    const ifParts = attr.nodeValue.split("?");
+    const expression = ifParts[0].trim();
+    const elseParts = ifParts[1].split(":");
+    const ifClasses = elseParts[0].trim().replace("[", "").replace("]", "");
+    const elseClasses = elseParts[1]?.trim();
 
-    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-    code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
+    code.push(`${path}.classList.remove(${ifClasses});`);
+    if (elseClasses != null) {
+        code.push(`${path}.classList.remove(${elseClasses});`);
+    }
+
+    const exp = await crs.binding.expression.sanitize(expression, ctxName);
+    code.push(`if (${exp.expression}) {`);
+    code.push(`    ${path}.classList.add(${ifClasses});`);
+    code.push(`}`);
+
+    if (elseClasses != null) {
+        code.push(`else {`);
+        code.push(`    ${path}.classList.add(${elseClasses});`);
+        code.push(`}`);
+    }
+
+    // const parts = attr.nodeValue.split("?")[1].split(":");
+    // preCode.push(`${path}.classList.remove(${parts.join(",")});`);
+    //
+    // const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    // code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
 }
 
 async function ifAttribute(attr, path, preCode, code, ctxName) {

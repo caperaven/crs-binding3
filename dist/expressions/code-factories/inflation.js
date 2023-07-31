@@ -28,10 +28,10 @@ async function children(path, element, preCode, code, ctxName) {
       await children(`${path}.children[${i}]`, child, preCode, code, ctxName);
     } else {
       const text = child.textContent.trim();
-      if (text.indexOf("${") == -1 && text.indexOf("&{") == -1)
-        continue;
-      const exp = await crs.binding.expression.sanitize(text, ctxName);
-      code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
+      if (text.indexOf("${") != -1 || text.indexOf("&{") != -1) {
+        const exp = await crs.binding.expression.sanitize(text, ctxName);
+        code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
+      }
     }
     await attributes(`${path}.children[${i}]`, element.children[i], preCode, code, ctxName);
   }

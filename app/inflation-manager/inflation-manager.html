@@ -19,6 +19,7 @@
 <template data-ref="template">
     <li data-id="${id}" data-state.if="age < 25 ? 'young' : 'old'">
         <div classlist.if="age < 25 ? 'blue' : 'red'">First Name: ${firstName}</div>
+        <div classlist.if="age < 25 ? 'blue'">First Name If LT 25</div>
         <div style.color="color">Last Name: ${lastName}</div>
         <div style.color.if="age < 25 ? 'red' : 'blue'">Age: ${age}</div>
         <div style.color.case="age < 20 ? 'red', age > 27 ? 'green', default: 'silver'">Age2: ${age}</div>
