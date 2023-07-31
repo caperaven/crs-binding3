@@ -140,8 +140,10 @@ async function classListCase(attr, path, preCode, code, ctxName) {
 }
 
 async function classListIf(attr, path, preCode, code, ctxName) {
-    const ifParts = attr.nodeValue.split("?");
-    const expression = ifParts[0].trim();
+    const value = attr.nodeValue.trim().replaceAll("?.", "*.");
+
+    const ifParts = value.split("?");
+    let expression = ifParts[0].trim();
     const elseParts = ifParts[1].split(":");
     const ifClasses = elseParts[0].trim().replace("[", "").replace("]", "");
     const elseClasses = elseParts[1]?.trim();
@@ -150,6 +152,8 @@ async function classListIf(attr, path, preCode, code, ctxName) {
     if (elseClasses != null) {
         code.push(`${path}.classList.remove(${elseClasses});`);
     }
+
+    expression = expression.replace("*.", "?.");
 
     const exp = await crs.binding.expression.sanitize(expression, ctxName);
     code.push(`if (${exp.expression}) {`);
@@ -161,12 +165,6 @@ async function classListIf(attr, path, preCode, code, ctxName) {
         code.push(`    ${path}.classList.add(${elseClasses});`);
         code.push(`}`);
     }
-
-    // const parts = attr.nodeValue.split("?")[1].split(":");
-    // preCode.push(`${path}.classList.remove(${parts.join(",")});`);
-    //
-    // const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-    // code.push([`${path}.classList.add(`, exp.expression, ");"].join(""));
 }
 
 async function ifAttribute(attr, path, preCode, code, ctxName) {
