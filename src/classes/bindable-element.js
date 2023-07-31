@@ -5,6 +5,15 @@
  */
 export class BindableElement extends HTMLElement {
     #bid;
+    #allowNotifications = true;
+
+    get allowNotifications() {
+        return this.#allowNotifications;
+    }
+
+    set allowNotifications(newValue) {
+        this.#allowNotifications = newValue;
+    }
 
     /**
      * @property {boolean} hasStyle - If true the element will have a style tag.
@@ -110,8 +119,21 @@ export class BindableElement extends HTMLElement {
         await crs.binding.data.setProperty(this, property, value);
     }
 
+    /**
+     * @method updateProperty - Update a property on the binding context.
+     * This will update the UI.
+     * @param property
+     * @param callback
+     * @returns {Promise<void>}
+     */
     async updateProperty(property, callback) {
         await crs.binding.data.updateProperty(this, property, callback);
+    }
+
+    notify(event, detail) {
+        if (this.allowNotifications === true) {
+            this.dispatchEvent(new CustomEvent(event, { detail }));
+        }
     }
 }
 
