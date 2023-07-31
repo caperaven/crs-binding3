@@ -15,7 +15,10 @@ async function inflationFactory(element, ctxName = "context") {
   return new Function("element", ctxName, [...preCode, ...code].join("\n"));
 }
 async function textContent(path, element, code, ctxName) {
-  const exp = await crs.binding.expression.sanitize(element.textContent.trim(), ctxName);
+  const text = element.textContent.trim();
+  if (text.indexOf("${") == -1 && text.indexOf("&{") == -1)
+    return;
+  const exp = await crs.binding.expression.sanitize(text, ctxName);
   code.push([path, ".textContent = `", exp.expression, "`;"].join(""));
 }
 async function children(path, element, preCode, code, ctxName) {
@@ -24,7 +27,10 @@ async function children(path, element, preCode, code, ctxName) {
     if (child.children.length > 0) {
       await children(`${path}.children[${i}]`, child, preCode, code, ctxName);
     } else {
-      const exp = await crs.binding.expression.sanitize(child.textContent.trim(), ctxName);
+      const text = child.textContent.trim();
+      if (text.indexOf("${") == -1 && text.indexOf("&{") == -1)
+        continue;
+      const exp = await crs.binding.expression.sanitize(text, ctxName);
       code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
     }
     await attributes(`${path}.children[${i}]`, element.children[i], preCode, code, ctxName);
