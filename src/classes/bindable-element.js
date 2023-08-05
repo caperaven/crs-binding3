@@ -132,7 +132,7 @@ export class BindableElement extends HTMLElement {
 
     notify(event, detail) {
         if (this.allowNotifications === true) {
-            this.dispatchEvent(new CustomEvent(event, { detail }));
+            this.dispatchEvent(new CustomEvent(event, { detail, composed: true, bubbles: true }));
         }
     }
 }
