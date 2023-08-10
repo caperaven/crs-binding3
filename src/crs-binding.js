@@ -22,6 +22,7 @@ import {EventStore} from "./store/event-store.js";
 import {getConverterParts} from "./utils/converter-parts.js";
 import {relativePathFrom} from "./utils/relative-path.js";
 import {TemplateProviderStore} from "./store/template-provider-store.js";
+import {Queryable} from "./utils/queryable.js";
 
 globalThis.GLOBALS = "$globals.";
 globalThis.crs ||= {};
@@ -75,6 +76,11 @@ globalThis.crs.binding = {
      * @property elements - map where the key is the uuid of the element and the value is the element.
      */
     elements: {},
+
+    /**
+     * @property elements - map where the key is the uuid of the element and the value is the element.
+     */
+    queryable: new Queryable(),
 
     /**
      * @property dom - dom related features and utilities are defined here.
