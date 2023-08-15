@@ -185,3 +185,7 @@ Object.defineProperty(globalThis.crs.binding, '$global', {
 });
 
 await crs.binding.providers.addTextProvider("$root/providers/text/text.js");
+
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1)
+};
