@@ -93,8 +93,10 @@ async function execute(bid, intent, event) {
         }
 
         for (let query of intent.queries) {
-            const element = parent.querySelector(query);
-            await element[fn].call(element, ...args);
+            const elements = parent.querySelectorAll(query);
+            for (const element of elements) {
+                await element[fn].call(element, ...args);
+            }
         }
         return;
     }

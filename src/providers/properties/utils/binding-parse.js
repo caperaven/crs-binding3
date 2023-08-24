@@ -10,23 +10,23 @@ export async function bindingParse(attr, context, provider) {
 
     const uuid = element["__uuid"];
 
-    let intent = crs.binding.eventStore.getIntent("change", uuid);
-    if (intent == null) {
-        intent = {
-            provider: provider,
-            value: {},
-            dataDef: null
-        };
-    }
-
-    intent.value[path] = property;
-
     const event = "change"; // element instanceof HTMLElement ? "component-change" : "change";
+    const intentCollection = crs.binding.eventStore.getIntent(event, uuid);
+    const intent = {
+        provider: provider,
+        value: { [path]: property },
+        dataDef: null
+    };
 
-    crs.binding.eventStore.register(event, uuid, intent);
+    if (intentCollection != null) {
+        intentCollection.push(intent);
+    }
+    else {
+        crs.binding.eventStore.register(event, uuid, intent);
+    }
 
     crs.binding.data.setCallback(element["__uuid"], context.bid, [path], provider);
 
     element.__events ||= [];
-    element.__events.push("change");
+    element.__events.push(event);
 }

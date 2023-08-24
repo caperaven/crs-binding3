@@ -5,11 +5,11 @@ export class MyComponent extends crs.classes.BindableElement {
         return true;
     }
     set value(newValue) {
-        console.log("one way binding: ", newValue);
+        console.log("my-component: one way binding: ", newValue);
     }
 
     set greeting(newValue) {
-        console.log("once binding: ", newValue);
+        console.log("my-component: once binding: ", newValue);
     }
 
     get html() {
