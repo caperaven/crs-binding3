@@ -6,7 +6,11 @@ export async function bindingParse(attr, context, provider) {
 
     crs.binding.utils.markElement(element, context);
     element.removeAttribute(attr.name);
-    element.setAttribute("data-field", path);
+
+    // element.value.bind="person.firstName" -> data-field="person.firstName"
+    if (property == "value") {
+        element.setAttribute("data-field", path);
+    }
 
     const uuid = element["__uuid"];
 
