@@ -70,7 +70,7 @@ export class EventStore {
         return this.#store[event]?.[uuid];
     }
 
-    register(event, uuid, intent, isCollection = true) {
+    register(event, uuid, intent) {
         const element = crs.binding.elements[uuid];
         const root = element.getRootNode();
 
@@ -90,13 +90,8 @@ export class EventStore {
             this.#store[event] = {};
         }
 
-        if (isCollection) {
-            this.#store[event][uuid] ||= [];
-            this.#store[event][uuid].push(intent);
-            return;
-        }
-
-        this.#store[event][uuid] = intent;
+        this.#store[event][uuid] ||= [];
+        this.#store[event][uuid].push(intent);
     }
 
     clear(uuid) {
