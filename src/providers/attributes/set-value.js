@@ -63,6 +63,10 @@ function getLeft(exp, context, preArray) {
         return getGlobalSetter(exp);
     }
 
+    if (exp.indexOf("$context.") != -1) {
+        exp = exp.replace("$context.", "");
+    }
+
     return `crs.binding.data.setProperty(${context}, "${exp}", __value__);`;
 }
 

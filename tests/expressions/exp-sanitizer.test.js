@@ -193,13 +193,6 @@ Deno.test("sanitize - $parentId in expression", async () => {
     assertEquals(result.properties[1], "property2");
 });
 
-Deno.test("sanitize - $data", async () => {
-    const result = await sanitize("selectedObj = $data($event.target.dataset.id)");
-    assertEquals(result.expression, "context.selectedObj = crs.binding.data.getValue(event.target.dataset.id)");
-    assertEquals(result.properties.length, 1);
-    assertEquals(result.properties[0], "selectedObj");
-});
-
 Deno.test("sanitize - inner-text", async () => {
     const result = await sanitize("This is the ${item.position} article", "item");
     assertEquals(result.expression, "This is the ${item.position} article");

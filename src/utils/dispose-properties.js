@@ -24,7 +24,7 @@ export function disposeProperties(obj) {
     }
 
     // dispose of set and map items
-    if (obj.constructor.name === "Set" || obj.constructor.name === "Map") {
+    if (obj instanceof Set || obj instanceof Map) {
         return disposeMapSet(obj);
     }
 
@@ -41,7 +41,7 @@ export function disposeProperties(obj) {
             if (Array.isArray(pObj)) {
                 disposeArray(pObj);
             }
-            else if (pObj.constructor.name === "Set" || pObj.constructor.name === "Map") {
+            else if (pObj instanceof Set || pObj instanceof Map) {
                 disposeMapSet(pObj);
             }
             else {
