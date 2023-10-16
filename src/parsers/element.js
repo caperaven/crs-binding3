@@ -42,13 +42,18 @@ export async function parseElement(element, context, options) {
     }
 
     if (element.children?.length > 0) {
-        return await crs.binding.parsers.parseElements(element.children, context, options);
+        await crs.binding.parsers.parseElements(element.children, context, options);
+        if (element.parseCompleted != null) {
+            await element.parseCompleted(context);
+        }
+        return;
     }
 
     // 4. If there are no children then check the textContent for processing
     for (const provider of crs.binding.providers.textProviders) {
         await provider.parseElement(element, context, ctxName)
     }
+
 }
 
 function ignore(element, options) {
