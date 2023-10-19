@@ -49,8 +49,8 @@ export default class BindProvider {
      * @param properties {string[]} - The properties to update
      * @returns {Promise<void>}
      */
-    async update(uuid, ...properties) {
-        await bindingUpdate(uuid, ...properties);
+    async update(uuid) {
+        await bindingUpdate(uuid);
     }
 
     /**
