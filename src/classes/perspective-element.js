@@ -158,7 +158,11 @@ export class PerspectiveElement extends HTMLElement {
         const template = await crs.binding.templates.getStoreTemplate(this.#store, this.#view);
         this.appendChild(template);
         const context = crs.binding.data.getContext(this._dataId);
-        await crs.binding.parsers.parseElements(this.children, context, {folder: this.dataset.folder});
+        const uuids = new Set();
+        await crs.binding.parsers.parseElements(this.children, context, {folder: this.dataset.folder, uuids});
+        await crs.binding.data.updateElements(Array.from(uuids));
+
+        uuids.clear();
 
         requestAnimationFrame(() => {
             this.dataset.view = this.#view;

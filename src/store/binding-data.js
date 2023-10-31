@@ -278,9 +278,8 @@ export class BindingData {
         id = this.#getContextId(id);
 
         const context = this.#context[id];
-        if (context == null) return;
 
-        if (context.boundElements != null) {
+        if (context?.boundElements != null) {
             for (const uuid of context.boundElements) {
                 delete this.#elementProviders[uuid];
             }
@@ -419,6 +418,17 @@ export class BindingData {
         if (context == null || context.boundElements == null) return;
 
         for (const uuid of context.boundElements) {
+            // call providers don't need to be updated but, they still marked with a uuid
+            const providers = this.#elementProviders[uuid];
+            if (providers == null) continue;
+
+            const providersCollection = Array.from(providers);
+            await crs.binding.providers.updateProviders(uuid, ...providersCollection);
+        }
+    }
+
+    async updateElements(uuids) {
+        for (const uuid of uuids) {
             // call providers don't need to be updated but, they still marked with a uuid
             const providers = this.#elementProviders[uuid];
             if (providers == null) continue;
