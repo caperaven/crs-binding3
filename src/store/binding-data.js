@@ -120,6 +120,8 @@ export class BindingData {
 
     #removeElementFromCallbacks(bid, uuid) {
         const callbacks = this.#callbacks[bid];
+        if (callbacks == null) return;
+
         for (const key of Object.keys(callbacks)) {
             callbacks[key].delete(uuid);
         }

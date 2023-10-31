@@ -27,9 +27,6 @@ export function markElement(element, context) {
  * This will remove the uuid and bid from the element.
  * It will also remove the element from the binding engine and the element becomes irrelevant to the binding engine.
  *
- * removeElementFromContext is used when the element is removed from the dom but the context stays alive.
- * This is set to true by components such as dialogs that move in and out of existence while the binding context that it is bound to stays alive.
- *
  * @param element {HTMLElement} - The element to unmark.
  * @param removeElementFromContext {boolean} - Should the element be removed from the binding context.
  */
@@ -64,8 +61,8 @@ export function unmarkElement(element) {
  * @function unmarkElements - This is a batch operation that un-marks multiple elements.
  * @param elements {NodeListOf<HTMLElement>} - The elements to unmark.
  */
-export function unmarkElements(elements, removeElementFromContext) {
+export function unmarkElements(elements) {
     for (const element of elements) {
-        unmarkElement(element, removeElementFromContext);
+        unmarkElement(element);
     }
 }
