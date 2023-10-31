@@ -21,8 +21,9 @@ class DomCollection {
 
         for (const item of items) {
             const instance = details.template.content.cloneNode(true);
-            details.fn(instance, item);
-            fragment.appendChild(instance);
+            const element = instance.firstElementChild;
+            details.fn(element, item);
+            fragment.appendChild(element);
         }
 
         element.appendChild(fragment);
