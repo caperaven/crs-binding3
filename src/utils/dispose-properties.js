@@ -38,6 +38,8 @@ export function disposeProperties(obj) {
         if (pObj == null) continue;
 
         if (typeof pObj == "object") {
+            if (pObj.autoDispose == false) continue;
+
             if (Array.isArray(pObj)) {
                 disposeArray(pObj);
             }
