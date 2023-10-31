@@ -33,11 +33,11 @@ export function markElement(element, context) {
  * @param element {HTMLElement} - The element to unmark.
  * @param removeElementFromContext {boolean} - Should the element be removed from the binding context.
  */
-export function unmarkElement(element, removeElementFromContext = false) {
+export function unmarkElement(element) {
     if (element.nodeName === "STYLE") return;
 
     if (element.children.length > 0) {
-        unmarkElements(element.children, removeElementFromContext);
+        unmarkElements(element.children);
     }
 
     const uuid = element["__uuid"];
@@ -46,13 +46,17 @@ export function unmarkElement(element, removeElementFromContext = false) {
     crs.binding.providers.clear(uuid).catch(error => console.error(error));
 
     if (crs.binding.elements[uuid]) {
-        if (removeElementFromContext === true) {
-            crs.binding.data.removeElement(uuid);
-        }
+        crs.binding.data.removeElement(uuid);
 
         delete crs.binding.elements[uuid];
     }
 
+    if (element.nodeName.indexOf("-") !== -1) {
+        // If the element is a custom element we don't want to dispose it.
+        if (customElements.get(element.nodeName.toLowerCase()) != null) {
+            return;
+        }
+    }
     crs.binding.utils.disposeProperties(element);
 }
 
