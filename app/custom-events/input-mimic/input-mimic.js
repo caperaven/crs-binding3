@@ -1,4 +1,4 @@
-class CustomComponent extends crs.classes.BindableElement {
+class InputMimic extends crs.classes.BindableElement {
     get html() {
         return import.meta.url.replace(".js", ".html");
     }
@@ -9,8 +9,8 @@ class CustomComponent extends crs.classes.BindableElement {
 
     async click(event) {
         this.value = "Custom Events Value 2";
-        this.dispatchEvent(new CustomEvent("change", {detail: { value: this.value }}));
+        this.dispatchEvent(new CustomEvent("change"));
     }
 }
 
-customElements.define("custom-component", CustomComponent);
+customElements.define("input-mimic", InputMimic);

@@ -70,6 +70,19 @@ export class EventStore {
         return this.#store[event]?.[uuid];
     }
 
+    getBindingField(event, uuid, componentProperty) {
+        const intent = this.getIntent(event, uuid);
+        if (intent == null) return null;
+
+        for (const intentItem of intent) {
+            const intentValue = intentItem.value;
+            for (const key of Object.keys(intentValue)) {
+                const value = intentValue[key];
+                if (value === componentProperty) return key;
+            }
+        }
+    }
+
     register(event, uuid, intent) {
         const element = crs.binding.elements[uuid];
         const root = element.getRootNode();

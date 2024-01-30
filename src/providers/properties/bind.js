@@ -15,6 +15,10 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async onEvent(event, bid, intent, target) {
+        if (event?.detail?.["componentProperty"] != null) {
+            return await this.onCustomPropertyEvent(event, bid, intent, target);
+        }
+
         const field = target.dataset.field;
         if (bid == null || field == null) return;
 
@@ -29,6 +33,18 @@ export default class BindProvider {
             }
         }
 
+        await crs.binding.data.setProperty(bid, field, value);
+    }
+
+    async onCustomPropertyEvent(event, bid, intent, target) {
+        const componentProperty = event.detail["componentProperty"];
+        const field = crs.binding.eventStore.getBindingField("change", target["__uuid"], componentProperty);
+
+        if (field == null) {
+            return;
+        }
+
+        const value = target[componentProperty];
         await crs.binding.data.setProperty(bid, field, value);
     }
 
