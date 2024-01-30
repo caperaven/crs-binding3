@@ -1,6 +1,7 @@
 import "../../expressions/code-factories/if.js";
 import {bindingUpdate} from "./utils/binding-update.js";
 import {bindingParse} from "./utils/binding-parse.js";
+import {toKebabCase} from "./../../utils/capitalization.js";
 
 /**
  * @class BindProvider - Binds an element to a property of a data object
@@ -38,7 +39,9 @@ export default class BindProvider {
 
     async onCustomPropertyEvent(event, bid, intent, target) {
         const componentProperty = event.detail["componentProperty"];
-        const field = crs.binding.eventStore.getBindingField("change", target["__uuid"], componentProperty);
+        const kebabComponentProperty = toKebabCase(componentProperty);
+
+        let field = crs.binding.eventStore.getBindingField("change", target["__uuid"], kebabComponentProperty);
 
         if (field == null) {
             return;
