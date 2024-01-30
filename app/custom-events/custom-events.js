@@ -1,5 +1,6 @@
 import "./input-mimic/input-mimic.js";
 import "./custom-event/custom-event.js";
+import "./capitalized-property/capitalized-property.js";
 
 export default class CustomEventsViewModel extends crs.classes.ViewBase {
     preLoad() {
