@@ -1,10 +1,14 @@
 <style>
-    custom-component {
+    input-mimic, custom-event {
         display: block;
         width: 100%;
         height: 100%;
         background: blue;
     }
 </style>
-<custom-component value.bind="customValue"></custom-component>
+<input-mimic value.bind="customValue"></input-mimic>
 <div style="background: green">${customValue}</div>
+
+<hr />
+<custom-event myvalue.bind="customValue2"></custom-event>
+<div style="background: green">${customValue2}</div>
