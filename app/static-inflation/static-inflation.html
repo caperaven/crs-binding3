@@ -7,7 +7,7 @@
 <h2>${title}</h2>
 
 <template>
-    <div classlist.if="person.age > 20 ? 'green'">First Name</div>
+    <div data-name.attr="person.firstName" classlist.if="person.age > 20 ? 'green'">First Name</div>
     <div>${person.firstName}</div>
     <div>Last Name</div>
     <div>${person.lastName}</div>
