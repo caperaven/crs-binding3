@@ -41,7 +41,7 @@ export default class BindProvider {
         const componentProperty = event.detail["componentProperty"];
         const kebabComponentProperty = toKebabCase(componentProperty);
 
-        let field = crs.binding.eventStore.getBindingField("change", target["__uuid"], kebabComponentProperty);
+        let field = crs.binding.eventStore.getBindingField("change", intent, kebabComponentProperty);
 
         if (field == null) {
             return;
