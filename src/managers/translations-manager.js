@@ -76,6 +76,8 @@ export class TranslationsManager {
      * @returns {Promise<*>}
      */
     async get(key) {
+        key = key.split("?.").join(".");
+
         let result = this.#dictionary[key];
 
         if(result != null) {
