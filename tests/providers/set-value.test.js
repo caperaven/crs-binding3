@@ -63,7 +63,7 @@ describe("set value provider tests", async () => {
         // 2. attribute name
         // 3. if it is a global search or not - true is global
         const exp = "state = prop(#input, value, true) == '1' ? 'state1' : 'state2')";
-        const expected = `const getPropElement = document.querySelector("#input"); const propValue = getPropElement["value"]; crs.binding.data.setProperty(1, "state", propValue == '1' ? 'state1' : 'state2'));`;
+        const expected = `const getPropElement = document.querySelector("#input"); const propValue = getPropElement.value; crs.binding.data.setProperty(1, "state", propValue == '1' ? 'state1' : 'state2'));`;
 
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
@@ -71,7 +71,7 @@ describe("set value provider tests", async () => {
 
     it ("createSourceFrom - property value", async () => {
         const exp = "state = prop(#input, value, true))";
-        const expected = `const getPropElement = element.querySelector("#input"); const propValue = getPropElement["value"]; crs.binding.data.setProperty(1, "state", propValue));`;
+        const expected = `const getPropElement = element.querySelector("#input"); const propValue = getPropElement.value; crs.binding.data.setProperty(1, "state", propValue));`;
 
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
@@ -95,7 +95,7 @@ describe("set value provider tests", async () => {
 
     it ("createSourceFrom - element property to element attribute", async () => {
         const exp = "attr(#numVal, value, true) = prop(#input, value, true)";
-        const expected = `const setAttrElement = document.querySelector("#numVal"); const getPropElement = document.querySelector("#input"); const propValue = getPropElement["value"]; setAttrElement.setAttribute("value", propValue);`;
+        const expected = `const setAttrElement = document.querySelector("#numVal"); const getPropElement = document.querySelector("#input"); const propValue = getPropElement.value; setAttrElement.setAttribute("value", propValue);`;
 
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
@@ -111,7 +111,7 @@ describe("set value provider tests", async () => {
 
     it ("createSourceFrom - element property to element property based on event", async () => {
         const exp = "prop(#numVal, value, true) = prop(#input, value, true)";
-        const expected = `const setPropElement = document.querySelector("#numVal"); const getPropElement = document.querySelector("#input"); const propValue = getPropElement["value"]; setPropElement["value"] = propValue;`;
+        const expected = `const setPropElement = document.querySelector("#numVal"); const getPropElement = document.querySelector("#input"); const propValue = getPropElement.value; setPropElement["value"] = propValue;`;
 
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
@@ -119,14 +119,14 @@ describe("set value provider tests", async () => {
 
     it ("createSourceFrom - property to property this element to another", async () => {
         const exp = "prop($element, value, true) = prop(#input, value, true)";
-        const expected = `const setPropElement = element; const getPropElement = document.querySelector("#input"); const propValue = getPropElement["value"]; setPropElement["value"] = propValue;`;
+        const expected = `const setPropElement = element; const getPropElement = document.querySelector("#input"); const propValue = getPropElement.value; setPropElement["value"] = propValue;`;
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
     });
 
     it ("createSourceFrom - property to attribute, this elements to another", async () => {
         const exp = "attr($element, value, true) = prop(#input, value, true)";
-        const expected = `const setAttrElement = element; const getPropElement = document.querySelector("#input"); const propValue = getPropElement["value"]; setAttrElement.setAttribute("value", propValue);`;
+        const expected = `const setAttrElement = element; const getPropElement = document.querySelector("#input"); const propValue = getPropElement.value; setAttrElement.setAttribute("value", propValue);`;
         const result = createSourceFrom(exp, 1);
         assertEquals(result, expected);
     });
