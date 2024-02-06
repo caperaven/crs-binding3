@@ -170,7 +170,38 @@ async function classListIf(attr, path, preCode, code, ctxName) {
 async function ifAttribute(attr, path, preCode, code, ctxName) {
     preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
     const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
-    code.push([`${path}.setAttribute("${attr.nodeName.replace(".if", "")}",`, exp.expression,  ");"].join(""));
+    const attrName = attr.nodeName.replace(".if", "");
+
+    // use a standard expression for example: hidden.if="age < 10"
+    if (exp.expression.indexOf("?") === -1) {
+        code.push(`if (${exp.expression} === true) {
+            ${path}.setAttribute("${attrName}", "${attrName}");
+        }
+        else {
+            ${path}.removeAttribute("${attrName}");
+        }
+        `);
+
+        return;
+    }
+
+    // example 1: data-value="age < 20 ? true"  -> only set attribute if the condition passes
+    // example 2: data-value="age < 20 ? true : false" -> set either way
+    const conditionParts = exp.expression.split("?");
+    const condition = conditionParts[0].trim();
+    const valueParts = conditionParts[1].split(":");
+    const trueValue = valueParts[0].trim();
+    const falseValue = valueParts.length === 1 ? null : valueParts[1].trim();
+
+    code.push(`if (${condition}) {
+        ${path}.setAttribute("${attrName}", "${trueValue}");
+    }`)
+
+    if (falseValue != null) {
+        code.push(`else {
+            ${path}.setAttribute("${attrName}", "${falseValue}");
+        }`)
+    }
 }
 
 async function attrAttribute(attr, path, preCode, code, ctxName) {
