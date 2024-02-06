@@ -78,7 +78,7 @@ Deno.test("sanitize - expression", async () => {
 
 Deno.test("sanitize - multiple functions", async () => {
     const result = await sanitize("${firstName.trim().toLowerCase()} > ${lastName.trim().toLowerCase()}");
-    assertEquals(result.expression, "${context.firstName?.trim().toLowerCase()} > ${context.lastName?.trim()?.toLowerCase()}");
+    assertEquals(result.expression, "${context.firstName?.trim()?.toLowerCase()} > ${context.lastName?.trim()?.toLowerCase()}");
     assertEquals(result.properties[0], "firstName");
     assertEquals(result.properties[1], "lastName");
     assertEquals(result.isLiteral, true);
@@ -331,7 +331,7 @@ Deno.test("sanitize - attribute condition", async () => {
 
 Deno.test("sanitize - context condition expression", async () => {
     const result = await sanitize("context.isDialog == true ? true : false");
-    assertEquals(result.expression, "context.context?.isDialog == true ? true : false");
+    assertEquals(result.expression, "context?.isDialog == true ? true : false");
 })
 
 Deno.test("sanitize - if true property", async () => {

@@ -67,7 +67,13 @@ export async function sanitize(exp, ctxName = "context") {
                 expression.push(token.value);
             }
             else {
-                expression.push(`${ctxName}.${token.value}`);
+                const contextToken = `${ctxName}?.`
+                if (token.value.startsWith(contextToken)) {
+                    expression.push(token.value);
+                }
+                else {
+                    expression.push(`${ctxName}.${token.value}`);
+                }
             }
 
             addProperty(properties, token.value, ctxName);
