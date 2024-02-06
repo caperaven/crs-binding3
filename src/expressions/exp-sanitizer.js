@@ -42,7 +42,9 @@ export async function sanitize(exp, ctxName = "context") {
     const expression = [];
 
     for (let token of tokens) {
-        if (token.type == "property") {
+        if (token.type === "property") {
+            token.value = token.value.split(".").join("?.");
+
             if (token.value.indexOf("$globals") != -1) {
                 expression.push(token.value.replace("$globals", "crs.binding.data.globals"));
             }
@@ -70,6 +72,10 @@ export async function sanitize(exp, ctxName = "context") {
 
             addProperty(properties, token.value, ctxName);
         }
+        else if (token.type === "function") {
+            token.value = token.value.replace(".", "?.");
+            expression.push(token.value);
+        }
         else {
             expression.push(token.value);
         }
@@ -95,6 +101,8 @@ const ignoreProperties = ["$data", "$event", "[", "]"];
 
 function addProperty(set, property, ctxName) {
     if (property.length == 0) return;
+
+    property = property.split("?.").join(".")
 
     for (let ignore of ignoreProperties) {
         if (property.indexOf(ignore) != -1) return;
