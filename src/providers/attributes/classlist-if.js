@@ -30,7 +30,7 @@ export default class ClassListIfProvider extends ClassListBase {
  * @param exp {string} - The expression to parse.
  */
 function getIfClasses(exp) {
-    const parts = exp.split("?");
+    const parts = exp.split(" ?");
 
     const valuesPart = parts[1]
         .replaceAll("[", "")
