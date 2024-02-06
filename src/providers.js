@@ -191,17 +191,17 @@ export class Providers {
             const onewayProvider = this.#attrProviders[".one-way"];
 
             if (typeof bindProvider === "object") {
-                bindProvider.update(uuid);
+                bindProvider.update(uuid, ...properties);
             }
 
             if (typeof onewayProvider === "object") {
-                onewayProvider.update(uuid);
+                onewayProvider.update(uuid, ...properties);
             }
         }
 
         for (const textProvider of this.#textProviders) {
             if (textProvider.store[uuid] != null) {
-                textProvider.update(uuid);
+                textProvider.update(uuid, ...properties);
             }
         }
 

@@ -83,7 +83,7 @@ export class StaticInflationManager {
     async #attrIf(attribute, value) {
         const attr = attribute.name.replace(".if", "").replace(".case", "");
 
-        if (attribute.value.indexOf("?") == -1) {
+        if (attribute.value.indexOf(" ?") == -1) {
             if (value) {
                 attribute.ownerElement.setAttribute(attr, value);
             }

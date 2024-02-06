@@ -29,11 +29,11 @@ export async function ifFactory(exp, ctxName = "context") {
     const expo = await crs.binding.expression.sanitize(exp);
     exp = expo.expression.replaceAll("context.[", "[");
 
-    if (exp.indexOf("?") == -1) {
+    if (exp.indexOf(" ?") == -1) {
         return setFunction(key, expo, `return ${exp}`, ctxName);
     }
 
-    const parts = exp.split("?").map(item => item.trim());
+    const parts = exp.split(" ?").map(item => item.trim());
     const left = parts[0];
     const right = parts[1];
     const rightParts = right.split(":");
