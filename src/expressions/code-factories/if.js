@@ -35,7 +35,6 @@ export async function ifFactory(exp, ctxName = "context") {
         return setFunction(key, expo, `return ${exp}`, ctxName);
     }
 
-    // const parts = exp.split(" ?").map(item => item.trim());
     const parts = OptionalChainActions.split(exp).map(item => item.trim());
     const left = parts[0];
     const right = parts[1];

@@ -4,8 +4,6 @@
  */
 
 export class OptionalChainActions {
-
-
     static indexOf(exp) {
         const newExp = exp.split("?.").join("~");
         return newExp.indexOf("?");

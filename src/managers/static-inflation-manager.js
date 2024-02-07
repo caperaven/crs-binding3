@@ -1,5 +1,6 @@
 import "./../expressions/code-factories/if.js"
 import "./../expressions/code-factories/case.js"
+import {OptionalChainActions} from "../utils/optional-chain-actions.js";
 
 /**
  * At runtime inflate an element or elements directly without a template.
@@ -83,7 +84,7 @@ export class StaticInflationManager {
     async #attrIf(attribute, value) {
         const attr = attribute.name.replace(".if", "").replace(".case", "");
 
-        if (attribute.value.indexOf(" ?") == -1) {
+        if (!OptionalChainActions.hasTernary(attribute)) {
             if (value) {
                 attribute.ownerElement.setAttribute(attr, value);
             }

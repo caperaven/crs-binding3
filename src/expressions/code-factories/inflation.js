@@ -1,3 +1,5 @@
+import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
+
 /**
  * @function inflationFactory - Creates a function that inflates a template with data
  * @param element {HTMLElement} - the template to inflate
@@ -119,7 +121,7 @@ async function classListCase(attr, path, preCode, code, ctxName) {
     const classes = [];
 
     for (const line of codeParts) {
-        const lineParts = line.split(" ?");
+        const lineParts = OptionalChainActions.split(line);
         const condition = lineParts[0].trim();
         const values = (lineParts[1] || lineParts[0]).split(":");
 
@@ -142,7 +144,7 @@ async function classListCase(attr, path, preCode, code, ctxName) {
 async function classListIf(attr, path, preCode, code, ctxName) {
     const value = attr.nodeValue.trim().replaceAll("?.", "*.");
 
-    const ifParts = value.split(" ?");
+    const ifParts = OptionalChainActions.split(value);
     let expression = ifParts[0].trim();
     const elseParts = ifParts[1].split(":");
     const ifClasses = elseParts[0].trim().replace("[", "").replace("]", "");
@@ -173,7 +175,7 @@ async function ifAttribute(attr, path, preCode, code, ctxName) {
     const attrName = attr.nodeName.replace(".if", "");
 
     // use a standard expression for example: hidden.if="age < 10"
-    if (exp.expression.indexOf(" ?") === -1) {
+    if (!OptionalChainActions.hasTernary(exp.expression)) {
         code.push(`if (${exp.expression} === true) {
             ${path}.setAttribute("${attrName}", "${attrName}");
         }
@@ -187,7 +189,7 @@ async function ifAttribute(attr, path, preCode, code, ctxName) {
 
     // example 1: data-value="age < 20 ? true"  -> only set attribute if the condition passes
     // example 2: data-value="age < 20 ? true : false" -> set either way
-    const conditionParts = exp.expression.split(" ?");
+    const conditionParts = OptionalChainActions.split(exp.expression);
     const condition = conditionParts[0].trim();
     const valueParts = conditionParts[1].split(":");
     const trueValue = valueParts[0].trim();
@@ -226,7 +228,7 @@ async function styles(attr, path, preCode, code, ctxName) {
                 continue;
             }
 
-            const lineParts = line.split(" ?");
+            const lineParts = OptionalChainActions.split(line);
             const condition = lineParts[0].trim();
             const values = (lineParts[1] || lineParts[0]).split(":");
 
