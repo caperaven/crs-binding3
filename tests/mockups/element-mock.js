@@ -12,8 +12,8 @@ export class ElementMock {
         return instance;
     }
 
-    constructor(tag, id, parentElement) {
-        mockElement(this, tag, id, parentElement);
+    constructor(tag, id, parentElement, rootNode) {
+        mockElement(this, tag, id, parentElement, rootNode);
 
         if (parentElement != null) {
             parentElement.appendChild(this);
@@ -21,10 +21,13 @@ export class ElementMock {
     }
 }
 
-export function mockElement(instance, tag, id) {
+export function mockElement(instance, tag, id, parentElement, rootNode) {
     if (instance.__events != null) {
         return instance;
     }
+
+    instance.rootNode = rootNode;
+    instance.parentElement = parentElement;
 
     instance.__events = [];
     instance.queryResults = {};
@@ -64,6 +67,7 @@ export function mockElement(instance, tag, id) {
     instance.attachShadow = attachShadow.bind(instance);
     instance.getBoundingClientRect = getBoundingClientRect.bind(instance);
     instance.matches = (query) => { return false; }
+    instance.getRootNode = () => instance.rootNode;
 
     Object.defineProperty(instance, "firstElementChild", {
         get() {
