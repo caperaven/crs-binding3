@@ -24,6 +24,10 @@ describe("call provider tests", async () => {
         crs.binding.data.addContext(1, context);
 
         element = new ElementMock("div");
+        let root = new ElementMock("div", "root");
+        element.getRootNode = () => root;
+
+
         const child = new ElementMock("div", "child", element);
         child["setAttribute"]("click.call", "log");
 
@@ -33,6 +37,7 @@ describe("call provider tests", async () => {
 
     afterEach(() => {
         crs.binding.providers.clear([element]);
+        element.getRootNode = null;
         element = null;
     })
 

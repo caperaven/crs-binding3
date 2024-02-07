@@ -1,4 +1,5 @@
 import {ClassListBase} from "./classlist-base.js";
+import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
 
 /**
  * @class ClassListIfProvider
@@ -30,7 +31,7 @@ export default class ClassListIfProvider extends ClassListBase {
  * @param exp {string} - The expression to parse.
  */
 function getIfClasses(exp) {
-    const parts = exp.split(" ?");
+    const parts = OptionalChainActions.split(exp);
 
     const valuesPart = parts[1]
         .replaceAll("[", "")
