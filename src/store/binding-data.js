@@ -120,6 +120,8 @@ export class BindingData {
 
     #removeElementFromCallbacks(bid, uuid) {
         const callbacks = this.#callbacks[bid];
+        if (callbacks == null) return;
+
         for (const key of Object.keys(callbacks)) {
             callbacks[key].delete(uuid);
         }
@@ -420,6 +422,17 @@ export class BindingData {
         if (context == null || context.boundElements == null) return;
 
         for (const uuid of context.boundElements) {
+            // call providers don't need to be updated but, they still marked with a uuid
+            const providers = this.#elementProviders[uuid];
+            if (providers == null) continue;
+
+            const providersCollection = Array.from(providers);
+            await crs.binding.providers.updateProviders(uuid, ...providersCollection);
+        }
+    }
+
+    async updateElements(uuids) {
+        for (const uuid of uuids) {
             // call providers don't need to be updated but, they still marked with a uuid
             const providers = this.#elementProviders[uuid];
             if (providers == null) continue;

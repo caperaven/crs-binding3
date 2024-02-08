@@ -27,7 +27,8 @@ export default class PostProvider {
         const event = queryParts[0].trim();
         const queries = queryParts[1].replace("]", "").split(",").map(q => q.trim().replaceAll("'", ""));
 
-        const value = createEventParameters(event, parts[1].replace(")", ""));
+        const paramExp = parts[1] ? parts[1].replace(")", ""): null;
+        const value = createEventParameters(event, paramExp);
         value.queries = queries;
 
         return { provider: ".post", value };
@@ -39,6 +40,7 @@ export default class PostProvider {
 }
 
 async function post(intent, event) {
+
     const intentObj = Object.assign({}, intent);
     const queries = intentObj.queries;
     delete intentObj.queries;
@@ -46,8 +48,10 @@ async function post(intent, event) {
     const args = createEventPacket(intent, event);
     args.key = intent.event;
 
+
     for (const query of queries) {
         const documentElements = Array.from(document.querySelectorAll(query));
+
         const queryableElements = crs.binding.queryable.query(query);
         const items = new Set([...documentElements, ...queryableElements]);
 

@@ -19,10 +19,14 @@ export async function bindingUpdate(uuid) {
 async function applyProperty(element, intent) {
     const properties = Object.keys(intent.value);
 
+    const emptyProperty = ["value", "textContent", "innerText", "innerHTML"];
+
     for (const property of properties) {
         const targetProperty = intent.value[property];
         if (targetProperty == null) continue;
 
-        element[targetProperty] = await crs.binding.data.getProperty(element["__bid"], property) ?? "";
+        const value = emptyProperty.includes(targetProperty) === true ? "" : null;
+
+        element[targetProperty] = await crs.binding.data.getProperty(element["__bid"], property) ?? value;
     }
 }

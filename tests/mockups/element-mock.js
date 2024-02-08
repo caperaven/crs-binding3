@@ -31,6 +31,9 @@ export function mockElement(instance, tag, id, parentElement, rootNode) {
 
     instance.__events = [];
     instance.queryResults = {};
+    instance.getRootNode = ()=> {
+        return instance;
+    };
 
     instance.nodeName = (tag || "div").toUpperCase();
     instance.id = id;

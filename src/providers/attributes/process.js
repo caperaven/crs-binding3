@@ -38,9 +38,7 @@ export default class ProcessProvider {
 }
 
 function createStepIntent(exp) {
-    // {type: 'console', action: 'log', args: {messages: [$context.value, 'world']}}
-    // {type: 'console', action: 'log', args: {message: [$event.clientX, $event.clientY]}}
-
+    exp = exp.replace("args:", "");
     const parts = exp.split(",").map(item => item.trim());
     const type = parts[0].replace("type:", "").replaceAll("'", "").replace("{", "").trim();
     const action = parts[1].replace("action:", "").replaceAll("'", "").trim();
@@ -81,6 +79,11 @@ function createArgs(exp) {
 
     for (const property of properties) {
         const propertyParts = property.split(":").map(item => item.trim());
+
+        if (propertyParts[1] == null) {
+            continue;
+        }
+
         const name = propertyParts[0];
         const value = processPropertyValue(propertyParts[1]);
         obj[name] = value;
@@ -176,7 +179,7 @@ async function callProcess(intent, event, context) {
     }
 
     const args = await parseArgsForCalling(intent.args, event, context);
-    await crs.call(intent.type, intent.action, args);
+    await crs.call(intent.type, intent.action, args, context);
 }
 
 async function callSchema(intent, event, context) {

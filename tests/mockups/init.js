@@ -15,4 +15,7 @@ export async function init() {
 
     const crs_binding = "./../../src/crs-binding.js";
     await import(crs_binding);
+
+    const crs_bindable_element = "./../../src/classes/bindable-element.js";
+    await import(crs_bindable_element);
 }

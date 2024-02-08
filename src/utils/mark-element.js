@@ -27,17 +27,14 @@ export function markElement(element, context) {
  * This will remove the uuid and bid from the element.
  * It will also remove the element from the binding engine and the element becomes irrelevant to the binding engine.
  *
- * removeElementFromContext is used when the element is removed from the dom but the context stays alive.
- * This is set to true by components such as dialogs that move in and out of existence while the binding context that it is bound to stays alive.
- *
  * @param element {HTMLElement} - The element to unmark.
  * @param removeElementFromContext {boolean} - Should the element be removed from the binding context.
  */
-export function unmarkElement(element, removeElementFromContext = false) {
+export function unmarkElement(element) {
     if (element.nodeName === "STYLE") return;
 
     if (element.children.length > 0) {
-        unmarkElements(element.children, removeElementFromContext);
+        unmarkElements(element.children);
     }
 
     const uuid = element["__uuid"];
@@ -46,13 +43,17 @@ export function unmarkElement(element, removeElementFromContext = false) {
     crs.binding.providers.clear(uuid).catch(error => console.error(error));
 
     if (crs.binding.elements[uuid]) {
-        if (removeElementFromContext === true) {
-            crs.binding.data.removeElement(uuid);
-        }
+        crs.binding.data.removeElement(uuid);
 
         delete crs.binding.elements[uuid];
     }
 
+    if (element.nodeName.indexOf("-") !== -1) {
+        // If the element is a custom element we don't want to dispose it.
+        if (customElements.get(element.nodeName.toLowerCase()) != null) {
+            return;
+        }
+    }
     crs.binding.utils.disposeProperties(element);
 }
 
@@ -60,8 +61,8 @@ export function unmarkElement(element, removeElementFromContext = false) {
  * @function unmarkElements - This is a batch operation that un-marks multiple elements.
  * @param elements {NodeListOf<HTMLElement>} - The elements to unmark.
  */
-export function unmarkElements(elements, removeElementFromContext) {
+export function unmarkElements(elements) {
     for (const element of elements) {
-        unmarkElement(element, removeElementFromContext);
+        unmarkElement(element);
     }
 }

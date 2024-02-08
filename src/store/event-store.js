@@ -28,18 +28,18 @@ export class EventStore {
 
                 if (Array.isArray(intent)) {
                     for (const i of intent) {
-                        await this.#onEventExecute(i, bid, target);
+                        await this.#onEventExecute(event,i, bid, target);
                     }
 
                     continue;
                 }
 
-                await this.#onEventExecute(intent, bid, target);
+                await this.#onEventExecute(event, intent, bid, target);
             }
         }
     }
 
-    async #onEventExecute(intent, bid, target) {
+    async #onEventExecute(event, intent, bid, target) {
         let provider = intent.provider;
         provider = provider.replaceAll("\\", "");
         const providerInstance = crs.binding.providers.attrProviders[provider];
@@ -62,7 +62,7 @@ export class EventStore {
         if (!Array.isArray(intent)) intent = [intent];
 
         for (const i of intent) {
-            await this.#onEventExecute(i, element.__bid, element);
+            await this.#onEventExecute(event, i, element.__bid, element);
         }
     }
 

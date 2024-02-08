@@ -36,8 +36,11 @@ export async function parseElement(element, context, options) {
     // 3. Parse the attributes
     await crs.binding.parsers.parseAttributes(element, context, ctxName);
 
+    if(element.__uuid != null && options?.uuids != null) {
+        options.uuids.add(element.__uuid);
+    }
 
-    if (ignore(element, crs.binding.ignoreChildren)) {
+    if (ignore(element, crs.binding.ignoreChildren) || element instanceof crs.classes.BindableElement === true) {
         return;
     }
 
@@ -53,7 +56,6 @@ export async function parseElement(element, context, options) {
     for (const provider of crs.binding.providers.textProviders) {
         await provider.parseElement(element, context, ctxName)
     }
-
 }
 
 function ignore(element, options) {
