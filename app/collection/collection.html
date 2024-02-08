@@ -3,7 +3,7 @@
 <ul>
     <template for="item of items">
         <li>
-            <span>${item.name}</span>
+            <span data-name="${item.name}">${item.name}</span>
             <ul>
                 <template for="subItem of item.sub_items">
                     <li>${subItem.name}</li>
