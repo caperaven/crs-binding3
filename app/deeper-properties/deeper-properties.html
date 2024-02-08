@@ -1,0 +1,42 @@
+<h2>${title}</h2>
+
+
+<h3>Person</h3>
+
+
+<hr />
+
+<div class="toolbar">
+    <button click.call="setPerson">Set Person</button>
+    <button click.call="setChild">Set New Child</button>
+    <button click.call="setChildFirstName">Set Child First Name</button>
+</div>
+
+<hr />
+
+<label>
+    <div>First Name</div>
+    <input id="edtFirstName" value.bind="person.firstName"  />
+</label>
+
+<label>
+    <div>Last Name</div>
+    <input id="edtLastName" value.bind="person.lastName"  />
+</label>
+
+<hr />
+
+<h3>Child details</h3>
+
+<label>
+    <div>Child First Name</div>
+    <input id="edtChildFirstName" value.bind="person.child.firstName" />
+</label>
+
+<label>
+    <div>Child Last Name</div>
+    <input id="edtChildLastName" value.bind="person.child.lastName" />
+</label>
+
+
+<child-details child.bind="person.child"></child-details>
