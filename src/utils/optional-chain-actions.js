@@ -18,6 +18,7 @@ export class OptionalChainActions {
         const newExp = exp.split("?.").join("~");
         const result = newExp.split("?");
         result[0] = result[0].split("~").join("?.").trim();
+        result[1] = result[1].split("~").join("?.").trim();
 
         // for expressions like "code == 'a'" there is no second part.
         if (result.length > 1) {

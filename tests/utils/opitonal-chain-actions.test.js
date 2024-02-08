@@ -29,6 +29,12 @@ describe("Optional Chain Actions", () => {
         assertEquals(result[1], "'yes':'no'")
     })
 
+    it("split with no spaces", async () => {
+        const exp = "model?.property == 'value' ? model?.property2 : model?.property3";
+        const result = OptionalChainActions.split(exp);
+        assertEquals(result[0], "model?.property == 'value'")
+        assertEquals(result[1], "model?.property2 : model?.property3")
+    })
 
     it("hasTernary true", async () => {
         const exp = "model?.object?.property === 'value' ? 'yes' : 'no'";
@@ -41,4 +47,5 @@ describe("Optional Chain Actions", () => {
         const result = OptionalChainActions.hasTernary(exp);
         assertEquals(result, false);
     })
+
 })
