@@ -119,13 +119,13 @@ Deno.test("sanitize - string token", async () => {
 });
 
 Deno.test("sanitize - ignore named expression", async () => {
-    const result = await sanitize("person.firstName", "person");
+    const result = await sanitize("person.firstName", "person", false);
     assertEquals(result.expression, "person?.firstName");
     assertEquals(result.properties[0], "firstName");
 });
 
 Deno.test("sanitize - ignore named expression - multiple", async () => {
-    const result = await sanitize("person.firstName && person.lastName", "person");
+    const result = await sanitize("person.firstName && person.lastName", "person", false);
     assertEquals(result.expression, "person?.firstName && person?.lastName");
     assertEquals(result.properties[0], "firstName");
     assertEquals(result.properties[1], "lastName");
@@ -186,7 +186,7 @@ Deno.test("sanitize - $event.target", async () => {
 });
 
 Deno.test("sanitize - $parentId in expression", async () => {
-    const result = await sanitize("$parent.property1 == item.property2", "item");
+    const result = await sanitize("$parent.property1 == item.property2", "item", false);
     assertEquals(result.expression, "parent?.property1 == item?.property2");
 
     assertEquals(result.properties[0], "$parent.property1");
@@ -201,7 +201,7 @@ Deno.test("sanitize - $data", async () => {
 });
 
 Deno.test("sanitize - inner-text", async () => {
-    const result = await sanitize("This is the ${item.position} article", "item");
+    const result = await sanitize("This is the ${item.position} article", "item", false);
     assertEquals(result.expression, "This is the ${item?.position} article");
     assertEquals(result.properties[0], "position");
 });
@@ -330,12 +330,12 @@ Deno.test("sanitize - attribute condition", async () => {
 })
 
 Deno.test("sanitize - context condition expression", async () => {
-    const result = await sanitize("context.isDialog == true ? true : false");
+    const result = await sanitize("context.isDialog == true ? true : false", "context", false);
     assertEquals(result.expression, "context?.isDialog == true ? true : false");
 })
 
 Deno.test("sanitize - if true property", async () => {
-    const result = await sanitize("columnSpan != null ? columnSpan : ''");
+    const result = await sanitize("columnSpan != null ? columnSpan : ''", "context", false);
     assertEquals(result.expression, "context.columnSpan != null ? context.columnSpan : ''");
 })
 

@@ -29,7 +29,7 @@ export default class TemplateRepeatForProvider {
         element.parentElement.removeChild(element);
         element.innerHTML = cleanHtml(element.innerHTML);
 
-        const fn = await crs.binding.expression.inflationFactory(element, forExpParts[0]);
+        const fn = await crs.binding.expression.inflationFactory(element, forExpParts[0], false);
         crs.binding.inflation.store.add(uuid, element, fn);
         crs.binding.data.setCallback(uuid, context.bid, [forExpParts[2]], "template[for]");
     }

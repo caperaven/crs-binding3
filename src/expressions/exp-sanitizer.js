@@ -10,7 +10,7 @@ const sanitizeKeywords = ["false", "true", "null"];
  * @param ctxName - The context name to use.
  * @returns {Promise<Object>}
  */
-export async function sanitize(exp, ctxName = "context") {
+export async function sanitize(exp, ctxName = "context", addContext = true) {
     let isHTML = false;
 
     if (typeof exp == "string" && exp.indexOf("$html") != -1) {
@@ -68,7 +68,7 @@ export async function sanitize(exp, ctxName = "context") {
             }
             else {
                 const contextToken = `${ctxName}?.`
-                if (token.value.startsWith(contextToken)) {
+                if (token.value.startsWith(contextToken) && addContext === false) {
                     expression.push(token.value);
                 }
                 else {

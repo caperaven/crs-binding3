@@ -15,7 +15,7 @@ import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
  *
  * const fn = await crs.binding.expression.inflationFactory(template);
  */
-export async function inflationFactory(element, ctxName = "context") {
+export async function inflationFactory(element, ctxName = "context", addContext = true) {
     const code = [];
     const preCode = [];
 
@@ -24,14 +24,14 @@ export async function inflationFactory(element, ctxName = "context") {
     }
 
     if (element.nodeName != "#document-fragment") {
-        await attributes("element", element, preCode, code, ctxName);
+        await attributes("element", element, preCode, code, ctxName, addContext);
     }
 
     if (element.children.length === 0) {
-        await textContent("element", element, code, ctxName);
+        await textContent("element", element, code, ctxName, addContext);
     }
     else {
-        await children("element", element, preCode, code, ctxName);
+        await children("element", element, preCode, code, ctxName, addContext);
     }
 
     return new Function("element", ctxName, [...preCode, ...code].join("\n"));
@@ -43,11 +43,11 @@ export async function inflationFactory(element, ctxName = "context") {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-async function textContent(path, element, code, ctxName) {
+async function textContent(path, element, code, ctxName, addContext) {
     const text = element.textContent.trim();
     if (text.indexOf("${") == -1 && text.indexOf("&{") == -1) return;
 
-    const exp = await crs.binding.expression.sanitize(text, ctxName);
+    const exp = await crs.binding.expression.sanitize(text, ctxName, addContext);
     code.push([path, ".textContent = `", exp.expression, "`;"].join(""));
 }
 
@@ -57,7 +57,7 @@ async function textContent(path, element, code, ctxName) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-async function children(path, element, preCode, code, ctxName) {
+async function children(path, element, preCode, code, ctxName, addContext) {
     for (let i = 0; i < element.children.length; i++) {
         const child = element.children[i];
 
@@ -67,7 +67,7 @@ async function children(path, element, preCode, code, ctxName) {
         else {
             const text = child.textContent.trim();
             if (text.indexOf("${") != -1 || text.indexOf("&{") != -1) {
-                const exp = await crs.binding.expression.sanitize(text, ctxName);
+                const exp = await crs.binding.expression.sanitize(text, ctxName, addContext);
                 code.push([path, ".children", `[${i}].textContent = `, "`", exp.expression, "`;"].join(""));
             }
         }
@@ -82,13 +82,13 @@ async function children(path, element, preCode, code, ctxName) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-async function attributes(path, element, preCode, code, ctxName) {
+async function attributes(path, element, preCode, code, ctxName, addContext) {
     if (element instanceof DocumentFragment) return;
 
     for (const attr of element.attributes) {
         if (attr.nodeValue.indexOf("${") != -1) {
             preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+            const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
         else if (attr.nodeName.indexOf("style.") != -1) {
@@ -114,8 +114,8 @@ async function attributes(path, element, preCode, code, ctxName) {
     }
 }
 
-async function classListCase(attr, path, preCode, code, ctxName) {
-    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+async function classListCase(attr, path, preCode, code, ctxName, addContext) {
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
     const codeParts = exp.expression.split(",");
 
     const classes = [];
@@ -141,7 +141,7 @@ async function classListCase(attr, path, preCode, code, ctxName) {
     preCode.push(`${path}.classList.remove(${classes.join(",")});`);
 }
 
-async function classListIf(attr, path, preCode, code, ctxName) {
+async function classListIf(attr, path, preCode, code, ctxName, addContext) {
     const value = attr.nodeValue.trim().replaceAll("?.", "*.");
 
     const ifParts = OptionalChainActions.split(value);
@@ -157,7 +157,7 @@ async function classListIf(attr, path, preCode, code, ctxName) {
 
     expression = expression.replace("*.", "?.");
 
-    const exp = await crs.binding.expression.sanitize(expression, ctxName);
+    const exp = await crs.binding.expression.sanitize(expression, ctxName, addContext);
     code.push(`if (${exp.expression}) {`);
     code.push(`    ${path}.classList.add(${ifClasses});`);
     code.push(`}`);
@@ -169,9 +169,9 @@ async function classListIf(attr, path, preCode, code, ctxName) {
     }
 }
 
-async function ifAttribute(attr, path, preCode, code, ctxName) {
+async function ifAttribute(attr, path, preCode, code, ctxName, addContext) {
     preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
     const attrName = attr.nodeName.replace(".if", "");
 
     // use a standard expression for example: hidden.if="age < 10"
@@ -206,15 +206,15 @@ async function ifAttribute(attr, path, preCode, code, ctxName) {
     }
 }
 
-async function attrAttribute(attr, path, preCode, code, ctxName) {
+async function attrAttribute(attr, path, preCode, code, ctxName, addContext) {
     preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
     code.push([`${path}.setAttribute("${attr.nodeName.replace(".attr", "")}",`, exp.expression,  ");"].join(""));
 }
 
-async function styles(attr, path, preCode, code, ctxName) {
+async function styles(attr, path, preCode, code, ctxName, addContext) {
     const parts = attr.nodeName.split(".");
-    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName);
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
     preCode.push(`${path}.style.${parts[1]} = "";`);
 
     if (attr.nodeName.indexOf(".case") == -1) {
