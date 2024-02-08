@@ -1,9 +1,10 @@
+<link href="/app/collection/collection.css" rel="stylesheet" type="text/css">
 <h2>${title}</h2>
 
 <ul>
     <template for="item of items">
         <li>
-            <span>${item.name}</span>
+            <span data-content="${item.name}">${item.name}</span>
             <ul>
                 <template for="subItem of item.sub_items">
                     <li>${subItem.name}</li>

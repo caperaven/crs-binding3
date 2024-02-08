@@ -62,7 +62,7 @@ async function children(path, element, preCode, code, ctxName, addContext) {
         const child = element.children[i];
 
         if (child.children.length > 0) {
-            await children(`${path}.children[${i}]`, child, preCode, code, ctxName);
+            await children(`${path}.children[${i}]`, child, preCode, code, ctxName, addContext);
         }
         else {
             const text = child.textContent.trim();
@@ -72,7 +72,7 @@ async function children(path, element, preCode, code, ctxName, addContext) {
             }
         }
 
-        await attributes(`${path}.children[${i}]`, element.children[i], preCode, code, ctxName);
+        await attributes(`${path}.children[${i}]`, element.children[i], preCode, code, ctxName, addContext);
     }
 }
 
