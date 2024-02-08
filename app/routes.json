@@ -120,6 +120,11 @@
       "view": "property-changed"
     },
     {
+      "title": "deeper-properties",
+      "hash": "#deeper-properties",
+      "view": "deeper-properties"
+    },
+    {
       "title": "About",
       "hash": "#about",
       "view": "about",
