@@ -28,6 +28,7 @@ export default class TemplateRepeatForProvider {
         element.parentElement["__repeat_container"] = true;
         element.parentElement.removeChild(element);
         element.innerHTML = cleanHtml(element.innerHTML);
+        element.__bid = context.bid;
 
         const fn = await crs.binding.expression.inflationFactory(element, forExpParts[0], false);
         crs.binding.inflation.store.add(uuid, element, fn);

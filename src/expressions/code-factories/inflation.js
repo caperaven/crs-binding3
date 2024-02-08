@@ -1,4 +1,5 @@
 import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
+import "./../../../src/managers/static-inflation-manager.js";
 
 /**
  * @function inflationFactory - Creates a function that inflates a template with data
@@ -18,6 +19,7 @@ import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
 export async function inflationFactory(element, ctxName = "context", addContext = true) {
     const code = [];
     const preCode = [];
+    const bid = element.__bid;
 
     if (element.nodeName === "TEMPLATE") {
         element = element.content.cloneNode(true).firstElementChild;
@@ -31,7 +33,7 @@ export async function inflationFactory(element, ctxName = "context", addContext 
         await textContent("element", element, code, ctxName, addContext);
     }
     else {
-        await children("element", element, preCode, code, ctxName, addContext);
+        await children("element", element, preCode, code, ctxName, addContext, bid);
     }
 
     return new Function("element", ctxName, [...preCode, ...code].join("\n"));
@@ -57,12 +59,35 @@ async function textContent(path, element, code, ctxName, addContext) {
  * @param element {HTMLElement} - the element to inflate
  * @param code {Array} - the array of code lines
  */
-async function children(path, element, preCode, code, ctxName, addContext) {
+async function children(path, element, preCode, code, ctxName, addContext, bid) {
     for (let i = 0; i < element.children.length; i++) {
         const child = element.children[i];
 
-        if (child.children.length > 0) {
-            await children(`${path}.children[${i}]`, child, preCode, code, ctxName, addContext);
+        if (child.nodeName === "TEMPLATE" && child.hasAttribute("for")) {
+            const forValue = child.getAttribute("for");
+            const forParts = forValue.split("of");
+            const paramName = forParts[0].trim();
+
+            code.push(`
+                const sub_template = ${path}.children[${i}];
+                sub_template.innerHTML = sub_template.innerHTML.split("${paramName}.").join("");
+            `);
+
+            // JHR: if we run into a scenario where the sequences gets messed up.
+            // We need to first add all the instances to a fragment
+            // Then inflate the fragment's items
+            // Then append the fragment to the parent
+
+            code.push(`
+            for (const b_item of ${forParts[1]}) {     
+                const instance = sub_template.content.cloneNode(true).firstElementChild;
+                crs.binding.staticInflationManager.inflateElement(instance, b_item).then(() => {
+                    ${path}.appendChild(instance);
+                });                                     
+            }`);
+        }
+        else if (child.children.length > 0) {
+            await children(`${path}.children[${i}]`, child, preCode, code, ctxName, addContext, bid);
         }
         else {
             const text = child.textContent.trim();
@@ -83,7 +108,9 @@ async function children(path, element, preCode, code, ctxName, addContext) {
  * @param code {Array} - the array of code lines
  */
 async function attributes(path, element, preCode, code, ctxName, addContext) {
-    if (element instanceof DocumentFragment) return;
+    // when parsing sub templates, the template gets removed and so the child count my differ causing the element to be null
+    // if that is the case just ignore the attribute parsing
+    if (element == null || element instanceof DocumentFragment) return;
 
     for (const attr of element.attributes) {
         if (attr.nodeValue.indexOf("${") != -1) {
