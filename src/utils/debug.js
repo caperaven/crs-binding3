@@ -34,7 +34,9 @@ export class Debug {
         for (const key of events) {
             for (const uuid of Object.keys(crs.binding.eventStore.store[key])) {
                 if (uuid === element.__uuid) {
-                    results.push(crs.binding.eventStore.store[key][uuid]);
+                    const obj = crs.binding.eventStore.store[key][uuid];
+                    obj.event = key;
+                    results.push(obj);
                 }
             }
         }
@@ -152,6 +154,33 @@ async function getEventIntent(element, results) {
     for (const intentItem of items) {
         for (const definition of intentItem) {
             const provider = definition.provider;
+
+            if (provider === ".call") {
+                const context = crs.binding.data.getContext(element.__bid);
+                results.push({
+                    "Provider": provider,
+                    "Attribute": intentItem.event,
+                    "Data Property": definition.value,
+                    "Data Value": context[definition.value]
+                })
+                continue;
+            }
+
+            if (provider === ".setvalue") {
+                const intent = await Debug.store(element);
+                for (const storeItem of intent) {
+                    for (const eventItem of storeItem) {
+                        results.push({
+                            "Provider": provider,
+                            "Attribute": storeItem.event,
+                            "Data Property": "",
+                            "Data Value": eventItem.value
+                        })
+                    }
+                }
+                continue;
+            }
+
             for (const bindingPropertyPath of Object.keys(definition.value)) {
                 const attribute = definition.value[bindingPropertyPath];
                 results.push({
@@ -166,7 +195,7 @@ async function getEventIntent(element, results) {
 }
 
 async function getConditionalIntent(provider, element, results) {
-    if (typeof(provider) === "string") return;
+    if (typeof(provider) === "string" || provider.store == null) return;
 
     const storeItem = provider.store[element.__uuid];
     if (storeItem == null) return;
