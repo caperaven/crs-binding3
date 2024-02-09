@@ -1,5 +1,5 @@
 import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
-import "./../../../src/managers/static-inflation-manager.js";
+import "../../managers/static-inflation-manager.js";
 
 /**
  * @function inflationFactory - Creates a function that inflates a template with data
