@@ -1,5 +1,19 @@
-<button hidden.if="context.isDialog == true">You should be hidden</button>
+<!--
+    context.dialog means an object on the context called context with a property dialog.
+    $context.dialog means a property called dialog on the current binding context.
+-->
+<h3>Objects to show and hide</h3>
+<button hidden.if="context.isDialog == true">context.dialog -> You should be hidden</button>
+<button hidden.if="$context.isDialog == true">$context.dialog -> You should be hidden</button>
+
+<hr />
+
+<h3>Toggle using set property</h3>
 <button click.call="setIsDialog(true)">Set True</button>
 <button click.call="setIsDialog(false)">Set False</button>
 
+<hr />
+
+<h3>Toggle using set value</h3>
 <button click.setvalue="context.isDialog = !context.isDialog">Toggle using Set Value</button>
+<button click.setvalue="isDialog = !isDialog">Toggle using Set Value</button>

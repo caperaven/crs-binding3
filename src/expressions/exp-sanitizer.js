@@ -116,7 +116,8 @@ function addProperty(set, property, ctxName) {
 
     let propertyValue = property;
 
-    const ctxPrefix = `${ctxName}.`;
+    const ctxPrefix = ctxName === "context" ? "$context." : `${ctxName}.`;
+
     if (propertyValue.indexOf(ctxPrefix) == 0) {
         propertyValue = propertyValue.replace(ctxPrefix, "");
     }
