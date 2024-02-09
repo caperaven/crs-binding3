@@ -112,9 +112,17 @@ async function getTextIntent(element, results) {
     }
 }
 
+const CONDITIONAL_PROVIDERS = [".if", ".case", "classlist.if", "classlist.case", "classlist.toggle", ".attr.toggle", "^style\..*\.if$", "^style\..*\.case$"]
+
 async function getAttributeIntent(element, results) {
     const providers = crs.binding.providers.attrProviders;
     for (const providerKey of Object.keys(providers)) {
+
+        if (CONDITIONAL_PROVIDERS.indexOf(providerKey) !== -1) {
+            await getConditionalIntent(providers[providerKey], element, results);
+            continue;
+        }
+
         const provider = providers[providerKey];
         if (typeof(provider) === "string" || provider.store == null) continue;
 
@@ -149,5 +157,27 @@ async function getEventIntent(element, results) {
                 })
             }
         }
+    }
+}
+
+async function getConditionalIntent(provider, element, results) {
+    if (typeof(provider) === "string") return;
+
+    const storeItem = provider.store[element.__uuid];
+    if (storeItem == null) return;
+
+    for (const attr of Object.keys(storeItem)) {
+        const exp = storeItem[attr];
+
+        const data = crs.binding.data.getDataForElement(element);
+        const expo = crs.binding.functions.get(exp);
+        const result = await expo.function(data);
+
+        results.push({
+            "Provider": provider.constructor.name,
+            "Attribute": attr,
+            "Data Property": exp,
+            "DataValue": result
+        })
     }
 }
