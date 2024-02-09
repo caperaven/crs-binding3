@@ -85,26 +85,12 @@ export class BindingData {
     async #performUpdate(bid, property) {
         if (this.#callbacks[bid] == null) return;
 
-        const uuids = this.#callbacks[bid]?.[property];
-
-        // item found on full path
-        if (uuids != null) {
-            for (const uuid of uuids.values()) {
-                if (typeof uuid === "function") {
-                    await uuid();
-                }
-                else {
-                    await crs.binding.providers.update(uuid, property);
-                }
-            }
-
-            return;
-        }
-
-        // scan paths
         for (const dataProperty of Object.keys(this.#callbacks[bid])) {
             if (dataProperty.indexOf(property) == 0) {
-                await this.#performUpdate(bid, dataProperty);
+                const uuids = this.#callbacks[bid]?.[dataProperty];
+                for (const uuid of uuids) {
+                    await crs.binding.providers.update(uuid, dataProperty);
+                }
             }
         }
     }
