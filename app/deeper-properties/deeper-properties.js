@@ -1,13 +1,13 @@
 import "./child-details.js";
 
 export default class DeeperProperties extends crs.classes.ViewBase {
-    setPerson() {
+    setPerson(firstName, lastName) {
         this.setProperty("person", {
             firstName: "Darth",
             lastName: "Vader",
             child: {
-                firstName: "Luke",
-                lastName: "Skywalker"
+                firstName,
+                lastName
             }
         })
     }
