@@ -34,7 +34,9 @@ export class Debug {
         for (const key of events) {
             for (const uuid of Object.keys(crs.binding.eventStore.store[key])) {
                 if (uuid === element.__uuid) {
-                    results.push(crs.binding.eventStore.store[key][uuid]);
+                    const obj = crs.binding.eventStore.store[key][uuid];
+                    obj.event = key;
+                    results.push(obj);
                 }
             }
         }
@@ -102,10 +104,10 @@ async function getTextIntent(element, results) {
             const value = await expo.function(data);
 
             results.push({
-                "Provider": "text",
+                "Provider": provider.constructor.name,
                 "Attribute": "textContent",
                 "Data Property": provider.store[element.__uuid].replace("context:", ""),
-                "DataValue": value
+                "Data Value": value
             })
         }
 
@@ -123,6 +125,11 @@ async function getAttributeIntent(element, results) {
             continue;
         }
 
+        if (providerKey === "style.") {
+            await getStyleIntent(providers[providerKey], element, results);
+            continue;
+        }
+
         const provider = providers[providerKey];
         if (typeof(provider) === "string" || provider.store == null) continue;
 
@@ -132,10 +139,10 @@ async function getAttributeIntent(element, results) {
         for (const propertyPath of Object.keys(elementStoreItem)) {
             for (const attribute of Object.keys(elementStoreItem[propertyPath])) {
                 results.push({
-                    "Provider": providerKey,
+                    "Provider": provider.constructor.name,
                     "Attribute": attribute,
                     "Data Property": propertyPath,
-                    "DataValue": await crs.binding.data.getProperty(element.__bid, propertyPath)
+                    "Data Value": await crs.binding.data.getProperty(element.__bid, propertyPath)
                 })
             }
         }
@@ -147,13 +154,40 @@ async function getEventIntent(element, results) {
     for (const intentItem of items) {
         for (const definition of intentItem) {
             const provider = definition.provider;
+
+            if (provider === ".call") {
+                const context = crs.binding.data.getContext(element.__bid);
+                results.push({
+                    "Provider": provider,
+                    "Attribute": intentItem.event,
+                    "Data Property": definition.value,
+                    "Data Value": context[definition.value]
+                })
+                continue;
+            }
+
+            if (provider === ".setvalue") {
+                const intent = await Debug.store(element);
+                for (const storeItem of intent) {
+                    for (const eventItem of storeItem) {
+                        results.push({
+                            "Provider": provider,
+                            "Attribute": storeItem.event,
+                            "Data Property": "",
+                            "Data Value": eventItem.value
+                        })
+                    }
+                }
+                continue;
+            }
+
             for (const bindingPropertyPath of Object.keys(definition.value)) {
                 const attribute = definition.value[bindingPropertyPath];
                 results.push({
                     "Provider": provider,
                     "Attribute": attribute,
                     "Data Property": bindingPropertyPath,
-                    "DataValue": await crs.binding.data.getProperty(element.__bid, bindingPropertyPath)
+                    "Data Value": await crs.binding.data.getProperty(element.__bid, bindingPropertyPath)
                 })
             }
         }
@@ -161,7 +195,7 @@ async function getEventIntent(element, results) {
 }
 
 async function getConditionalIntent(provider, element, results) {
-    if (typeof(provider) === "string") return;
+    if (typeof(provider) === "string" || provider.store == null) return;
 
     const storeItem = provider.store[element.__uuid];
     if (storeItem == null) return;
@@ -177,7 +211,26 @@ async function getConditionalIntent(provider, element, results) {
             "Provider": provider.constructor.name,
             "Attribute": attr,
             "Data Property": exp,
-            "DataValue": result
+            "Data Value": result
+        })
+    }
+}
+
+async function getStyleIntent(provider, element, results) {
+    if (typeof(provider) === "string") return;
+
+    const storeItem = provider.store[element.__uuid];
+    if (storeItem == null) return;
+
+    for (const attr of Object.keys(storeItem)) {
+        const exp = storeItem[attr].replace("context:", "");
+        const value = await crs.binding.data.getProperty(element.__bid, exp);
+
+        results.push({
+            "Provider": provider.constructor.name,
+            "Attribute": attr,
+            "Data Property": exp,
+            "Data Value": value
         })
     }
 }
