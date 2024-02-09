@@ -1,0 +1,5 @@
+<button hidden.if="context.isDialog == true">You should be hidden</button>
+<button click.call="setIsDialog(true)">Set True</button>
+<button click.call="setIsDialog(false)">Set False</button>
+
+<button click.setvalue="context.isDialog = !context.isDialog">Toggle using Set Value</button>
