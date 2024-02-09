@@ -255,6 +255,10 @@ export class BindingData {
         return data.data;
     }
 
+    getElementProviders(uuid) {
+        return this.#elementProviders[uuid];
+    }
+
     /**
      * This is used for elements that are bound to context and being removed while the context is still alive.
      * This is often used when doing partial bindings where the UI is different from the main context UI but bound to the main context UI.
