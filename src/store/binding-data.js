@@ -89,7 +89,13 @@ export class BindingData {
             if (dataProperty.indexOf(property) == 0) {
                 const uuids = this.#callbacks[bid]?.[dataProperty];
                 for (const uuid of uuids) {
-                    await crs.binding.providers.update(uuid, dataProperty);
+                    // In some scenarios like customActionEvents we only add a callback. So when the property changes we call the callback.
+                    if (typeof uuid === "function") {
+                        await uuid();
+                    }
+                    else {
+                        await crs.binding.providers.update(uuid, dataProperty);
+                    }
                 }
             }
         }
