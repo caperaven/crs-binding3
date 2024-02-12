@@ -28,7 +28,9 @@ export class BindingData {
         0: {
             name: "global",
             type: "data",
-            data: {}
+            data: {},
+            definitions: {},
+            issues: {}
         }
     };
 
@@ -189,7 +191,9 @@ export class BindingData {
         this.#data[id] = {
             name: name,
             type: "data",
-            data: struct
+            data: struct,
+            definitions: {},
+            issues: {}
         };
         this.#callbacks[id] = {};
 
@@ -482,5 +486,102 @@ export class BindingData {
         if (obj[property] == null) return;
 
         obj[property].delete(callback);
+    }
+
+    /**
+     * Add a data definition to the data object of the context.
+     * This is used for validation and automation of data.
+     * @param bid
+     * @param dataDef
+     * @returns {Promise<void>}
+     */
+    async addDataDefinition(bid, dataDef) {
+        const data = this.getData(bid);
+        const name = dataDef.name;
+        data.definitions[name] = dataDef;
+    }
+
+    /**
+     * Set an issue, either an error or warning, on the property of the context.
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property/path to set the issue on. Set to null to set a global issue.
+     * @param value {string} - The message to set
+     * @param kind {string} - "error" or "warning"
+     * @returns {Promise<string>} returns an uuid to use to remove the issue
+     */
+    async setIssue(bid, property, value, kind="error") {
+        const data = this.getData(bid);
+        const issues = data.issues[property] ||= {};
+        const uuid = crypto.randomUUID();
+
+        issues[uuid] ||= {
+            kind: kind,
+            message: value
+        };
+
+        return uuid;
+    }
+
+    /**
+     * Get the issue on the property of the context.
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property/path to get the issue for. Set to null to get a global issue.
+     * @param kind {string} - "error" or "warning" or "all"
+     * @returns {Promise<void>}
+     */
+    async getIssue(bid, property, kind="error") {
+
+    }
+
+    /**
+     * Get if the context or property has any issues.
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property/path to get the issue for. Set to null to get a global issue.
+     * @param kind {string} - "error" or "warning" or "all"
+     * @returns {Promise<void>}
+     */
+    async hasIssues(bid, property, kind="error") {
+
+    }
+
+    /**
+     * For a given collection of uuids remove the issues on the binding context.
+     * @param uuids {string[]} - The uuids to remove the issues for
+     * @returns {Promise<void>}
+     */
+    async removeIssues(uuids) {
+
+    }
+
+    /**
+     * Remove all issues on the binding context
+     * @param bid
+     * @returns {Promise<void>}
+     */
+    async clearIssues(bid) {
+
+    }
+
+    /**
+     * Create a new data object and set it on the property path defined.
+     * Use the data definition to determine the default values to use during creation.
+     * @param bid {number} - The id to use for the context. This is the same as the binding id
+     * @param property {string} - The property/path to set the data on
+     * @param dataDefName {string} - The name of the data definition to use
+     * @returns {Promise<void>}
+     */
+    async create(bid, property, dataDefName){
+
+    }
+
+    /**
+     * Validate the property on the context.
+     * @param bid
+     * @param property
+     * @param dataDefName
+     * @returns {Promise<void>}
+     */
+    async validate(bid, property, dataDefName) {
+
     }
 }

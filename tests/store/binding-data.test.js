@@ -50,4 +50,21 @@ describe("binding data store tests", async () => {
         assertEquals(crs.binding.data.getData(id), undefined);
         assertEquals(crs.binding.data.getContext(id), undefined);
     })
+
+    it ("add data definition", async () => {
+        const definition = { name: "test" }
+        const id = crs.binding.data.addObject("add context");
+        await crs.binding.data.addDataDefinition(id, definition);
+
+        const data = crs.binding.data.getData(id);
+        assertEquals(data.definitions["test"], definition);
+    })
+
+    it ("setIssue", async () => {
+        const id = crs.binding.data.addObject("test");
+        const errorUUID = await crs.binding.data.setIssue(id, "person.firstName", "first name is required");
+        const data = crs.binding.data.getData(id);
+
+        assertEquals(data.issues["person.firstName"][errorUUID].message, "first name is required");
+    })
 })

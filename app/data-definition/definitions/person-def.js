@@ -7,7 +7,8 @@ export const person_def = {
 
             defaultValidations: {
                 required: {
-                    required: true
+                    required: true,
+                    error: "uuummm you should fill this in!"
                 },
 
                 maxLength: {
