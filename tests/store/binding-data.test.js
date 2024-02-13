@@ -128,6 +128,7 @@ describe("binding data store tests", async () => {
         await crs.binding.data.removeIssues(id, [uuid]);
         const clearedIssues = await crs.binding.data.getIssues(id, "person.firstName");
         assertEquals(clearedIssues.issues.length, 0);
+        await crs.binding.data.remove(id);
     })
 
     it ("clearIssues", async () => {
@@ -139,5 +140,42 @@ describe("binding data store tests", async () => {
 
         const data = crs.binding.data.getData(id);
         assertEquals(data.issues, {});
+        await crs.binding.data.remove(id);
     });
+
+    it ("create with default", async () => {
+        const definition = {
+            "name": "test_definition",
+            "fields": {
+                "firstName": {
+                    "dataType": "string",
+                    "default": "John"
+                },
+                "lastName": {
+                    "dataType": "string",
+                    "default": "Doe"
+                },
+                "age": {
+                    "dataType": "number",
+                    "default": 20
+                },
+                "location": {}
+            }
+        }
+
+        const id = crs.binding.data.addObject("test");
+        await crs.binding.data.addDataDefinition(id, definition);
+
+        const model = await crs.binding.data.create(id, "person", "test_definition");
+        const person = await crs.binding.data.getProperty(id, "person");
+
+        assertEquals(model.firstName, "John");
+        assertEquals(model.lastName, "Doe");
+        assertEquals(model.age, 20);
+        assertEquals(model.location, null);
+
+        assertEquals(model, person);
+
+        await crs.binding.data.remove(id);
+    })
 })

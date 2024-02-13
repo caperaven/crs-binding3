@@ -635,7 +635,43 @@ export class BindingData {
      * @returns {Promise<void>}
      */
     async create(bid, property, dataDefName){
+        const data = this.getData(bid);
+        const dataDef = data.definitions[dataDefName];
+        const model = {};
 
+        for (const [fieldName, value] of Object.entries(dataDef.fields)) {
+            let fieldValue = null;
+            if (value.default != null) {
+                switch(value.dataType.toLowerCase()) {
+                    case "string": {
+                        fieldValue = String(value.default);
+                        break;
+                    }
+                    case "number": {
+                        fieldValue = Number(value.default);
+                        break;
+                    }
+                    case "boolean": {
+                        fieldValue = Boolean(value.default);
+                        break;
+                    }
+                    case "datetime": {
+                        fieldValue = new Date(value.default);
+                        break;
+                    }
+                    case "array": {
+                        fieldValue = Array.from(value.default);
+                        break;
+                    }
+                }
+            }
+
+            model[fieldName] = fieldValue;
+        }
+
+        await crs.binding.data.setProperty(bid, property, model);
+
+        return model;
     }
 
     /**
