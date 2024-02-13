@@ -58,6 +58,7 @@ describe("binding data store tests", async () => {
 
         const data = crs.binding.data.getData(id);
         assertEquals(data.definitions["test"], definition);
+        await crs.binding.data.remove(id);
     })
 
     it ("setIssue", async () => {
@@ -66,12 +67,13 @@ describe("binding data store tests", async () => {
         const data = crs.binding.data.getData(id);
 
         assertEquals(data.issues["person.firstName"][errorUUID].message, "first name is required");
+        await crs.binding.data.remove(id);
     })
 
     it ("getIssues", async () => {
         const id = crs.binding.data.addObject("test");
         const errorUUID = await crs.binding.data.setIssue(id, "person.firstName", "error 1");
-        const warningUUID = await crs.binding.data.setIssue(id, "person.firstName", "warning 1", "warning");
+        const warningUUID = await crs.binding.data.setIssue(id, "person.firstName", "warning 1", null, "warning");
 
         assert(errorUUID != null);
         assert(warningUUID != null);
@@ -89,5 +91,53 @@ describe("binding data store tests", async () => {
         assertEquals(all.issues.length, 2);
         assertEquals(all.issues[0].message, "error 1");
         assertEquals(all.issues[1].message, "warning 1");
+        await crs.binding.data.remove(id);
     })
+
+    it ("has issues", async () => {
+        const id = crs.binding.data.addObject("test");
+        await crs.binding.data.setIssue(id, "person.firstName", "error 1");
+        await crs.binding.data.setIssue(id, "person.firstName", "warning 1", null, "warning");
+
+        const hasErrors = await crs.binding.data.hasIssues(id, "person.firstName");
+        const hasWarnings = await crs.binding.data.hasIssues(id, "person.firstName", "warning");
+
+        assertEquals(hasErrors, true);
+        assertEquals(hasWarnings, true);
+        await crs.binding.data.remove(id);
+    })
+
+    it ("get elements for errors", async () => {
+        const id = crs.binding.data.addObject("test");
+
+        await crs.binding.data.addCallback(id, "person.firstName", "uuid")
+        await crs.binding.data.setIssue(id, "person.firstName", "error 1", "uuid");
+
+        const elements = await crs.binding.data.getIssueElements(id, "person.firstName");
+        assertEquals(elements.length, 1);
+        assertEquals(elements[0], "uuid");
+        await crs.binding.data.remove(id);
+    });
+
+    it ("removeIssues", async () => {
+        const id = crs.binding.data.addObject("test");
+        const uuid = await crs.binding.data.setIssue(id, "person.firstName", "error 1", "uuid");
+        const issues = await crs.binding.data.getIssues(id, "person.firstName");
+        assert(issues != null);
+
+        await crs.binding.data.removeIssues(id, [uuid]);
+        const clearedIssues = await crs.binding.data.getIssues(id, "person.firstName");
+        assertEquals(clearedIssues.issues.length, 0);
+    })
+
+    it ("clearIssues", async () => {
+        const id = crs.binding.data.addObject("test");
+        await crs.binding.data.setIssue(id, "person.firstName", "error 1", "uuid");
+        await crs.binding.data.clearIssues(id, "person.firstName");
+        const issues = await crs.binding.data.getIssues(id, "person.firstName");
+        assertEquals(issues, undefined);
+
+        const data = crs.binding.data.getData(id);
+        assertEquals(data.issues, {});
+    });
 })

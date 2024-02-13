@@ -506,10 +506,11 @@ export class BindingData {
      * @param bid {number} - The id to use for the context. This is the same as the binding id
      * @param property {string} - The property/path to set the issue on. Set to null to set a global issue.
      * @param value {string} - The message to set
+     * @param elementUUID {string} - The uuid of the element to set the issue for
      * @param kind {string} - "error" or "warning"
      * @returns {Promise<string>} returns an uuid to use to remove the issue
      */
-    async setIssue(bid, property, value, kind="error") {
+    async setIssue(bid, property, value, elementUUID, kind="error") {
         const data = this.getData(bid);
         const issues = data.issues[property] ||= {};
         const uuid = crypto.randomUUID();
@@ -518,6 +519,10 @@ export class BindingData {
             kind: kind,
             message: value
         };
+
+        if (elementUUID != null) {
+            issues[uuid].elementUUID = elementUUID;
+        }
 
         return uuid;
     }
@@ -564,16 +569,51 @@ export class BindingData {
      * @returns {Promise<void>}
      */
     async hasIssues(bid, property, kind="error") {
+        const data = this.getData(bid);
+        let issues = data.issues[property];
 
+        if (issues == null) return false;
+
+        issues = Object.values(issues).filter(issue => {
+            return kind === "all" || issue.kind === kind
+        });
+
+        return issues.length > 0;
+    }
+
+    async getIssueElements(bid, property, kind="error") {
+        const data = this.getData(bid);
+        let issues = data.issues[property];
+
+        if (issues == null) return [];
+
+        const elements = [];
+
+        for (const issue of Object.values(issues)) {
+            if (issue.kind === kind) {
+                elements.push(issue.elementUUID);
+            }
+        }
+
+        return elements;
     }
 
     /**
      * For a given collection of uuids remove the issues on the binding context.
+     * @param bid
      * @param uuids {string[]} - The uuids to remove the issues for
      * @returns {Promise<void>}
      */
-    async removeIssues(uuids) {
+    async removeIssues(bid, uuids) {
+        const data = this.getData(bid);
 
+        for (const property of Object.keys(data.issues)) {
+            const issues = data.issues[property];
+
+            for (const uuid of uuids) {
+                delete issues[uuid];
+            }
+        }
     }
 
     /**
@@ -582,7 +622,8 @@ export class BindingData {
      * @returns {Promise<void>}
      */
     async clearIssues(bid) {
-
+        const data = this.getData(bid);
+        data.issues = {};
     }
 
     /**
