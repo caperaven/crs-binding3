@@ -67,4 +67,27 @@ describe("binding data store tests", async () => {
 
         assertEquals(data.issues["person.firstName"][errorUUID].message, "first name is required");
     })
+
+    it ("getIssues", async () => {
+        const id = crs.binding.data.addObject("test");
+        const errorUUID = await crs.binding.data.setIssue(id, "person.firstName", "error 1");
+        const warningUUID = await crs.binding.data.setIssue(id, "person.firstName", "warning 1", "warning");
+
+        assert(errorUUID != null);
+        assert(warningUUID != null);
+
+        const errors = await crs.binding.data.getIssues(id, "person.firstName");
+        const warnings = await crs.binding.data.getIssues(id, "person.firstName", "warning");
+        const all = await crs.binding.data.getIssues(id, "person.firstName", "all");
+
+        assertEquals(errors.issues.length, 1);
+        assertEquals(errors.issues[0].message, "error 1");
+
+        assertEquals(warnings.issues.length, 1);
+        assertEquals(warnings.issues[0].message, "warning 1");
+
+        assertEquals(all.issues.length, 2);
+        assertEquals(all.issues[0].message, "error 1");
+        assertEquals(all.issues[1].message, "warning 1");
+    })
 })

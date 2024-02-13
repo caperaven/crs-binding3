@@ -529,8 +529,31 @@ export class BindingData {
      * @param kind {string} - "error" or "warning" or "all"
      * @returns {Promise<void>}
      */
-    async getIssue(bid, property, kind="error") {
+    async getIssues(bid, property, kind="error") {
+        const data = this.getData(bid);
+        let issues = data.issues[property];
 
+        if (issues == null) return;
+
+        for (const [key, issue] of Object.entries(issues)) {
+            issue.uuid = key;
+        }
+
+        issues = Object.values(issues).filter(issue => {
+            return kind === "all" || issue.kind === kind
+        });
+
+        const result = {
+            issues: issues
+        };
+
+        if (property == null) {
+            return result;
+        }
+
+        result.elements = crs.binding.data.getCallbacks(bid, property);
+
+        return result;
     }
 
     /**
