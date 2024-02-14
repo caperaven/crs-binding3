@@ -52,7 +52,7 @@ describe("binding data store tests", async () => {
     })
 
     it ("add data definition", async () => {
-        const definition = { name: "test" }
+        const definition = { name: "test", fields: {} }
         const id = crs.binding.data.addObject("add context");
         await crs.binding.data.addDataDefinition(id, definition);
 
@@ -134,7 +134,7 @@ describe("binding data store tests", async () => {
     it ("clearIssues", async () => {
         const id = crs.binding.data.addObject("test");
         await crs.binding.data.setIssue(id, "person.firstName", "error 1", "uuid");
-        await crs.binding.data.clearIssues(id, "person.firstName");
+        await crs.binding.data.clearIssues(id);
         const issues = await crs.binding.data.getIssues(id, "person.firstName");
         assertEquals(issues, undefined);
 
@@ -145,7 +145,7 @@ describe("binding data store tests", async () => {
 
     it ("create with default", async () => {
         const definition = {
-            "name": "test_definition",
+            "name": "model",
             "fields": {
                 "firstName": {
                     "dataType": "string",
@@ -166,7 +166,7 @@ describe("binding data store tests", async () => {
         const id = crs.binding.data.addObject("test");
         await crs.binding.data.addDataDefinition(id, definition);
 
-        const model = await crs.binding.data.create(id, "person", "test_definition");
+        const model = await crs.binding.data.create(id, "person", "model");
         const person = await crs.binding.data.getProperty(id, "person");
 
         assertEquals(model.firstName, "John");
@@ -177,5 +177,54 @@ describe("binding data store tests", async () => {
         assertEquals(model, person);
 
         await crs.binding.data.remove(id);
+    })
+
+    it ("validate defaults", async () => {
+        const definition = {
+            "name": "person",
+            "fields": {
+                "firstName": {
+                    "dataType": "string",
+                    "default": "John"
+                },
+                "lastName": {
+                    "dataType": "string",
+                    "default": "Doe"
+                },
+                "age": {
+                    "dataType": "number",
+                    "default": 20
+                },
+                "location": {
+                    "dataType": "string",
+                    "default": "RSA",
+
+                    "conditionalDefaults": [
+                        {
+                            "conditionExpr": "person.firstName == 'Jane' && isActive == true",
+                            "true_value": "UK",
+                            "false_value": "DE"
+                        }
+                    ]
+                }
+            }
+        }
+
+        const id = crs.binding.data.addObject("test");
+        await crs.binding.data.addDataDefinition(id, definition);
+
+        const callbacks = await crs.binding.data.getCallbacks(id, "person.firstName");
+
+        assert(definition.fields.location.conditionalDefaults == null);
+        assert(callbacks.length === 1);
+
+        let location;
+        await crs.binding.data.setProperty(id, "person.firstName", "Jane");
+        location = await crs.binding.data.getProperty(id, "person.location");
+        assert(location === "DE");
+
+        await crs.binding.data.setProperty(id, "isActive", true);
+        location = await crs.binding.data.getProperty(id, "person.location");
+        assert(location === "UK");
     })
 })

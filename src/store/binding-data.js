@@ -1,3 +1,5 @@
+import {processDefinition} from "./binding-data/conditional-code-factory.js";
+
 /**
  * @class BindingData - This is the main management of the binding data.
  * This includes context data.
@@ -91,9 +93,11 @@ export class BindingData {
             if (dataProperty.indexOf(property) == 0) {
                 const uuids = this.#callbacks[bid]?.[dataProperty];
                 for (const uuid of uuids) {
-                    // In some scenarios like customActionEvents we only add a callback. So when the property changes we call the callback.
+                    // In some scenarios like customActionEvents we only add a callback.
+                    // So when the property changes we call the callback.
                     if (typeof uuid === "function") {
-                        await uuid();
+                        const data = this.getData(bid).data;
+                        await uuid(data);
                     }
                     else {
                         await crs.binding.providers.update(uuid, dataProperty);
@@ -499,6 +503,7 @@ export class BindingData {
         const data = this.getData(bid);
         const name = dataDef.name;
         data.definitions[name] = dataDef;
+        await processDefinition(bid, dataDef);
     }
 
     /**
@@ -642,6 +647,8 @@ export class BindingData {
         for (const [fieldName, value] of Object.entries(dataDef.fields)) {
             let fieldValue = null;
             if (value.default != null) {
+                value.dataType ||= "string";
+
                 switch(value.dataType.toLowerCase()) {
                     case "string": {
                         fieldValue = String(value.default);
@@ -652,7 +659,7 @@ export class BindingData {
                         break;
                     }
                     case "boolean": {
-                        fieldValue = Boolean(value.default);
+                        fieldValue = value.toString().toLowerCase() === "true";
                         break;
                     }
                     case "datetime": {
