@@ -193,7 +193,14 @@ describe("binding data store tests", async () => {
                 },
                 "age": {
                     "dataType": "number",
-                    "default": 20
+                    "default": 20,
+
+                    "conditionalDefaults": [
+                        {
+                            "conditionExpr": "person.firstName == 'Jane'",
+                            "value": 30
+                        }
+                    ]
                 },
                 "location": {
                     "dataType": "string",
@@ -216,12 +223,16 @@ describe("binding data store tests", async () => {
         const callbacks = await crs.binding.data.getCallbacks(id, "person.firstName");
 
         assert(definition.fields.location.conditionalDefaults == null);
-        assert(callbacks.length === 1);
+        assert(callbacks.length === 2);
 
         let location;
+        let age;
+
         await crs.binding.data.setProperty(id, "person.firstName", "Jane");
         location = await crs.binding.data.getProperty(id, "person.location");
+        age = await crs.binding.data.getProperty(id, "person.age");
         assert(location === "DE");
+        assert(age === 30);
 
         await crs.binding.data.setProperty(id, "isActive", true);
         location = await crs.binding.data.getProperty(id, "person.location");
