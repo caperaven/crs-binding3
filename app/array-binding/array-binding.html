@@ -4,6 +4,8 @@
 
 <ul>
     <template for="item of items">
-        <li>${item.code}</li>
+        <li hidden.if="item.selected == true">${item.code}</li>
     </template>
+
+    <li hidden.attr="model.value"  title.once="item.title"></li>
 </ul>

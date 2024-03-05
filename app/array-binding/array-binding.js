@@ -22,7 +22,7 @@ export default class ArrayBindingViewModel extends crs.classes.ViewBase {
 
     async update() {
         const items = this.getProperty("items");
-        items.push({ code: "Code 12" });
+        items.push({ code: "Code 12", selected: true });
         items.push({ code: "Code 13" });
         // items[0].code = "Code 1 Updated";
         // debugger;

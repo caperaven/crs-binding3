@@ -119,29 +119,28 @@ async function attributes(path, element, preCode, code, ctxName, addContext) {
             code.push([`${path}.setAttribute("${attr.nodeName}",`, "`", exp.expression, "`",  ");"].join(""));
         }
         else if (attr.nodeName.indexOf("style.") != -1) {
-            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            await styles(attr, path, preCode, code, ctxName);
+            await styles(attr, path, preCode, code, ctxName, addContext);
         }
         else if (attr.nodeName.indexOf("classlist.case") != -1) {
-            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            await classListCase(attr, path, preCode, code, ctxName);
+            await classListCase(attr, path, preCode, code, ctxName, addContext);
         }
         else if (attr.nodeName.indexOf("classlist.if") != -1) {
-            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            await classListIf(attr, path, preCode, code, ctxName);
+            await classListIf(attr, path, preCode, code, ctxName, addContext);
         }
         else if (attr.nodeName.indexOf(".if") != -1) {
-            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            await ifAttribute(attr, path, preCode, code, ctxName);
+            await ifAttribute(attr, path, preCode, code, ctxName, addContext);
         }
-        else if (attr.nodeName.indexOf(".attr") != -1 || attr.nodeName.indexOf(".one-way") != -1) {
-            preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
-            await attrAttribute(attr, path, preCode, code, ctxName);
+        else if (attr.nodeName.indexOf(".attr") != -1) {
+            await attrAttribute(attr, path, preCode, code, ctxName, addContext);
+        }
+        else if (attr.nodeName.indexOf(".one-way") != -1 || attr.nodeName.indexOf(".once") != -1) {
+            await onceAttribute(attr, path, preCode, code, ctxName, addContext);
         }
     }
 }
 
 async function classListCase(attr, path, preCode, code, ctxName, addContext) {
+    preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
     const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
     const codeParts = exp.expression.split(",");
 
@@ -169,6 +168,7 @@ async function classListCase(attr, path, preCode, code, ctxName, addContext) {
 }
 
 async function classListIf(attr, path, preCode, code, ctxName, addContext) {
+    preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
     const value = attr.nodeValue.trim().replaceAll("?.", "*.");
 
     const ifParts = OptionalChainActions.split(value);
@@ -239,7 +239,16 @@ async function attrAttribute(attr, path, preCode, code, ctxName, addContext) {
     code.push([`${path}.setAttribute("${attr.nodeName.replace(".attr", "")}",`, exp.expression,  ");"].join(""));
 }
 
+async function onceAttribute(attr, path, preCode, code, ctxName, addContext) {
+    preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
+    const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
+    let value = attr.nodeName.replace(".once", "");
+    value = value.replace(".one-way", "");
+    code.push([`${path}.${value}`, " = " , exp.expression, ";"].join(""));
+}
+
 async function styles(attr, path, preCode, code, ctxName, addContext) {
+    preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
     const parts = attr.nodeName.split(".");
     const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
     preCode.push(`${path}.style.${parts[1]} = "";`);
