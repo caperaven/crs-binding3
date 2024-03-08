@@ -115,7 +115,7 @@ export class Providers {
     async getAttrProvider(attrName, attrValue) {
         if (attrName === "ref") return await this.getAttrModule("ref");
 
-        if (attrName.indexOf(".") == -1 && attrValue.startsWith("${")) {
+        if (attrName.indexOf(".") == -1 && (attrValue.startsWith("${") || attrValue.startsWith("&{"))) {
             // This is to cater for attribute bindings that look like my-value="${my-value}"
             return await this.getAttrModule(".attr");
         }
