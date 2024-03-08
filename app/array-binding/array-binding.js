@@ -28,4 +28,9 @@ export default class ArrayBindingViewModel extends crs.classes.ViewBase {
         // debugger;
         // this.setProperty("items[0].code", "Code 1 Updated");
     }
+
+    async remove() {
+        const items = this.getProperty("items");
+        items.splice(0, 1, { code: "Code 14" });
+    }
 }
