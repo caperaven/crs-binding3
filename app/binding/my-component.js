@@ -12,6 +12,10 @@ export class MyComponent extends crs.classes.BindableElement {
         console.log("my-component: once binding: ", newValue);
     }
 
+    set myLongProperty(newValue) {
+        console.log("my-component: two way binding: ", newValue);
+    }
+
     get html() {
         return import.meta.url.replace(".js", ".html");
     }

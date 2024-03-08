@@ -30,7 +30,7 @@
 <button click.attr.toggle="[this](data-hidden)">Toggle Hidden</button>
 
 <my-component value.one-way="person.firstName" greeting.once="greeting"></my-component>
-<my-component value.bind="person.firstName" greeting.bind="greeting"></my-component>
+<my-component value.bind="person.firstName" greeting.bind="greeting" my-long-property.bind="greeting"></my-component>
 
 <ul>
     <template for="person of people">
