@@ -13,19 +13,28 @@
         background: silver;
         color: black;
     }
+
+    .test-translation::before {
+        content: attr(data-label);
+        background: yellow;
+        display: block;
+    }
+
 </style>
 <h2>Inflation Manager</h2>
 
 <template data-ref="template">
     <li data-id="${id}" data-state.if="age < 25 ? 'young' : 'old'">
-        <div hidden.if="age < 25">Hidden if age is less than 25</div>
         <div data-value.if="age < 25 ? true" data-value2.if="age < 25 ? true : false">Attributes Test - see dom</div>
         <div classlist.if="age < 25 ? 'blue' : 'red'">First Name: ${firstName}</div>
         <div classlist.if="age < 25 ? 'blue'">First Name If LT 25</div>
         <div style.color="color">Last Name: ${lastName}</div>
         <div style.color.if="age < 25 ? 'red' : 'blue'">Age: ${age}</div>
+        <div style.background-color.if="age < 25 ? 'red' : 'blue'">Age: ${age}</div>
         <div style.color.case="age < 20 ? 'red', age > 27 ? 'green', default: 'silver'">Age2: ${age}</div>
         <div classlist.case="age < 20 ? 'red', age > 27 ? 'green'">Age2: ${age}</div>
+        <div hidden.if="age < 25">Remove if age is less than 25. Age = ${agews}</div>
+        <div class="test-translation" data-label.if="$context.age > 25? &{inflationManager.old} : &{inflationManager.young}" ></div>
     </li>
 </template>
 

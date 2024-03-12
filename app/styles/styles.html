@@ -18,8 +18,19 @@
 <strong>Standard binding</strong>
 <div class="color" style.background="background">${background}</div>
 
+<strong>Standard binding for property with a "-"</strong>
+<div class="color" style.background-color="background">${background}</div>
+
 <strong>If binding</strong>
 <div class="color" style.color.if="background == 'red' ? '#9000ff' : '#ff0090'">${background}</div>
 
+<strong>If binding for property with a "-"</strong>
+<div class="color" style.background-color.if="background == 'red' ? '#9000ff' : '#ff0090'">${background}</div>
+
 <strong>Case binding</strong>
 <div class="color" style.color.case="background == 'red': 'red', background == 'blue': 'blue', default: 'green'">${background}</div>
+
+<strong>Case binding for property with a "-"</strong>
+<div class="color" style.background-color.case="background == 'red' ? '#9000ff' : '#ff0090'">${background}</div>
+
+

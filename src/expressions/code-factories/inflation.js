@@ -1,5 +1,6 @@
 import {OptionalChainActions} from "../../utils/optional-chain-actions.js";
 import "../../managers/static-inflation-manager.js";
+import {capitalizePropertyPath} from "../../utils/capitalization.js";
 
 /**
  * @function inflationFactory - Creates a function that inflates a template with data
@@ -36,7 +37,7 @@ export async function inflationFactory(element, ctxName = "context", addContext 
         await children("element", element, preCode, code, ctxName, addContext, bid);
     }
 
-    return new Function("element", ctxName, [...preCode, ...code].join("\n"));
+    return new globalThis.crs.classes.AsyncFunction("element", ctxName, [...preCode, ...code].join("\n"));
 }
 
 /**
@@ -219,18 +220,28 @@ async function ifAttribute(attr, path, preCode, code, ctxName, addContext) {
     const conditionParts = OptionalChainActions.split(exp.expression);
     const condition = conditionParts[0].trim();
     const valueParts = conditionParts[1].split(":");
-    const trueValue = valueParts[0].trim();
-    const falseValue = valueParts.length === 1 ? null : valueParts[1].trim();
+    let trueValue = valueParts[0].trim();
+    let falseValue = valueParts.length === 1 ? null : valueParts[1].trim();
+
+    if (trueValue.startsWith("${")) {
+       trueValue = `\`${trueValue}\` `;
+    }
+
+    if (falseValue != null && falseValue.startsWith("${")) {
+        falseValue = `\`${falseValue}\` `;
+    }
+
 
     code.push(`if (${condition}) {
-        ${path}.setAttribute("${attrName}", "${trueValue}");
+        ${path}.setAttribute("${attrName}", ${trueValue});
     }`)
 
     if (falseValue != null) {
         code.push(`else {
-            ${path}.setAttribute("${attrName}", "${falseValue}");
+            ${path}.setAttribute("${attrName}", ${falseValue});
         }`)
     }
+
 }
 
 async function attrAttribute(attr, path, preCode, code, ctxName, addContext) {
@@ -251,16 +262,17 @@ async function styles(attr, path, preCode, code, ctxName, addContext) {
     preCode.push(`${path}.removeAttribute("${attr.nodeName}");`);
     const parts = attr.nodeName.split(".");
     const exp = await crs.binding.expression.sanitize(attr.nodeValue.trim(), ctxName, addContext);
-    preCode.push(`${path}.style.${parts[1]} = "";`);
+    const stylePropertyName = capitalizePropertyPath(parts[1]);
+    preCode.push(`${path}.style.${stylePropertyName} = "";`);
 
     if (attr.nodeName.indexOf(".case") == -1) {
-        code.push([`${path}.style.${parts[1]} =`, exp.expression,  ";"].join(""));
+        code.push([`${path}.style.${stylePropertyName} =`, exp.expression,  ";"].join(""));
     }
     else {
         const codeParts = exp.expression.split(",");
         for (const line of codeParts) {
             if (line.indexOf("context.default") != -1) {
-                preCode.push(`${path}.style.${parts[1]} = ${line.split(":")[1].trim()};`);
+                preCode.push(`${path}.style.${stylePropertyName} = ${line.split(":")[1].trim()};`);
                 continue;
             }
 
@@ -269,12 +281,12 @@ async function styles(attr, path, preCode, code, ctxName, addContext) {
             const values = (lineParts[1] || lineParts[0]).split(":");
 
             code.push(`if (${condition}) {`);
-            code.push(`    ${path}.style.${parts[1]} = ${values[0].trim()};`);
+            code.push(`    ${path}.style.${stylePropertyName} = ${values[0].trim()};`);
             code.push(`}`);
 
             if (values.length > 1) {
                 code.push(`else {`);
-                code.push(`    ${path}.style.${parts[1]} = ${values[1].trim()};`);
+                code.push(`    ${path}.style.${stylePropertyName} = ${values[1].trim()};`);
                 code.push(`}`);
             }
         }
