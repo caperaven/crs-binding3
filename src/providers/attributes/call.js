@@ -73,11 +73,11 @@ export default class CallProvider {
  * @returns {Promise<void>}
  */
 async function execute(bid, intent, event) {
-    const context = crs.binding.data.getContext(bid);
+    let context = crs.binding.data.getContext(bid);
     if (context == null) return;
 
     const parts = intent.value.replace(")", "").split("(");
-    const fn = parts[0];
+    let fn = parts[0];
     const args = parts.length == 1 ? [event] : processArgs(parts[1], event, bid);
 
     if (intent.queries != null) {
@@ -99,6 +99,12 @@ async function execute(bid, intent, event) {
             }
         }
         return;
+    }
+
+    if (fn.indexOf(".") !== -1) {
+        const parts = fn.split(".");
+        fn = parts.pop();
+        context = crs.binding.data.getProperty(bid, parts.join("."));
     }
 
     await context[fn].call(context, ...args);

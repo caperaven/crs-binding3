@@ -19,6 +19,7 @@
 <label>
     <div>&{person.age}</div>
     <input id="edtAge" value.bind="person.age" type="number" />
+    <button click.call="person.addAge">Add Age</button>
 </label>
 
 <div id="lblSummery">${person.firstName} ${person.lastName} is ${person.age} old</div>
@@ -46,5 +47,7 @@
 <button click.call="shift">Shift</button>
 
 <hr />
+
+
 
 <template src="/app/binding/template.html"></template>
