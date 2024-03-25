@@ -1,5 +1,7 @@
 import {capitalizePropertyPath} from "../../../utils/capitalization.js";
 
+const propertyBindingTypes = [".bind", ".two-way", ".one-way", ".once"]
+
 export async function bindingUpdate(uuid) {
     const element = crs.binding.elements[uuid];
     if (element == null) return;
@@ -9,7 +11,9 @@ export async function bindingUpdate(uuid) {
 
     if (Array.isArray(intent)) {
         for (const i of intent) {
-            await applyProperty(element, i);
+            if (propertyBindingTypes.indexOf(i.provider) !== -1) {
+                await applyProperty(element, i);
+            }
         }
 
         return;
