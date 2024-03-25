@@ -50,8 +50,6 @@ Deno.test("sanitize - single assignment expression", async () => {
     assertEquals(result.properties[1], "value2");
 });
 
-
-
 Deno.test("sanitize - single assignment expression", async () => {
     const result = await sanitize("value1 === value2");
     assertEquals(result.expression, "context.value1 === context.value2");
@@ -391,3 +389,14 @@ Deno.test("sanitize - model and context mix", async () =>{
     const result = await sanitize("model.firstName == 'Jane' && $context.isActive == true");
     assertEquals(result.expression, "context.model?.firstName == 'Jane' && context?.isActive == true");
 })
+
+Deno.test("sanitize - square brackets", async () =>{
+    const result = await sanitize("schema.variables.dataModel.selectedId[0]");
+    assertEquals(result.expression, "context.schema?.variables?.dataModel?.selectedId?.[0]");
+})
+
+Deno.test("sanitize - set classlist with array", async () =>{
+    const result = await sanitize("background == 'red' ? ['white', 'green'] : ['blue', 'yellow']");
+    assertEquals(result.expression, "context.background == 'red' ? ['white', 'green'] : ['blue', 'yellow']");
+})
+
