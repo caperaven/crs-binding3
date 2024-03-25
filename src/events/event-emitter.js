@@ -37,6 +37,17 @@ export class EventEmitter {
         return this.#events;
     }
 
+
+    /**
+     * @function has - This checks if an event is registered.
+     * @param event {string} - The event name to check.
+     * @returns {Promise<boolean>}
+     * */
+    async has(event) {
+        return this.#events[event] != null;
+    }
+
+
     /**
      * @function on - This registers an event. If the event and callback pair is already registered, it will not be registered again.
      * @param event {string} - The event name to register.
