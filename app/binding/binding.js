@@ -89,4 +89,8 @@ export default class BindingViewModel extends crs.classes.ViewBase {
     async onEvent(event) {
         console.log(event);
     }
+
+    async greetings(event) {
+        console.log("greetings", event);
+    }
 }

@@ -26,7 +26,11 @@ export class MyComponent extends crs.classes.BindableElement {
 
     async greet(message) {
         this.setProperty("title", message);
-        console.log("greet", message);
+        await this.changed(message);
+    }
+
+    async changed(value) {
+        this.dispatchEvent(new CustomEvent("changed", { detail: { value } }));
     }
 }
 
