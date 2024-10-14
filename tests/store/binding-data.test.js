@@ -179,7 +179,7 @@ describe("binding data store tests", async () => {
         await crs.binding.data.remove(id);
     })
 
-    it ("validate defaults", async () => {
+    it ("conditional defaults", async () => {
         const definition = {
             "name": "person",
             "fields": {
@@ -237,5 +237,45 @@ describe("binding data store tests", async () => {
         await crs.binding.data.setProperty(id, "isActive", true);
         location = await crs.binding.data.getProperty(id, "person.location");
         assert(location === "UK");
+
+        await crs.binding.data.remove(id);
+    })
+
+    it ("validation", async () => {
+        const definition = {
+            "name": "person",
+            "fields": {
+                "firstName": {
+                    "dataType": "string",
+                    "default": "John",
+
+                    "defaultValidations": {
+                        "required": {
+                            "value": true,
+                            "error": "uuummm you should fill this in!"
+                        },
+
+                        "maxLength": {
+                            "error": "Too long",
+                            "value": 12
+                        }
+                    },
+
+                    "conditionalValidations": [
+                        {
+                            "conditionExpr": "isActive == true",
+                            "rules": {
+                                "required": { "value": false, "error": "First name is required" }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        const id = crs.binding.data.addObject("test");
+        await crs.binding.data.addDataDefinition(id, definition);
+
+        await crs.binding.data.remove(id);
     })
 })

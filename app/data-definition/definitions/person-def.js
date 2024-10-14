@@ -7,7 +7,7 @@ export const person_def = {
 
             defaultValidations: {
                 required: {
-                    required: true,
+                    value: true,
                     error: "uuummm you should fill this in!"
                 },
 
@@ -36,7 +36,7 @@ export const person_def = {
                 {
                     conditionExpr: "person.firstName == 'Jane'",
                     rules: {
-                        required: { value: true }
+                        required: { value: false, error: "Last name is required if first name is 'Jane'" }
                     }
                 }
             ]
