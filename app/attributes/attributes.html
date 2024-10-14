@@ -11,6 +11,13 @@
     div::after {
         content: attr(data-value);
     }
+    #age-attr::after {
+        content: attr(my-age);
+    }
+
+    #age-dataset::after {
+        content: attr(data-age);
+    }
 </style>
 <h2>${title}</h2>
 
@@ -37,3 +44,9 @@
 <div data-value.case="age < 20: 'young', age < 30: 'mid'"></div>
 
 <div hidden.if="age < 10 ? true">Hidden if age is less than 10</div>
+
+<strong>Attribute $ binding</strong>
+<div id="age-attr" my-age="${age}"></div>
+
+<strong>Attribute $ dataset binding</strong>
+<div id="age-dataset" data-age="${age}"></div>

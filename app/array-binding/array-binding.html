@@ -1,9 +1,12 @@
 <button click.call="collection1">Collection 1</button>
 <button click.call="collection2">Collection 2</button>
 <button click.call="update">Update</button>
+<button click.call="remove">Remove</button>
 
 <ul>
     <template for="item of items">
-        <li>${item.code}</li>
+        <li hidden.if="item.selected == true">${item.code}</li>
     </template>
+
+    <li hidden.attr="model.value"  title.once="item.title"></li>
 </ul>

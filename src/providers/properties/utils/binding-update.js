@@ -1,3 +1,7 @@
+import {capitalizePropertyPath} from "../../../utils/capitalization.js";
+
+const propertyBindingTypes = [".bind", ".two-way", ".one-way", ".once"]
+
 export async function bindingUpdate(uuid) {
     const element = crs.binding.elements[uuid];
     if (element == null) return;
@@ -7,7 +11,9 @@ export async function bindingUpdate(uuid) {
 
     if (Array.isArray(intent)) {
         for (const i of intent) {
-            await applyProperty(element, i);
+            if (propertyBindingTypes.indexOf(i.provider) !== -1) {
+                await applyProperty(element, i);
+            }
         }
 
         return;
@@ -22,9 +28,8 @@ async function applyProperty(element, intent) {
     const emptyProperty = ["value", "textContent", "innerText", "innerHTML"];
 
     for (const property of properties) {
-        const targetProperty = intent.value[property];
-        if (targetProperty == null) continue;
-
+        if (intent.value[property] == null) continue;
+        const targetProperty = capitalizePropertyPath(intent.value[property]);
         const value = emptyProperty.includes(targetProperty) === true ? "" : null;
 
         element[targetProperty] = await crs.binding.data.getProperty(element["__bid"], property) ?? value;

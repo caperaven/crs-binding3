@@ -19,6 +19,16 @@
 <label>
     <div>&{person.age}</div>
     <input id="edtAge" value.bind="person.age" type="number" />
+    <button click.call="person.addAge">Add Age</button>
+</label>
+
+<label>
+    <div>&{person.age}</div>
+    <select value.bind="person.age">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+    </select>
 </label>
 
 <div id="lblSummery">${person.firstName} ${person.lastName} is ${person.age} old</div>
@@ -29,8 +39,8 @@
 <button click.attr.toggle="[this](aria-expanded='true')">Toggle Expanded</button>
 <button click.attr.toggle="[this](data-hidden)">Toggle Hidden</button>
 
-<my-component value.one-way="person.firstName" greeting.once="greeting"></my-component>
-<my-component value.bind="person.firstName" greeting.bind="greeting"></my-component>
+<my-component value.one-way="person.firstName" greeting.once="greeting" changed.call="greetings"></my-component>
+<my-component value.bind="person.firstName" greeting.bind="greeting" my-long-property.bind="greeting"></my-component>
 
 <ul>
     <template for="person of people">
@@ -46,5 +56,7 @@
 <button click.call="shift">Shift</button>
 
 <hr />
+
+
 
 <template src="/app/binding/template.html"></template>

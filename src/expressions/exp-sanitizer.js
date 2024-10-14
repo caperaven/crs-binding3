@@ -45,6 +45,7 @@ export async function sanitize(exp, ctxName = "context", addContext = true) {
         if (token.type === "property") {
             token.value = token.value.split(".").join("?.");
 
+
             if (token.value.indexOf("$globals") != -1) {
                 expression.push(token.value.replace("$globals", "crs.binding.data.globals"));
             }
@@ -91,6 +92,18 @@ export async function sanitize(exp, ctxName = "context", addContext = true) {
         .join("")
         .replaceAll("context.[", "[")
         .replaceAll("context.]", "]")
+
+
+    if (expr.indexOf("[") !== -1) {
+        // Replace all [ with ?.[ to support add safety for expressions like "model.selectedItems[0] where selectedItems is not yet set
+        expr = expr.replace(/(\w+)(\s*)(\?|\:)?(\s*)\[/g, (match, p1, p2, p3) => {
+            if (p3 === '?' || p3 === ':') {
+                return match; // If there's a ? or : before [, don't replace
+            } else {
+                return p1 + "?.["; // Otherwise, replace [ with ?.[
+            }
+        });
+    }
 
     expr = await crs.binding.expression.translateFactory(expr);
 

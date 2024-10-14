@@ -15,11 +15,12 @@ class ArrayProxyFunctions {
     }
 
     static splice(start, deleteCount, ...items) {
-        this.splice(start, deleteCount, ...items);
+        const result = this.splice(start, deleteCount, ...items);
 
         updateDom.call(this, (uuid) => {
             crs.binding.dom.collection.splice(uuid, start, deleteCount, ...items);
         });
+        return result;
     }
 
     static shift() {

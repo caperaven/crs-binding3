@@ -12,6 +12,10 @@ export class MyComponent extends crs.classes.BindableElement {
         console.log("my-component: once binding: ", newValue);
     }
 
+    set myLongProperty(newValue) {
+        console.log("my-component: two way binding: ", newValue);
+    }
+
     get html() {
         return import.meta.url.replace(".js", ".html");
     }
@@ -22,7 +26,11 @@ export class MyComponent extends crs.classes.BindableElement {
 
     async greet(message) {
         this.setProperty("title", message);
-        console.log("greet", message);
+        await this.changed(message);
+    }
+
+    async changed(value) {
+        this.dispatchEvent(new CustomEvent("changed", { detail: { value } }));
     }
 }
 

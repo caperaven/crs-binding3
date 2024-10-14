@@ -21,14 +21,14 @@ export class InflationManager {
      * @param data {Array} - The data to inflate the template with
      * @returns {Promise<void>}
      */
-    async get(id, data, elements) {
+    async get(id, data, elements ) {
         const {template, fn} = crs.binding.inflation.store.get(id);
 
         elements = syncCollection(elements, data.length, template);
 
         for (let i = 0; i < data.length; i++) {
             const element = elements[i];
-            fn(element, data[i]);
+            await fn(element, data[i]);
         }
 
         return elements;

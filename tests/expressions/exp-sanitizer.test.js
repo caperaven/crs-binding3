@@ -10,6 +10,15 @@ beforeAll(async () => {
     sanitize = (await import("../../src/expressions/exp-sanitizer.js")).sanitize;
 });
 
+Deno.test("sanitize - using translations requires adding context manaully", async () => {
+    // For the following expression, the context is not added automatically because we are using a translation
+    // The tokenization process is set to be a literal expression because of the translation
+    // For this reason, the context is not added automatically and we need to add it manually
+    const result = await sanitize("$context.age > 25 ? &{inflationManager.selectedLabel} : &{inflationManager.unselectLabel}");
+    assertEquals(result.expression, "context?.age > 25 ? ${await crs.binding.translations.get('inflationManager?.selectedLabel')} : ${await crs.binding.translations.get('inflationManager?.unselectLabel')}");
+    assertEquals(result.properties[0], "age");
+});
+
 Deno.test("sanitize - with translation", async () => {
     const result = await sanitize("${value} is &{translation}");
     assertEquals(result.expression, "${context.value} is ${await crs.binding.translations.get('translation')}");
@@ -20,6 +29,13 @@ Deno.test("sanitize - globals variable", async () => {
     assertEquals(result.expression, "crs.binding.data.globals?.menu?.isVisible = !crs.binding.data.globals?.menu?.isVisible");
     assertEquals(result.properties.length, 1);
     assertEquals(result.properties[0], "$globals.menu.isVisible");
+})
+
+Deno.test("sanitize - globals variable", async () => {
+    const result = await sanitize("value == true? 'check-circle-true': 'check-circle-false'");
+    assertEquals(result.expression, "context.value == true? 'check-circle-true': 'check-circle-false'");
+    assertEquals(result.properties.length, 1);
+    assertEquals(result.properties[0], "value");
 })
 
 Deno.test("sanitize - exp = context", async () => {
@@ -373,3 +389,14 @@ Deno.test("sanitize - model and context mix", async () =>{
     const result = await sanitize("model.firstName == 'Jane' && $context.isActive == true");
     assertEquals(result.expression, "context.model?.firstName == 'Jane' && context?.isActive == true");
 })
+
+Deno.test("sanitize - square brackets", async () =>{
+    const result = await sanitize("schema.variables.dataModel.selectedId[0]");
+    assertEquals(result.expression, "context.schema?.variables?.dataModel?.selectedId?.[0]");
+})
+
+Deno.test("sanitize - set classlist with array", async () =>{
+    const result = await sanitize("background == 'red' ? ['white', 'green'] : ['blue', 'yellow']");
+    assertEquals(result.expression, "context.background == 'red' ? ['white', 'green'] : ['blue', 'yellow']");
+})
+

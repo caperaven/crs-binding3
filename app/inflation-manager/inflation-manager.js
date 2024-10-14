@@ -6,11 +6,17 @@ export default class InflationManagerViewModel extends crs.classes.ViewBase {
     }
 
     async load() {
+        await crs.binding.translations.add({
+            old: "You are old",
+            young: "You are young"
+        }, "inflationManager");
         await crs.binding.inflation.manager.register("test", this.template);
     }
 
     async disconnectedCallback() {
+        await crs.binding.translations.delete("inflationManager");
         await crs.binding.inflation.manager.unregister("test");
+
     }
 
     async add() {

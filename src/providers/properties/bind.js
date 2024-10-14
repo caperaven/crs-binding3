@@ -16,6 +16,7 @@ export default class BindProvider {
      * @returns {Promise<void>}
      */
     async onEvent(event, bid, intent, target) {
+        if (event.target.dataset.ignoreBinding != null) return;
         if (event?.detail?.["componentProperty"] != null) {
             return await this.onCustomPropertyEvent(event, bid, intent, target);
         }

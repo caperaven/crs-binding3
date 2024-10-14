@@ -17,7 +17,10 @@ export default class BindingViewModel extends crs.classes.ViewBase {
         this.setProperty("person", {
             firstName: "John",
             lastName: "Doe",
-            age: 30
+            age: 30,
+            addAge: ()=> {
+                this.setProperty("person.age", this.getProperty("person.age") + 1);
+            }
         })
 
         this.setProperty("people", [
@@ -85,5 +88,9 @@ export default class BindingViewModel extends crs.classes.ViewBase {
 
     async onEvent(event) {
         console.log(event);
+    }
+
+    async greetings(event) {
+        console.log("greetings", event);
     }
 }
