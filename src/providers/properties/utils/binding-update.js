@@ -6,7 +6,15 @@ export async function bindingUpdate(uuid) {
     const element = crs.binding.elements[uuid];
     if (element == null) return;
 
-    let intent = crs.binding.eventStore.getIntent("change", uuid);
+    let intent;
+
+    if (element.contentEditable) {
+        intent = crs.binding.eventStore.getIntent("blur", uuid);
+    }
+    else {
+        intent = crs.binding.eventStore.getIntent("change", uuid);
+    }
+
     intent ||= crs.binding.eventStore.getIntent("component-change", uuid);
 
     if (Array.isArray(intent)) {

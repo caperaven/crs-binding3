@@ -15,6 +15,11 @@
       "view": "binding"
     },
     {
+      "title": "content-editable",
+      "hash": "#content-editable",
+      "view": "content-editable"
+    },
+    {
       "title": "Globals",
       "hash": "#globals",
       "view": "globals"

@@ -25,6 +25,7 @@ export default class BindProvider {
         if (bid == null || field == null) return;
 
         let value = target.value;
+
         if (target.nodeName === "INPUT") {
             if (target.type === "checkbox") {
                 value = target.checked;
@@ -33,6 +34,9 @@ export default class BindProvider {
             if (target.type === "number") {
                 value = Number(value);
             }
+        }
+        else if (target.contentEditable) {
+            value = target.innerHTML;
         }
 
         await crs.binding.data.setProperty(bid, field, value);
